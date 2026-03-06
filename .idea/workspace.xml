@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="Copy paste">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/data/tunoe.osm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/jsonData/tunoe.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/osmData/tunoe.osm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,19 +65,24 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "git-widget-placeholder": "#1 on Test-Parse",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/lonespringer/Desktop/First_Year_Project/BFST2026GroupNo15/src/test/resources/osmData",
+    "last_opened_file_path": "/Users/lonespringer/Desktop/First_Year_Project/BFST2026GroupNo15/src/main/resources/data",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "terminal",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/data" />
       <recent name="$PROJECT_DIR$/src/test/resources/osmData" />
+      <recent name="$PROJECT_DIR$/src/test/resources/jsonData" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/.idea" />
@@ -105,7 +114,7 @@
       <option name="presentableId" value="Default" />
       <updated>1772795686044</updated>
       <workItem from="1772795687403" duration="1678000" />
-      <workItem from="1772797467431" duration="304000" />
+      <workItem from="1772797467431" duration="2423000" />
     </task>
     <task id="LOCAL-00001" summary="Copy paste">
       <option name="closed" value="true" />
@@ -123,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772797473324</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Copy paste">
+      <option name="closed" value="true" />
+      <created>1772797953709</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1772797953709</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,5 +172,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Copy paste" />
     <option name="LAST_COMMIT_MESSAGE" value="Copy paste" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

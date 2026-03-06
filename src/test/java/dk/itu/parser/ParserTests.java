@@ -39,7 +39,7 @@ public class ParserTests {
     static {
         try {
             //parserResults.add(new ParserResult("tunoe.osm", "tunoe.json"));
-            parserResults.add(new ParserResult("bondeholm.osm", "bondeholm.json"));
+            parserResults.add(new ParserResult("tunoe.osm", "tunoe.json"));
         } catch (Exception e) {
             throw new ExceptionInInitializerError("An exception occurred while creating parser");
         }
