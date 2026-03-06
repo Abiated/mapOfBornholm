@@ -6,14 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="bornholm.Replace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/src/main/resources/data/tunoe.osm" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/jsonData/tunoe.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/osmData/tunoe.osm" beforeDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="25" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -45,6 +51,10 @@
     &quot;repository&quot;: &quot;BFST2026GroupNo15&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -60,11 +70,18 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+<<<<<<< Updated upstream
     "git-widget-placeholder": "#1 on Test-Parse",
+=======
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "Test-Parse",
+    "junie.onboarding.icon.badge.shown": "true",
+>>>>>>> Stashed changes
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/lonespringer/Desktop/First_Year_Project/BFST2026GroupNo15",
     "node.js.detected.package.eslint": "true",
@@ -72,10 +89,15 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+<<<<<<< Updated upstream
     "project.structure.last.edited": "Artifacts",
+=======
+    "project.structure.last.edited": "SDKs",
+>>>>>>> Stashed changes
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "database.data.views",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -92,6 +114,7 @@
       <recent name="$PROJECT_DIR$/OSM_map_Snippet" />
     </key>
   </component>
+<<<<<<< Updated upstream
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dk.itu.parser.Main" />
@@ -117,6 +140,8 @@
       </list>
     </recent_temporary>
   </component>
+=======
+>>>>>>> Stashed changes
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -134,10 +159,18 @@
       <updated>1772795686044</updated>
       <workItem from="1772795687403" duration="1678000" />
       <workItem from="1772797467431" duration="2423000" />
+<<<<<<< Updated upstream
       <workItem from="1772801988032" duration="1508000" />
       <workItem from="1772803516944" duration="178000" />
       <workItem from="1772804031272" duration="7000" />
       <workItem from="1772804121467" duration="659000" />
+=======
+      <workItem from="1772801988032" duration="377000" />
+      <workItem from="1772803981852" duration="706000" />
+      <workItem from="1772804695092" duration="199000" />
+      <workItem from="1772804902034" duration="51000" />
+      <workItem from="1772804978129" duration="348000" />
+>>>>>>> Stashed changes
     </task>
     <task id="LOCAL-00001" summary="Copy paste">
       <option name="closed" value="true" />
