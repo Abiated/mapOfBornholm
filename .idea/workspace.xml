@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/Member.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmElement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmNode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmRelation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmWay.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/data/Bornholm(mini).osm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/osmData/Bornholm(mini).osm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "ncst"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git",
+    "accountId": "94d0d372-590c-4e75-be09-788740032f83"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="3AZMYNzPL1jHCMnv3QKpkzQh6Oq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/lonespringer/Desktop/First_Year_Project/BFST2026GroupNo15/src/test/resources/osmData",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "terminal",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/osmData" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.idea" />
+      <recent name="$PROJECT_DIR$/src/main/resources/data" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/OSM_map_Snippet" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="" />
+      <created>1772795686044</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772795686044</updated>
+      <workItem from="1772795687403" duration="1381000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
