@@ -4,25 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/Member.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmElement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmRelation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmWay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/data/Bornholm(mini).osm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/osmData/Bornholm(mini).osm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="ab8951a4-ee4f-47e3-b3f5-3b8058f9d03a" name="Changes" comment="Copy paste" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
@@ -37,6 +30,9 @@
     "accountId": "94d0d372-590c-4e75-be09-788740032f83"
   }
 }]]></component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 7
 }]]></component>
@@ -51,7 +47,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Test-Parse",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/lonespringer/Desktop/First_Year_Project/BFST2026GroupNo15/src/test/resources/osmData",
     "node.js.detected.package.eslint": "true",
@@ -89,11 +85,47 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772795686044</updated>
-      <workItem from="1772795687403" duration="1381000" />
+      <workItem from="1772795687403" duration="1678000" />
     </task>
+    <task id="LOCAL-00001" summary="Copy paste">
+      <option name="closed" value="true" />
+      <created>1772797334444</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772797334444</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Test-Parse" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Copy paste" />
+    <option name="LAST_COMMIT_MESSAGE" value="Copy paste" />
   </component>
 </project>
