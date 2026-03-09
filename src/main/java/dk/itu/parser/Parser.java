@@ -16,7 +16,7 @@ import dk.itu.parser.models.*;
 public class Parser implements IParser {
 
     private final String fileName;
-    private final List<Double> boundingBox = new ArrayList<>();
+    private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
     private final HashMap<Long, OsmRelation> osmRelationMap = new HashMap<>();
@@ -50,10 +50,10 @@ public class Parser implements IParser {
                 line = line.trim();
 
                 if (line.startsWith("<bounds")) {
-                    double minlat = getAttributeDouble(line, "minlat");
-                    double minlon = getAttributeDouble(line, "minlon");
-                    double maxlat = getAttributeDouble(line, "maxlat");
-                    double maxlon = getAttributeDouble(line, "maxlon");
+                    float minlat = getAttributeFloat(line, "minlat");
+                    float minlon = getAttributeFloat(line, "minlon");
+                    float maxlat = getAttributeFloat(line, "maxlat");
+                    float maxlon = getAttributeFloat(line, "maxlon");
                     boundingBox.add(minlat);
                     boundingBox.add(minlon);
                     boundingBox.add(maxlat);
@@ -63,8 +63,8 @@ public class Parser implements IParser {
                 if (line.startsWith("<node")) {
 
                     long id = getAttributeLong(line, "id");
-                    double lat = getAttributeDouble(line, "lat");
-                    double lon = getAttributeDouble(line, "lon");
+                    float lat = getAttributeFloat(line, "lat");
+                    float lon = getAttributeFloat(line, "lon");
 
                     OsmNode osm = new OsmNode(id, lat, lon);
                     osmNodeMap.put(id, osm);
@@ -249,12 +249,12 @@ public class Parser implements IParser {
         return value;
     }
 
-    public double getAttributeDouble(String s, String key) {
+    public float getAttributeFloat(String s, String key) {
         String val = getAttribute(s, key);
         if (val == null) {
-            return Double.NaN;
+            return Float.NaN;
         }
-        return Double.parseDouble(val);
+        return Float.parseFloat(val);
     }
 
     public long getAttributeLong(String s, String key) {
@@ -268,7 +268,7 @@ public class Parser implements IParser {
 
     //DO NOT MODIFY BELOW GETTER METHODS
     @Override
-    public List<Double> getBoundingBox() {
+    public List<Float> getBoundingBox() {
         return boundingBox;
     }
 

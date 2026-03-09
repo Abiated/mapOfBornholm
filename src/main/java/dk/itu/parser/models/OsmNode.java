@@ -2,19 +2,19 @@ package dk.itu.parser.models;
 
 public class OsmNode extends OsmElement {
 
-    private final double lat, lon;
+    private final float lat, lon;
 
-    public OsmNode(long id, double lat, double lon) {
+    public OsmNode(long id, float lat, float lon) {
         super(id);
         this.lat = lat;
         this.lon = lon;
     }
 
-    public double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public double getLon() {
+    public float getLon() {
         return lon;
     }
 }

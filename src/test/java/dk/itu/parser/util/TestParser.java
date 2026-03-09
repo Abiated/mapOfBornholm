@@ -2,6 +2,8 @@ package dk.itu.parser.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ import dk.itu.parser.models.OsmWay;
 public class TestParser implements IParser {
 
     String fileName;
-    private final List<Double> boundingBox = new ArrayList<>();
+    private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
     private final HashMap<Long, OsmRelation> osmRelationMap = new HashMap<>();
@@ -58,10 +60,10 @@ public class TestParser implements IParser {
     private void parseBoundingBox(JsonNode root) {
         JsonNode bounds = root.path("osm").path("bounds");
 
-        Double minLat = bounds.path("@minlat").asDouble();
-        Double minLon = bounds.path("@minlon").asDouble();
-        Double maxLat = bounds.path("@maxlat").asDouble();
-        Double maxLon = bounds.path("@maxlon").asDouble();
+        Float minLat = BigDecimal.valueOf(bounds.path("@minlat").asDouble()).floatValue();
+        Float minLon = BigDecimal.valueOf(bounds.path("@minlon").asDouble()).floatValue();
+        Float maxLat = BigDecimal.valueOf(bounds.path("@maxlat").asDouble()).floatValue();
+        Float maxLon = BigDecimal.valueOf(bounds.path("@maxlon").asDouble()).floatValue();
 
         boundingBox.addAll(List.of(minLat, minLon, maxLat, maxLon));
     }
@@ -71,8 +73,8 @@ public class TestParser implements IParser {
 
         for (JsonNode n : nodes) {
             long id = n.path("@id").asLong();
-            double lat = n.path("@lat").asDouble();
-            double lon = n.path("@lon").asDouble();
+            float lat = BigDecimal.valueOf(n.path("@lat").asDouble()).floatValue();
+            float lon = BigDecimal.valueOf(n.path("@lon").asDouble()).floatValue();
 
             osmNodeMap.put(id, new OsmNode(id, lat, lon));
         }
@@ -202,7 +204,7 @@ public class TestParser implements IParser {
     }
 
     @Override
-    public List<Double> getBoundingBox() {
+    public List<Float> getBoundingBox() {
         return boundingBox;
     }
 }

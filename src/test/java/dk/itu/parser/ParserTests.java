@@ -364,19 +364,19 @@ public class ParserTests {
             IParser actualParser = pr.getActualParser();
             IParser expectedParser = pr.getExpectedParser();
 
-            List<Double> actualBounds = actualParser.getBoundingBox();
-            List<Double> expectedBounds = expectedParser.getBoundingBox();
+            List<Float> actualBounds = actualParser.getBoundingBox();
+            List<Float> expectedBounds = expectedParser.getBoundingBox();
 
             assertEquals(expectedBounds.size(), actualBounds.size(), () -> String.format("[ERROR - %s] : Size of BoundingBox list did not match. Expected %d values, found %d", pr.getName(), expectedBounds.size(), actualBounds.size()));
 
-            Double expectedMinLat = expectedBounds.get(0);
-            Double expectedMinLon = expectedBounds.get(1);
-            Double expectedMaxLat = expectedBounds.get(2);
-            Double expectedMaxLon = expectedBounds.get(3);
-            Double actualMinLat = actualBounds.get(0);
-            Double actualMinLon = actualBounds.get(1);
-            Double actualMaxLat = actualBounds.get(2);
-            Double actualMaxLon = actualBounds.get(3);
+            Float expectedMinLat = expectedBounds.get(0);
+            Float expectedMinLon = expectedBounds.get(1);
+            Float expectedMaxLat = expectedBounds.get(2);
+            Float expectedMaxLon = expectedBounds.get(3);
+            Float actualMinLat = actualBounds.get(0);
+            Float actualMinLon = actualBounds.get(1);
+            Float actualMaxLat = actualBounds.get(2);
+            Float actualMaxLon = actualBounds.get(3);
 
             //Act
             //Assert
