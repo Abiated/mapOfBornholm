@@ -234,7 +234,19 @@ public class Parser implements IParser {
         }
         int valueStart = start + pattern.length();
         int valueEnd = s.indexOf('"', valueStart);
-        return s.substring(valueStart, valueEnd);
+        String value = s.substring(valueStart, valueEnd);
+
+        /*
+        Decoding af xml enheder - til fejl OsmWayTagsAreCorrect
+        - ved ikke om man kan gøre det anderledes?
+        */
+        value = value.replace("&amp;", "&");
+        value = value.replace("&lt;", "<");
+        value = value.replace("&gt;", ">");
+        value = value.replace("&quot;", "\"");
+        value = value.replace("&apos;", "'");
+
+        return value;
     }
 
     public double getAttributeDouble(String s, String key) {

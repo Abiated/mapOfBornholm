@@ -102,7 +102,7 @@ public class TestParser implements IParser {
             ArrayNode tagArray = mapper.createArrayNode();
             if (tagNode.isArray()) {
                 tagArray = (ArrayNode) tagNode;
-            } else {
+            } else if (!tagNode.isMissingNode() && !tagNode.isNull()) {
                 tagArray.add(tagNode);
             }
 
