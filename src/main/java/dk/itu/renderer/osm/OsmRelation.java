@@ -34,5 +34,11 @@ public class OsmRelation extends OsmElement {
 
     @Override
     public void drawForTest(Graphics2D gc, Color color, Integer strokeWidth) {
-        /* Not yet implemented */ }
+        /*
+        for (Member member : members) {
+            member.getElement().drawForTest(gc,color,strokeWidth);
+        }
+
+         */
+    }
 }

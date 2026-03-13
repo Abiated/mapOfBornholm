@@ -265,24 +265,16 @@ public class Parser implements IParser {
         return Long.parseLong(val);
     }
 
-
-    //DO NOT MODIFY BELOW GETTER METHODS
-    @Override
     public List<Float> getBoundingBox() {
         return boundingBox;
     }
 
-    @Override
-    public HashMap<Long, OsmNode> getOsmNodeMap() {
-        return osmNodeMap;
-    }
+    public HashMap<Long, OsmNode> getOsmNodeMap() { return osmNodeMap; }
 
-    @Override
     public HashMap<Long, OsmWay> getOsmWayMap() {
         return osmWayMap;
     }
 
-    @Override
     public HashMap<Long, OsmRelation> getOsmRelationMap() {
         return osmRelationMap;
     }

@@ -5,67 +5,101 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_03_2026,_14_56_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_03_2026,_15_22_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_03_2026__14_56__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_03_2026__15_22__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/bondeholm.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/bondeholm.osm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/jasonData/tunoe.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/jsonData/tunoe.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/jsonData/.tunoe.json.icloud" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/tunoe.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Test-Parse" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ncst"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ncst&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git",
-    "accountId": "9c0980cb-7ff3-44bc-94dd-744f81feaf2e"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git&quot;,
+    &quot;accountId&quot;: &quot;9c0980cb-7ff3-44bc-94dd-744f81feaf2e&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="3Ag7WO5PiaviwC7oIXrIcThRwn5" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "#1 on Test-Parse",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.customizations",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;abdallah-legeplads-2&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\java\dk\itu\parser" />
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\data" />
       <recent name="$PROJECT_DIR$/target/test-classes/jsonData" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="dk.itu.parser" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="renderer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="renderer" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -88,5 +122,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
