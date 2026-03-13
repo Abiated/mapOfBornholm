@@ -31,11 +31,7 @@
 //            List<Coordinate> coords = new ArrayList<>();
 //
 //            long id = 0;
-//            double height = 0;
-//            double minLat = 0;
-//            double minLon = 0;
-//            double maxLat = 0;
-//            double maxLon = 0;
+//            float height = 0, minLat = 0, minLon = 0, maxLat = 0, maxLon = 0;
 //            int count = 0;
 //
 //
@@ -43,20 +39,20 @@
 //                // TODO: Implement parsing
 //
 //                if(line.contains("<bounds")) {
-//                    minLat = Double.parseDouble(getAttribute(line, "minlat"));
-//                    minLon = Double.parseDouble(getAttribute(line, "minlon"));
-//                    maxLat = Double.parseDouble(getAttribute(line, "maxlat"));
-//                    maxLon = Double.parseDouble(getAttribute(line, "maxlon"));
+//                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
+//                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
+//                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
+//                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
 //
 //                }
 //                if (line.contains("<hc")) {
 //                    id = Long.parseLong(getAttribute(line, "id"));
-//                    height = Double.parseDouble(getAttribute(line, "height"));
+//                    height = Float.parseFloat(getAttribute(line, "height"));
 //                    coords = new ArrayList<>();
 //
 //                } else if (line.contains("<coord")) {
-//                    double lat = Double.parseDouble(getAttribute(line, "lat"));
-//                    double lon = Double.parseDouble(getAttribute(line, "lon"));
+//                    Float lat = Float.parseFloat(getAttribute(line, "lat"));
+//                    Float lon = Float.parseFloat(getAttribute(line, "lon"));
 //                    coords.add(new Coordinate(lat, lon));
 //
 //                } else if(line.contains("</hc")) {
@@ -115,10 +111,10 @@
 //    }
 //
 //    //Area
-//    private double area(HeightCurve c) {
+//    private float area(HeightCurve c) {
 //        List<Coordinate> c_coords = c.coords;
 //
-//        double sum = 0;
+//        float sum = 0;
 //
 //        for(int i = 0; i < c_coords.size(); i++) {
 //            Coordinate a = c_coords.get(i);
