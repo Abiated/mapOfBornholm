@@ -6,18 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/Member.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmElement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmRelation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmWay.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,12 +34,12 @@
     &quot;assignee&quot;: &quot;ncst&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git",
-    "accountId": "3ea05b30-591d-41c4-9e0a-bfe863f74920"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git&quot;,
+    &quot;accountId&quot;: &quot;3ea05b30-591d-41c4-9e0a-bfe863f74920&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -105,6 +94,15 @@
       <updated>1773002391436</updated>
       <workItem from="1773002392665" duration="2995000" />
     </task>
+    <task id="LOCAL-00001" summary="mere arbejde">
+      <option name="closed" value="true" />
+      <created>1773667454923</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773667454923</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,5 +118,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="mere arbejde" />
+    <option name="LAST_COMMIT_MESSAGE" value="mere arbejde" />
   </component>
 </project>

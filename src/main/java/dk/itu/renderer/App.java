@@ -56,6 +56,8 @@ public class App extends DrawingApp {
         /* BASIC COMPONENT SETUP */
         stage.setTitle("Drawing App"); // Sets the title
         stage.setResizable(false); // Set non-resizable
+        stage.setWidth(WIDTH);
+        stage.setHeight(HEIGHT);
 
         BorderPane mouseEventComponent = new BorderPane();
         mouseEventComponent.setOnMousePressed(this::handleMousePressed);
@@ -86,7 +88,7 @@ public class App extends DrawingApp {
         /* DRAWING */
         // Example with line across screen
 
-        Parser parser = new Parser("tunoe.osm");
+        Parser parser = new Parser("bondeholm.osm");
         parser.parse();
 
 
@@ -108,15 +110,27 @@ public class App extends DrawingApp {
     public void draw() {
         // This provides our main drawing API
         Graphics2D gc = bufferedImage.createGraphics();
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_OFF
+        );
+        gc.setRenderingHint(
+                RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_PURE
+        );
+        gc.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY
+        );
         // Uncomment if drawing actual OSM data
-        // DrawingUtils.applyTransformation(gc);
+        DrawingUtils.applyTransformation(gc);
         // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
         // Here we can do any pre-processing such a setting the background or transformations
         gc.setColor(Color.BLUE); // Sets the color
         gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
+        // gc.setTransform(superAffine);
 
-        gc.setTransform(superAffine);
+
 
         /*
         HeightCurveData data = Tunoe.create();
