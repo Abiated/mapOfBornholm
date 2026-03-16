@@ -1,5 +1,7 @@
 package dk.itu.renderer.osm;
 
+import dk.itu.renderer.Drawable;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,7 +9,7 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.Map;
 
-public class OsmWay extends OsmElement {
+public class OsmWay extends OsmElement implements Drawable {
 
     private final List<OsmNode> nodes;
     private final Map<String, String> tags;

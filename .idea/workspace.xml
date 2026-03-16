@@ -5,18 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/bondeholm.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/bondeholm.osm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Main.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/Member.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmElement.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmNode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmRelation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/models/OsmWay.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/tunoe.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,12 +45,12 @@
     &quot;assignee&quot;: &quot;ncst&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git&quot;,
-    &quot;accountId&quot;: &quot;9c0980cb-7ff3-44bc-94dd-744f81feaf2e&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git",
+    "accountId": "3ea05b30-591d-41c4-9e0a-bfe863f74920"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -88,24 +89,10 @@
       <recent name="dk.itu.parser" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="renderer" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="renderer" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
       </set>
     </attachedChunks>
   </component>

@@ -3,7 +3,6 @@ package dk.itu.parser.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -189,17 +188,17 @@ public class TestParser implements IParser {
     }
 
     @Override
-    public HashMap<Long, OsmNode> getOsmNodeMap() {
+    public HashMap<Long, dk.itu.renderer.osm.OsmNode> getOsmNodeMap() {
         return osmNodeMap;
     }
 
     @Override
-    public HashMap<Long, OsmWay> getOsmWayMap() {
+    public HashMap<Long, dk.itu.renderer.osm.OsmWay> getOsmWayMap() {
         return osmWayMap;
     }
 
     @Override
-    public HashMap<Long, OsmRelation> getOsmRelationMap() {
+    public HashMap<Long, dk.itu.renderer.osm.OsmRelation> getOsmRelationMap() {
         return osmRelationMap;
     }
 

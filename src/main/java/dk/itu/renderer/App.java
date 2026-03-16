@@ -7,10 +7,12 @@ import java.awt.image.DataBufferInt;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import dk.itu.parser.HeightCurveData;
 import dk.itu.parser.HeightCurveParser;
+import dk.itu.parser.Parser;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
@@ -71,32 +73,32 @@ public class App extends DrawingApp {
         );
         stage.show(); // Sets the stage as visible
 
-        /*
-        ArrayList<OsmNode> list = new ArrayList<>();
+
+        List<OsmNode> list = new ArrayList<>();
         list.add(new OsmNode(1,10,10));
         list.add(new OsmNode(2,20,30));
         list.add(new OsmNode(3,30,10));
         list.add(new OsmNode( 4,10,10 ));
         OsmWay way = new OsmWay(4,list,new HashMap<String,String>());
         Drawable e = (Drawable)way;
-        ArrayList<Member> members = new ArrayList<>();
-        Member member = new Member((OsmElement)way,"s");
-        members.add(member);
-        OsmRelation r = new OsmRelation(5,members,new HashMap<String,String>());
-        Drawable x = (Drawable)r;
-
-         */
+        this.drawableList.add(e);
 
         /* DRAWING */
         // Example with line across screen
 
-        HeightCurveParser gay = new HeightCurveParser("tunoe.osm");
-        gay.parse();
-        HashMap<Long,OsmWay> = gay.getOsmWayMap();
-        for (OsmWay way : gay.getOsmWayMap()) {
+        Parser parser = new Parser("tunoe.osm");
+        parser.parse();
 
+
+        // parser.getOsmWayMap().get(4120948).getNodes().get(0).getLat() = 30;
+
+        List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
+
+        for (OsmElement element : waylist) {
+            this.drawableList.add(element);
         }
-        this.drawableList.add(x);
+
+
 
         this.draw();
 
@@ -107,7 +109,6 @@ public class App extends DrawingApp {
         // This provides our main drawing API
         Graphics2D gc = bufferedImage.createGraphics();
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         // Uncomment if drawing actual OSM data
         // DrawingUtils.applyTransformation(gc);
         // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
