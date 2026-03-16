@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/bondeholm.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/bondeholm.osm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/tunoe.osm" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,6 +73,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\resources\data" />
       <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\java\dk\itu\parser" />
       <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\data" />
       <recent name="$PROJECT_DIR$/target/test-classes/jsonData" />

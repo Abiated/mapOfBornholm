@@ -2,6 +2,7 @@ package dk.itu.renderer;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.nio.IntBuffer;
@@ -85,23 +86,18 @@ public class App extends DrawingApp {
         Drawable e = (Drawable)way;
         this.drawableList.add(e);
 
+
         /* DRAWING */
         // Example with line across screen
 
         Parser parser = new Parser("bondeholm.osm");
         parser.parse();
-
-
-        // parser.getOsmWayMap().get(4120948).getNodes().get(0).getLat() = 30;
-
         List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
-
+        DrawingUtils.sortOsmElementsByArea(waylist);
         for (OsmElement element : waylist) {
             this.drawableList.add(element);
+            System.out.println("way");
         }
-
-
-
         this.draw();
 
         this.render(); // This will actually show what has been drawn
@@ -128,7 +124,7 @@ public class App extends DrawingApp {
         // Here we can do any pre-processing such a setting the background or transformations
         gc.setColor(Color.BLUE); // Sets the color
         gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
-        // gc.setTransform(superAffine);
+        gc.setTransform(superAffine);
 
 
 
@@ -165,10 +161,12 @@ public class App extends DrawingApp {
         }
 
          */
-
-        int[] pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
-        System.arraycopy(pixels, 0, pixelBuffer.getBuffer().array(), 0, pixels.length);
-        imageView.setImage(new WritableImage(pixelBuffer));
+        // This takes the BufferedImage, and gets the pixels representation
+        int[] pixels = ((DataBufferInt) this.bufferedImage.getRaster().getDataBuffer()).getData();
+        // This copies our pixels into the PixelBuffer
+        System.arraycopy(pixels, 0, this.pixelBuffer.getBuffer().array(), 0, pixels.length);
+        // This updates our graphical component with the buffer
+        this.imageView.setImage(new WritableImage(this.pixelBuffer));
     }
     private void handleMousePressed(MouseEvent event) {
         this.screenX = event.getX();
