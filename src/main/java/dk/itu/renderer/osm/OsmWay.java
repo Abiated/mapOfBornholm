@@ -43,6 +43,7 @@ public class OsmWay extends OsmElement implements Drawable {
     @Override
     public void drawForTest(Graphics2D gc, Color color, Integer strokeWidth) {
         // If the way has less than two nodes, draw nothing
+        /*
         if (nodes == null || nodes.size() < 2) return;
 
         gc.setColor(color);
@@ -83,5 +84,8 @@ public class OsmWay extends OsmElement implements Drawable {
         }
 
 
+
+         */
     }
+
 }
