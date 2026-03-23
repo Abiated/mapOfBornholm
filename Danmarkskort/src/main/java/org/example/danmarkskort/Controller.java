@@ -2,6 +2,7 @@ package org.example.danmarkskort;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +13,7 @@ public class Controller {
     private SuperAffine transform = new SuperAffine();
     private double lastX;
     private double lastY;
+    //private Model model; //ensures the controller knows the model
 
     /** Updates view to show new things based on the input ex. MouseEvent, ScrollEvents etc*/
     private void updateView(){
@@ -22,8 +24,12 @@ public class Controller {
         imageView.setScaleY(transform.getScaleY());
     }
 
+    //Helper method to set the model
+   // public void setModel(Model model){this.model = model;}
+
     @FXML private TextField textInputTo;
     @FXML private TextField textInputFrom;
+    @FXML private ScrollBar seaLevelScrollBar;
 
     //TODO: Exchange with the Pane we render map in. ImageView with the image is a placeholder to get a feel for the final GUI
     @FXML private ImageView imageView;

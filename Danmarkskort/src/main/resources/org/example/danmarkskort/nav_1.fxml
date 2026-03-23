@@ -24,7 +24,7 @@
             <TextField layoutX="14.0" layoutY="43.0" prefHeight="26.0" prefWidth="139.0" promptText="from" fx:id="textInputFrom"/>
          </children>
       </AnchorPane>
-      <ScrollBar layoutX="373.0" layoutY="344.0" />
+      <ScrollBar layoutX="373.0" layoutY="344.0" fx:id="seaLevelScrollBar"/>
       <Line endX="100.0" layoutX="475.0" layoutY="344.0" startX="13.5" />
       <Text layoutX="373.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sea level" />
       <Text layoutX="488.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="x meters / km" />
