@@ -87,7 +87,7 @@ public class App extends DrawingApp {
         Renderer renderer = new Renderer(gc,parser,WIDTH,HEIGHT);
         for (OsmElement element : waylist) {
             OsmWay wayski = (OsmWay)element;
-            renderer.drawWay(wayski,Color.BLACK,1);
+            renderer.drawWay(wayski,1);
         }
         this.draw();
 

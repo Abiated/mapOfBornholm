@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="mere arbejde">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" afterDir="false" />
+    <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="vi kan tegne osm data nu">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +112,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773685539011</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="vi kan tegne osm data nu">
+      <option name="closed" value="true" />
+      <created>1774012845454</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1774012845454</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,6 +139,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="mere arbejde" />
-    <option name="LAST_COMMIT_MESSAGE" value="mere arbejde" />
+    <MESSAGE value="vi kan tegne osm data nu" />
+    <option name="LAST_COMMIT_MESSAGE" value="vi kan tegne osm data nu" />
   </component>
 </project>
