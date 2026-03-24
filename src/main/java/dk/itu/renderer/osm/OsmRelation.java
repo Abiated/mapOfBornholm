@@ -31,14 +31,4 @@ public class OsmRelation extends OsmElement {
     public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
     }
-
-    @Override
-    public void drawForTest(Graphics2D gc, Color color, Integer strokeWidth) {
-        /*
-        for (Member member : members) {
-            member.getElement().drawForTest(gc,color,strokeWidth);
-        }
-
-         */
     }
-}

@@ -5,23 +5,19 @@ import java.awt.Graphics2D;
 
 public class OsmNode extends OsmElement {
 
-    private final double lat, lon;
+    private final float lat, lon;
 
-    public OsmNode(long id, double lat, double lon) {
+    public OsmNode(long id, float lat, float lon) {
         super(id);
         this.lat = lat;
         this.lon = lon;
     }
 
-    public double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public double getLon() {
+    public float getLon() {
         return lon;
     }
-
-    @Override
-    public void drawForTest(Graphics2D gc, Color color, Integer strokeWidth) {
-        /* Not yet implemented */ }
 }

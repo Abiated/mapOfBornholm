@@ -29,13 +29,13 @@ import javafx.stage.Stage;
 
 public class App extends DrawingApp {
 
-    private static final double SEA_LEVEL = 0.0; // (default: 0.0)
+    private static final float SEA_LEVEL = 0.0F; // (default: 0.0)
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
-    private double screenX = 0;
-    private double screenY = 0;
+    private float screenX = 0;
+    private float screenY = 0;
     private final SuperAffine superAffine = new SuperAffine();
-    private final List<Drawable> drawableList = new ArrayList<>();
+    //private final List<Drawable> drawableList = new ArrayList<>();
 
     private final PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(
             WIDTH,
@@ -134,6 +134,7 @@ public class App extends DrawingApp {
 
          */
         // Draws our drawables
+        /*
         for (Drawable drawable : drawableList) {
             // In the actual project, color and strokeWidth arguments won't be in the draw method signature
             // Color and strokeWidth are only there for test purposes in the assignment
@@ -164,10 +165,14 @@ public class App extends DrawingApp {
         // This updates our graphical component with the buffer
         this.imageView.setImage(new WritableImage(this.pixelBuffer));
     }
+
+    /*
     private void handleMousePressed(MouseEvent event) {
         this.screenX = event.getX();
         this.screenY = event.getY();
     }
+
+     */
 
     /**
      * Pans by following the mouse.
@@ -176,7 +181,7 @@ public class App extends DrawingApp {
     private void handleMouseDragged(MouseEvent event) {
         double dx = event.getX() - this.screenX, dy = event.getY() - this.screenY;
         superAffine.prependTranslation(dx, dy);
-        handleMousePressed(event);
+        //handleMousePressed(event);
 
         draw();
         render();
