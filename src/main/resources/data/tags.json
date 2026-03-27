@@ -1,0 +1,140 @@
+{
+  "highway": {
+    "motorway": {
+      "driveable": true,
+      "walkable": false
+    },
+    "primary": {
+      "driveable": true,
+      "walkable": false
+    },
+    "residential": {
+      "driveable": false,
+      "walkable": true
+    },
+    "pedestrian": {
+      "driveable": false,
+      "walkable": true
+    },
+    "footway": {
+      "driveable": false,
+      "walkable": true
+    },
+    "cycleway": {
+      "driveable": false,
+      "walkable": false
+    },
+    "path": {
+      "driveable": false,
+      "walkable": true
+    },
+    "Unknown": {
+      "driveable": false,
+      "walkable": false
+    }
+  },
+
+  "natural": {
+    "bay": {
+      "render": true, "color": "#FFFF" },
+    "_comment": "//render kan bruges senere, hvis vi vil finde ud af om det skal tegnes eller ej"
+  },
+  "landuse": {
+    "residential": {
+      "render": true,
+      "color": "???"
+    }
+  },
+  "bulding": {
+    "yes": {
+      "render": true,
+      "color": "???"
+    }
+    "andet": {
+      "_comment": Main
+      roads: motoway,
+      trunk,
+      primary,
+      secondary,
+      tertiary,
+      unclassified,
+      residential,
+      herefter
+      kan
+      der
+      forekomme
+      de
+      samme
+      klassifikationer
+      med
+      "-link"
+      som
+      viser
+      at
+      vejen
+      leder
+      til
+      eller
+      fra
+      klassifikationenrne.
+
+      Special
+      Road
+      TYpes: living_street
+      service
+      pedestrian
+      track
+      bus_guideway
+      escape
+      raceway
+      road,
+      busway
+
+      Paths: path
+      -
+      path
+      er
+      en
+      uspecifik
+      vej
+      -
+      her
+      vil
+      der
+      være
+      et
+      tilhørende
+      tag
+      som
+      footway
+      eller
+      cycleway
+      footway
+      bridleway
+      steps,
+      corridor
+      path
+      via_ferrata
+
+      When
+      sidewalk/crosswalk
+      is
+      tagged
+      as
+      a
+      separate
+      way: Alle
+      hører
+      under
+      footway
+      sidewalk
+      crossing
+      traffic_island
+
+
+      Cycleway
+
+      busway
+    }
+  }
+}

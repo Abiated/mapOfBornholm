@@ -21,7 +21,7 @@ import dk.itu.parser.models.OsmWay;
 public class TestParser implements IParser {
 
     String fileName;
-    private final List<Double> boundingBox = new ArrayList<>();
+    private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
     private final HashMap<Long, OsmRelation> osmRelationMap = new HashMap<>();
@@ -58,10 +58,10 @@ public class TestParser implements IParser {
     private void parseBoundingBox(JsonNode root) {
         JsonNode bounds = root.path("osm").path("bounds");
 
-        Double minLat = bounds.path("@minlat").asDouble();
-        Double minLon = bounds.path("@minlon").asDouble();
-        Double maxLat = bounds.path("@maxlat").asDouble();
-        Double maxLon = bounds.path("@maxlon").asDouble();
+        float minLat = (float) bounds.path("@minlat").asDouble();
+        float minLon = (float) bounds.path("@minlon").asDouble();
+        float maxLat = (float) bounds.path("@maxlat").asDouble();
+        float maxLon = (float) bounds.path("@maxlon").asDouble();
 
         boundingBox.addAll(List.of(minLat, minLon, maxLat, maxLon));
     }
@@ -71,8 +71,8 @@ public class TestParser implements IParser {
 
         for (JsonNode n : nodes) {
             long id = n.path("@id").asLong();
-            double lat = n.path("@lat").asDouble();
-            double lon = n.path("@lon").asDouble();
+            float lat = (float)  n.path("@lat").asDouble();
+            float lon = (float)  n.path("@lon").asDouble();
 
             osmNodeMap.put(id, new OsmNode(id, lat, lon));
         }
@@ -202,7 +202,7 @@ public class TestParser implements IParser {
     }
 
     @Override
-    public List<Double> getBoundingBox() {
+    public List<Float> getBoundingBox() {
         return boundingBox;
     }
 }

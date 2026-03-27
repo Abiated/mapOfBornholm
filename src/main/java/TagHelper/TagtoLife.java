@@ -1,8 +1,70 @@
 package TagHelper;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.itu.parser.models.OsmWay;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
 public class TagtoLife {
+    private static final JsonNode config = loadConfig();
+
+    private static JsonNode loadConfig() {
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream is = TagtoLife.class.getClassLoader().getResourceAsStream("/tags.json");
+            if(is== null){
+                System.out.println( "tags.json not found");
+            }
+            return mapper.readTree(is);
+        } catch (IOException e){
+            System.out.println("Error loading config file");
+            return null;
+        }
+    }
+
+    public static boolean isDriveable(OsmWay way) {
+        String value = way.getTags().get("highway");
+        if (value == null || config == null) return false;
+        return config.path("highway")
+                .path(value)
+                .path("driveable")
+                .asBoolean(false);
+    }
+    public static boolean isWalkable(OsmWay way) {
+        String value = way.getTags().get("highway");
+        if (value == null || config == null) return false;
+        return config.path("highway")
+                .path(value)
+                .path("walkable")
+                .asBoolean(false);
+    }
+    public static boolean isCycleable(OsmWay way){
+        String value= way.getTags().get("highway");
+        if(value== null|| config== null) return false;
+        return config.path("highway")
+                .path(value)
+                .path("cycleable")
+                .asBoolean(false);
+    }
+    public static void getColor(OsmWay way){
+        for ( String key : List.of( "highway", "natural", "landuse", "building")){
+            String value= way.getTags().get(key);
+        }
+    }
+
+
+    public static boolean isManMade(OsmWay way){
+        return way.getTags().containsKey("man_made");
+    }
+
+    public static boolean isBarrier (OsmWay way){
+        return way.getTags().containsKey("barrier");
+
+    }
+
     public static boolean isBuilding(OsmWay osmway){
             return osmway.getTags().containsKey("building");
         //building {yes, house, apartement, commercial, school
@@ -16,10 +78,12 @@ public class TagtoLife {
         // natural { cliff, water, wood, beach, grassland, coastline}
 
     }
-    public static boolean isRailway(OsmWay osmway){
+    /*public static boolean isRailway(OsmWay osmway){
         return osmway.getTags().containsKey("railway");
 
     }
+    */
+
     public static boolean isLandUse(OsmWay osmway){
         return osmway.getTags().containsKey("landuse");
         // landUse{ Forrest, Residential, farmland, industrial}
@@ -28,9 +92,11 @@ public class TagtoLife {
         return  osmway.getTags().containsKey("waterway");
         // River Stream, Canal
     }
-    public static boolean isAeroway(OsmWay osmway){
+    /*public static boolean isAeroway(OsmWay osmway){
         return  osmway.getTags().containsKey("aeroway");
     }
+
+     */
     public static boolean isAmenity(OsmWay  osmway){
         return osmway.getTags().containsKey("amenity");
     }
@@ -40,9 +106,9 @@ public class TagtoLife {
     public static boolean isPlace(OsmWay osmway){
         return osmway.getTags().containsKey("place");
     }
-    public static boolean isStation(OsmWay way) {
+    /*public static boolean isStation(OsmWay way) {
         return "station".equals(way.getTags().get("railway")); // fixed!
-    }
+    } */
 
     public static NaturalType getNaturalType (OsmWay osmway){
         String value=osmway.getTags().get("natural");
@@ -86,7 +152,7 @@ public class TagtoLife {
             case "residential" -> HighwayType.RESIDENTIAL;
             case "path" ->  HighwayType.PATH;
             case "footway" -> HighwayType.FOOTWAY;
-            case "cycleway" -> HighwayType.CYCLEWAY; //findes ikke på tunoe
+            //case "cycleway" -> HighwayType.CYCLEWAY; //findes ikke på tunoe
             case "primary" -> HighwayType.PRIMARY; //findes ikke på tunoe
 
             default -> HighwayType.UNKNOWN;
@@ -155,6 +221,10 @@ public class TagtoLife {
 
         };
 
+    }
+    public static Address getAddress(OsmWay way){
+        HashMap (String,String) tags = way.getTags();
+        if(tags.containsKey("addr:city"))
     }
 }
 

@@ -1,22 +1,22 @@
 package TagHelper;
 
 public enum HighwayType{
-    MOTORWAY(true, false, false),
-    PRIMARY(true,false,false),
-    RESIDENTIAL(true, true, false),
-    PEDESTRIAN(false, true, false),
-    FOOTWAY(false, true, false),
-    CYCLEWAY(false, false, true),
-    PATH(false,true,true),
-    UNKNOWN(false, false, false);
+    MOTORWAY(false, false),
+    PRIMARY(false, false),
+    RESIDENTIAL(false, false),
+    PEDESTRIAN(false, false),
+    FOOTWAY(false, false),
+    //CYCLEWAY(false, false),
+    PATH(false,true),
+    UNKNOWN(false, false);
 
     public final boolean driveable;
     public final boolean walkable;
-    public final boolean bikeable;
+    //public final boolean bikeable;
 
-    HighwayType(boolean driveable, boolean walkable, boolean bikeable) {
+    HighwayType(boolean driveable, boolean walkable) {
         this.driveable = driveable;
         this.walkable = walkable;
-        this.bikeable = bikeable;
+        //this.cycleable = bikeable;
     }
 }

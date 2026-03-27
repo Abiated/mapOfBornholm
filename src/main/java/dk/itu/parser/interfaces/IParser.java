@@ -17,5 +17,5 @@ public interface IParser {
 
     HashMap<Long, OsmRelation> getOsmRelationMap();
 
-    List<Double> getBoundingBox();
+    List<Float> getBoundingBox();
 }
