@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="mere arbejde">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/Model/Dijkstra.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dk/itu/Model/DirectedEdge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,12 +57,14 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;abdallah-legeplads-2&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dijkstra-Model&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nkf/Desktop/BFST2026GroupNo15&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
@@ -84,7 +86,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
@@ -96,6 +99,8 @@
       <option name="presentableId" value="Default" />
       <updated>1773002391436</updated>
       <workItem from="1773002392665" duration="2995000" />
+      <workItem from="1774266044491" duration="4225000" />
+      <workItem from="1774369335492" duration="9151000" />
     </task>
     <task id="LOCAL-00001" summary="mere arbejde">
       <option name="closed" value="true" />
