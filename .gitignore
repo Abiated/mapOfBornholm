@@ -12,3 +12,4 @@ buildNumber.properties
 /.idea/
 /BroCode/.idea
 .DS_Store
+workspace.xml
