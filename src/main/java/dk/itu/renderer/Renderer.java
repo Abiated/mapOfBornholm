@@ -25,6 +25,7 @@ public class Renderer {
     float maxLon;
     float scaleX;
     float scaleY;
+    float c;
 
     Renderer(Graphics2D gc, Parser parser, int width, int height) {
         this.width = width;
@@ -51,11 +52,13 @@ public class Renderer {
             gc.setStroke(new BasicStroke(strokeWidth));
 
             OsmNode a = way.getNodes().get(0);
-            float x1 = (a.getLon() - minLon) * scaleX;
+            float c = (float) Math.cos(Math.toRadians(a.getLat()));
+            float x1 = ((a.getLon() - minLon) * scaleX) * c;
             float y1 = (maxLat - a.getLat()) * scaleY;
 
             OsmNode b = way.getNodes().get(1);
-            float x2 = (b.getLon() - minLon) * scaleX;
+            c = (float) Math.cos(Math.toRadians(b.getLat()));
+            float x2 = ((b.getLon() - minLon) * scaleX) * c;
             float y2 = (maxLat - b.getLat()) * scaleY;
 
             Path2D.Double p = new Path2D.Double();
@@ -68,13 +71,15 @@ public class Renderer {
         if (way.getNodes().size() > 2) {
             Path2D.Double polygon = new Path2D.Double();
             OsmNode first = way.getNodes().getFirst();
-            float x1 = (first.getLon() - minLon) * scaleX;
+            float c = (float) Math.cos(Math.toRadians(first.getLat()));
+            float x1 = ((first.getLon() - minLon) * scaleX) * c;
             float y1 = (maxLat - first.getLat()) * scaleY;
             polygon.moveTo(x1,y1);
 
             for (int i = 1; i < way.getNodes().size(); i++) {
                 OsmNode n = way.getNodes().get(i);
-                float xn = (n.getLon() - minLon) * scaleX;
+                c = (float) Math.cos(Math.toRadians(n.getLat()));
+                float xn = ((n.getLon() - minLon) * scaleX) * c;
                 float yn = (maxLat - n.getLat()) * scaleY;
                 polygon.lineTo(xn,yn);
             }

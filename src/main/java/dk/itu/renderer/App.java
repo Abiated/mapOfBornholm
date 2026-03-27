@@ -120,11 +120,11 @@ public class App extends DrawingApp {
          */
 
         // Uncomment if drawing actual OSM data
-        DrawingUtils.applyTransformation(gc);
+         DrawingUtils.applyTransformation(gc);
         // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
         // Here we can do any pre-processing such a setting the background or transformations
-        //gc.setColor(Color.BLUE); // Sets the color
-       // gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
+        gc.setColor(Color.BLACK); // Sets the color
+        gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
         gc.setTransform(superAffine);
 
         for (Path2D way : ways) {
@@ -132,7 +132,7 @@ public class App extends DrawingApp {
             // Color and strokeWidth are only there for test purposes in the assignment
             gc.draw(way);
         }
-
+/*
         for (Path2D heightcurve : heightcurves)
             gc.draw(heightcurve);
         /*
