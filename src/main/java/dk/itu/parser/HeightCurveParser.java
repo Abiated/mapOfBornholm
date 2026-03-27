@@ -18,7 +18,7 @@ public class HeightCurveParser {
 
     public HeightCurveData parse() {
         try {
-            InputStream is = HeightCurveParser.class.getResourceAsStream("/" + fileName);
+            InputStream is = HeightCurveParser.class.getResourceAsStream("/data/" + fileName);
             if (is == null) {
                 throw new IllegalArgumentException("Resource not found: " + fileName);
             }
@@ -31,11 +31,11 @@ public class HeightCurveParser {
             List<Coordinate> coords = new ArrayList<>();
 
             long id = 0;
-            double height = 0;
-            double minLat = 0;
-            double minLon = 0;
-            double maxLat = 0;
-            double maxLon = 0;
+            float height = 0;
+            float minLat = 0;
+            float minLon = 0;
+            float maxLat = 0;
+            float maxLon = 0;
             int count = 0;
 
 
@@ -43,20 +43,20 @@ public class HeightCurveParser {
                 // TODO: Implement parsing
 
                 if(line.contains("<bounds")) {
-                    minLat = Double.parseDouble(getAttribute(line, "minlat"));
-                    minLon = Double.parseDouble(getAttribute(line, "minlon"));
-                    maxLat = Double.parseDouble(getAttribute(line, "maxlat"));
-                    maxLon = Double.parseDouble(getAttribute(line, "maxlon"));
+                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
+                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
+                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
+                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
 
                 }
                 if (line.contains("<hc")) {
                     id = Long.parseLong(getAttribute(line, "id"));
-                    height = Double.parseDouble(getAttribute(line, "height"));
+                    height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
 
                 } else if (line.contains("<coord")) {
-                    double lat = Double.parseDouble(getAttribute(line, "lat"));
-                    double lon = Double.parseDouble(getAttribute(line, "lon"));
+                    float lat = Float.parseFloat(getAttribute(line, "lat"));
+                    float lon = Float.parseFloat(getAttribute(line, "lon"));
                     coords.add(new Coordinate(lat, lon));
 
                 } else if(line.contains("</hc")) {
@@ -115,19 +115,19 @@ public class HeightCurveParser {
     }
 
     //Area
-    private double area(HeightCurve c) {
+    private float area(HeightCurve c) {
         List<Coordinate> c_coords = c.coords;
 
-        double sum = 0;
+        float sum = 0;
 
         for(int i = 0; i < c_coords.size(); i++) {
             Coordinate a = c_coords.get(i);
             Coordinate b = c_coords.get((i+1) % c.coords.size());
 
-            sum += a.getLon() * b.getLat() - a.getLat() * b.getLon();
+            sum += (float) (a.getLon() * b.getLat() - a.getLat() * b.getLon());
         }
 
-        return Math.abs(sum) / 2.0;
+        return Math.abs(sum) / 2.0F;
     }
 
     //getAtrribute

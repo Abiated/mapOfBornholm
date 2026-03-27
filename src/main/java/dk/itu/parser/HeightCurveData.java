@@ -34,5 +34,9 @@ public class HeightCurveData {
         this.sea = sea;
         this.curves = List.copyOf(curves);
     }
+
+    public List<HeightCurve> getCurves() {
+        return curves;
+    }
 }
 

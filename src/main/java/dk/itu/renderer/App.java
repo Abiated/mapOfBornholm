@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import dk.itu.parser.HeightCurveData;
-import dk.itu.parser.HeightCurveParser;
-import dk.itu.parser.Parser;
+import dk.itu.parser.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
@@ -52,6 +50,8 @@ public class App extends DrawingApp {
 
     private final ImageView imageView = new ImageView();
     Graphics2D gc = bufferedImage.createGraphics();
+    List<Path2D> ways = new ArrayList<>();
+    List<Path2D> heightcurves = new ArrayList<>();
 
     @Override
     public void start(Stage stage) {
@@ -84,11 +84,18 @@ public class App extends DrawingApp {
         parser.parse();
         List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
         DrawingUtils.sortOsmElementsByArea(waylist);
+        HeightCurveParser HcParser = new HeightCurveParser("tunoe.hc");
+        HeightCurveData HcData = HcParser.parse();
         Renderer renderer = new Renderer(gc,parser,WIDTH,HEIGHT);
         for (OsmElement element : waylist) {
             OsmWay wayski = (OsmWay)element;
-            renderer.drawWay(wayski,1);
+            ways.add(renderer.getWayPath(wayski,1));
         }
+        for (HeightCurve curve : HcData.getCurves()) {
+            if (!curve.getCoords().isEmpty())
+                heightcurves.add(renderer.getHcRegionPath(curve, 1));
+        }
+
         this.draw();
 
         this.render(); // This will actually show what has been drawn
@@ -96,8 +103,6 @@ public class App extends DrawingApp {
 
     public void draw() {
         // This provides our main drawing API
-        //Graphics2D gc = getNewGraphicsContext();
-
         /*
         gc.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
@@ -118,29 +123,18 @@ public class App extends DrawingApp {
         DrawingUtils.applyTransformation(gc);
         // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
         // Here we can do any pre-processing such a setting the background or transformations
-        gc.setColor(Color.BLUE); // Sets the color
-        gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
+        //gc.setColor(Color.BLUE); // Sets the color
+       // gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
         gc.setTransform(superAffine);
 
-
-
-        /*
-        HeightCurveData data = Tunoe.create();
-
-        HeightCurve sea = data.sea;
-        sea.resetSubmerged();
-        sea.submerge(SEA_LEVEL);
-
-
-         */
-        // Draws our drawables
-        /*
-        for (Drawable drawable : drawableList) {
+        for (Path2D way : ways) {
             // In the actual project, color and strokeWidth arguments won't be in the draw method signature
             // Color and strokeWidth are only there for test purposes in the assignment
-            drawable.drawForTest(gc, Color.BLACK, 1);
-
+            gc.draw(way);
         }
+
+        for (Path2D heightcurve : heightcurves)
+            gc.draw(heightcurve);
         /*
         for (HeightCurve curve : data.curves) {
             if (curve == sea) {
