@@ -64,7 +64,7 @@ public class DrawingTests {
 
     private Renderer makeRenderer() {
         Parser parser = new FakeParser(List.of(0f, 0f, 800f, 800f));
-        return new Renderer(gc, parser, WIDTH, HEIGHT);
+        return new Renderer(gc);
     }
 
     private void fillBackground() {
@@ -82,7 +82,7 @@ public class DrawingTests {
 
         Renderer renderer = makeRenderer();
         gc.setColor(Color.BLACK);
-        renderer.drawWay(wayUnderTest, 2);
+        gc.draw(renderer.getWayPath(wayUnderTest, 2));
 
         Utils.savePixelsAsImageAndTest("task-2a_zero_nodes_are_not_drawn", bufferedImage, true);
     }
@@ -392,7 +392,7 @@ public class DrawingTests {
         localGc.fillRect(0, 0, width, height);
 
         Parser parser = new FakeParser(List.of(0f, 0f, 800f, 800f));
-        Renderer renderer = new Renderer(localGc, parser, width, height);
+        Renderer renderer = new Renderer(localGc);
 
         List<OsmElement> bonus = Utils.getBondeholm();
         DrawingUtils.sortOsmElementsByArea(bonus);

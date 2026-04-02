@@ -15,35 +15,16 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class Renderer {
-    int width;
-    int height;
     Graphics2D gc;
-    Parser parser;
-    float minLat;
-    float minLon;
-    float maxLat;
-    float maxLon;
-    float scaleX;
-    float scaleY;
-    float c;
+    //float R = 6378137;
 
-    Renderer(Graphics2D gc, Parser parser, int width, int height) {
-        this.width = width;
-        this.height = height;
+    Renderer(Graphics2D gc) {
         this.gc = gc;
-        this.parser = parser;
-        // exception hvis boundingbox ikke er parsed
-        minLat = parser.getBoundingBox().get(0);
-        minLon = parser.getBoundingBox().get(1);
-        maxLat = parser.getBoundingBox().get(2);
-        maxLon = parser.getBoundingBox().get(3);
-        scaleX = width / (maxLon - minLon);
-        scaleY = height / (maxLat - minLat);
     }
 
     Path2D getWayPath(OsmWay way, Integer strokeWidth) {
-        setWayColor(way);
         // If the way has less than two nodes, draw nothing
+        setWayColor(way);
         if (way.getNodes() == null || way.getNodes().size() < 2) {
             return new Path2D.Double();
         }
@@ -52,18 +33,16 @@ public class Renderer {
             gc.setStroke(new BasicStroke(strokeWidth));
 
             OsmNode a = way.getNodes().get(0);
-            float c = (float) Math.cos(Math.toRadians(a.getLat()));
-            float x1 = ((a.getLon() - minLon) * scaleX) * c;
-            float y1 = (maxLat - a.getLat()) * scaleY;
+            float x1 = a.getLon();
+            float y1 = a.getLat();
 
             OsmNode b = way.getNodes().get(1);
-            c = (float) Math.cos(Math.toRadians(b.getLat()));
-            float x2 = ((b.getLon() - minLon) * scaleX) * c;
-            float y2 = (maxLat - b.getLat()) * scaleY;
-
+            float x2 = b.getLon();
+            float y2 = b.getLat();
             Path2D.Double p = new Path2D.Double();
             p.moveTo(x1,y1);
             p.lineTo(x2,y2);
+            gc.fill(p);
             return p;
 
         }
@@ -71,16 +50,14 @@ public class Renderer {
         if (way.getNodes().size() > 2) {
             Path2D.Double polygon = new Path2D.Double();
             OsmNode first = way.getNodes().getFirst();
-            float c = (float) Math.cos(Math.toRadians(first.getLat()));
-            float x1 = ((first.getLon() - minLon) * scaleX) * c;
-            float y1 = (maxLat - first.getLat()) * scaleY;
+            float x1 = first.getLon();
+            float y1 = first.getLat();
             polygon.moveTo(x1,y1);
 
             for (int i = 1; i < way.getNodes().size(); i++) {
                 OsmNode n = way.getNodes().get(i);
-                c = (float) Math.cos(Math.toRadians(n.getLat()));
-                float xn = ((n.getLon() - minLon) * scaleX) * c;
-                float yn = (maxLat - n.getLat()) * scaleY;
+                float xn = n.getLon();
+                float yn = n.getLat();
                 polygon.lineTo(xn,yn);
             }
 
@@ -89,6 +66,7 @@ public class Renderer {
                 gc.setStroke(new BasicStroke(0));
                 polygon.closePath();
                 gc.fill(polygon);
+                return polygon;
 
             } else {
                 gc.setStroke(new BasicStroke(strokeWidth));
@@ -136,12 +114,12 @@ public class Renderer {
         gc.setColor(Color.BLACK);
         Path2D hc = new Path2D.Double();
         // problemer opstår hvis heightcurve ikke er parsed
-        float x1 = (curve.getCoords().getFirst().getLon() - minLon) * scaleX;
-        float y1 = (maxLat - curve.getCoords().getFirst().getLat()) * scaleY;
+        float x1 = curve.getCoords().getFirst().getLon();
+        float y1 = curve.getCoords().getFirst().getLat();
         hc.moveTo(x1,y1);
         for (int i = 1; i<curve.getCoords().size(); i++) {
-            float x = (curve.getCoords().get(i).getLon() - minLon) * scaleX;
-            float y = (maxLat - curve.getCoords().get(i).getLat()) * scaleY;
+            float x = curve.getCoords().get(i).getLon();
+            float y = curve.getCoords().get(i).getLat();
             hc.lineTo(x,y);
         }
         return hc;
@@ -153,4 +131,16 @@ public class Renderer {
             hc.append(heightcurve.getBoundaryPath(),false);
         return hc;
     }
+    /*
+
+    float mercatorX(float lon) {
+        return (float) (R * Math.toRadians(lon));
+    }
+
+    float mercatorY(float lat) {
+        float rad = (float) Math.toRadians(lat);
+        return (float) (R * Math.log(Math.tan(Math.PI / 4 + rad / 2)));
+    }
+
+     */
 }

@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class HeightCurveData {
 
-    public final double minLat;
-    public final double minLon;
-    public final double maxLat;
-    public final double maxLon;
+    public final float minLat;
+    public final float minLon;
+    public final float maxLat;
+    public final float maxLon;
 
     /**
      * Implicit "sea" root of the containment tree. Its {@code children} are the
@@ -26,7 +26,7 @@ public class HeightCurveData {
      */
     public final List<HeightCurve> curves;
 
-    public HeightCurveData(double minLat, double minLon, double maxLat, double maxLon, HeightCurve sea, List<HeightCurve> curves) {
+    public HeightCurveData(float minLat, float minLon, float maxLat, float maxLon, HeightCurve sea, List<HeightCurve> curves) {
         this.minLat = minLat;
         this.minLon = minLon;
         this.maxLat = maxLat;

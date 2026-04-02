@@ -86,22 +86,22 @@ public class App extends DrawingApp {
         DrawingUtils.sortOsmElementsByArea(waylist);
         HeightCurveParser HcParser = new HeightCurveParser("tunoe.hc");
         HeightCurveData HcData = HcParser.parse();
-        Renderer renderer = new Renderer(gc,parser,WIDTH,HEIGHT);
+        Renderer renderer = new Renderer(gc);
         for (OsmElement element : waylist) {
             OsmWay wayski = (OsmWay)element;
             ways.add(renderer.getWayPath(wayski,1));
         }
         for (HeightCurve curve : HcData.getCurves()) {
             if (!curve.getCoords().isEmpty())
-                heightcurves.add(renderer.getHcRegionPath(curve, 1));
+                heightcurves.add(renderer.getHcRegionPath(curve,1));
         }
 
-        this.draw();
+        this.draw(parser,HcData);
 
         this.render(); // This will actually show what has been drawn
     }
 
-    public void draw() {
+    public void draw(Parser parser, HeightCurveData data) {
         // This provides our main drawing API
         /*
         gc.setRenderingHint(
@@ -119,23 +119,25 @@ public class App extends DrawingApp {
 
          */
 
-        // Uncomment if drawing actual OSM data
-         DrawingUtils.applyTransformation(gc);
-        // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
         // Here we can do any pre-processing such a setting the background or transformations
-        gc.setColor(Color.BLACK); // Sets the color
+        gc.setColor(Color.BLUE); // Sets the color
         gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
-        gc.setTransform(superAffine);
+        //gc.setTransform(superAffine);
+
 
         for (Path2D way : ways) {
             // In the actual project, color and strokeWidth arguments won't be in the draw method signature
             // Color and strokeWidth are only there for test purposes in the assignment
-            gc.draw(way);
+            gc.setColor(Color.BLACK);
+            gc.draw(project(way,parser));
+        }
+
+
+        for (Path2D heightcurve : heightcurves) {
+            gc.setColor(Color.BLACK);
+            gc.draw(project(heightcurve,data));
         }
 /*
-        for (Path2D heightcurve : heightcurves)
-            gc.draw(heightcurve);
-        /*
         for (HeightCurve curve : data.curves) {
             if (curve == sea) {
                 continue;
@@ -172,6 +174,7 @@ public class App extends DrawingApp {
      * Pans by following the mouse.
      * @param event The screen mouse drag event that was triggered.
      */
+    /*
     private void handleMouseDragged(MouseEvent event) {
         double dx = event.getX() - this.screenX, dy = event.getY() - this.screenY;
         superAffine.prependTranslation(dx, dy);
@@ -181,10 +184,10 @@ public class App extends DrawingApp {
         render();
     }
 
-    /**
+
      * Zooms in-and-out around the mouse.
      * @param event The screen scroll event that was triggered.
-     */
+
     private void handleScroll(ScrollEvent event) {
         double zoom = event.getDeltaY() > 0 ? 1.05 : 1/1.05;
         superAffine
@@ -196,11 +199,11 @@ public class App extends DrawingApp {
         render();
     }
 
-    /**
+
      * Re-centers the screen against some world lat/lon bounds.
      * The function will add the projection transformation of 0.56 to the bounds.
      * @param bounds An array in the format {minLon, minLat, maxLon, maxLat}.
-     */
+
     public void reCenter(double[] bounds) {
         double scale = getHEIGHT() / (bounds[3] - bounds[1]);
         superAffine
@@ -215,10 +218,12 @@ public class App extends DrawingApp {
                 );
     }
 
+     */
+
     private static Shape project(Shape s, HeightCurveData d) {
-        double p = 20, c = Math.cos(Math.toRadians((d.minLat + d.maxLat) / 2));
-        double w = (d.maxLon - d.minLon) * c, h = d.maxLat - d.minLat;
-        double k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+        float p = 20, c = (float) Math.cos(Math.toRadians((d.minLat + d.maxLat) / 2));
+        float w = (d.maxLon - d.minLon) * c, h = d.maxLat - d.minLat;
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
         AffineTransform t = new AffineTransform();
         t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
         t.scale(k, -k);
@@ -226,4 +231,21 @@ public class App extends DrawingApp {
         t.translate(-d.minLon, -d.minLat);
         return t.createTransformedShape(s);
     }
+
+    private static Shape project(Shape s, Parser parser) {
+        float minLat = parser.getBoundingBox().get(0);
+        float minLon = parser.getBoundingBox().get(1);
+        float maxLat = parser.getBoundingBox().get(2);
+        float maxLon = parser.getBoundingBox().get(3);
+        float p = 20, c = (float) Math.cos(Math.toRadians((minLat + maxLat) / 2));
+        float w = (maxLon - minLon) * c, h = maxLat - minLat;
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+        AffineTransform t = new AffineTransform();
+        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
+        t.scale(k, -k);
+        t.scale(c, 1);
+        t.translate(-minLon, -minLat);
+        return t.createTransformedShape(s);
+    }
+
 }
