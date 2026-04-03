@@ -33,7 +33,6 @@ public class App extends DrawingApp {
     private float screenX = 0;
     private float screenY = 0;
     private final SuperAffine superAffine = new SuperAffine();
-    //private final List<Drawable> drawableList = new ArrayList<>();
 
     private final PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(
             WIDTH,
@@ -50,8 +49,12 @@ public class App extends DrawingApp {
 
     private final ImageView imageView = new ImageView();
     Graphics2D gc = bufferedImage.createGraphics();
-    List<Path2D> ways = new ArrayList<>();
-    List<Path2D> heightcurves = new ArrayList<>();
+    List<OsmWay> ways = new ArrayList<>();
+    List<HeightCurve> heightcurves = new ArrayList<>();
+    private Renderer renderer;
+    private Parser parser;
+    private HeightCurveParser HcParser;
+    private HeightCurveData HcData;
 
     @Override
     public void start(Stage stage) {
@@ -77,31 +80,28 @@ public class App extends DrawingApp {
         );
         stage.show(); // Sets the stage as visible
 
-        /* DRAWING */
-        // Example with line across screen
-
-        Parser parser = new Parser("tunoe.osm");
+        parser = new Parser("tunoe.osm");
         parser.parse();
         List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
         DrawingUtils.sortOsmElementsByArea(waylist);
-        HeightCurveParser HcParser = new HeightCurveParser("tunoe.hc");
-        HeightCurveData HcData = HcParser.parse();
-        Renderer renderer = new Renderer(gc);
+        HcParser = new HeightCurveParser("tunoe.hc");
+        HcData = HcParser.parse();
+        renderer = new Renderer(gc);
         for (OsmElement element : waylist) {
             OsmWay wayski = (OsmWay)element;
-            ways.add(renderer.getWayPath(wayski,1));
+            ways.add(wayski);
         }
         for (HeightCurve curve : HcData.getCurves()) {
             if (!curve.getCoords().isEmpty())
-                heightcurves.add(renderer.getHcRegionPath(curve,1));
+                heightcurves.add(curve);
         }
 
-        this.draw(parser,HcData);
+        this.draw();
 
         this.render(); // This will actually show what has been drawn
     }
 
-    public void draw(Parser parser, HeightCurveData data) {
+    public void draw() {
         // This provides our main drawing API
         /*
         gc.setRenderingHint(
@@ -118,24 +118,26 @@ public class App extends DrawingApp {
         );
 
          */
-
         // Here we can do any pre-processing such a setting the background or transformations
         gc.setColor(Color.BLUE); // Sets the color
         gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
         //gc.setTransform(superAffine);
 
 
-        for (Path2D way : ways) {
+        for (OsmWay way : ways) {
             // In the actual project, color and strokeWidth arguments won't be in the draw method signature
             // Color and strokeWidth are only there for test purposes in the assignment
-            gc.setColor(Color.BLACK);
-            gc.draw(project(way,parser));
+            Shape projected = project(renderer.getWayPath(way),parser);
+            renderer.setWayColor(way);
+            if (way.getNodes().getFirst()==way.getNodes().getLast())
+                gc.fill(projected);
+            gc.draw(projected);
         }
 
+        gc.setColor(Color.BLACK);
 
-        for (Path2D heightcurve : heightcurves) {
-            gc.setColor(Color.BLACK);
-            gc.draw(project(heightcurve,data));
+        for (HeightCurve heightcurve : heightcurves) {
+            gc.draw(project(renderer.getHcRegionPath(heightcurve),parser));
         }
 /*
         for (HeightCurve curve : data.curves) {
@@ -219,18 +221,6 @@ public class App extends DrawingApp {
     }
 
      */
-
-    private static Shape project(Shape s, HeightCurveData d) {
-        float p = 20, c = (float) Math.cos(Math.toRadians((d.minLat + d.maxLat) / 2));
-        float w = (d.maxLon - d.minLon) * c, h = d.maxLat - d.minLat;
-        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-        AffineTransform t = new AffineTransform();
-        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
-        t.scale(k, -k);
-        t.scale(c, 1);
-        t.translate(-d.minLon, -d.minLat);
-        return t.createTransformedShape(s);
-    }
 
     private static Shape project(Shape s, Parser parser) {
         float minLat = parser.getBoundingBox().get(0);

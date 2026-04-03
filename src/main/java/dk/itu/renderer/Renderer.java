@@ -22,15 +22,14 @@ public class Renderer {
         this.gc = gc;
     }
 
-    Path2D getWayPath(OsmWay way, Integer strokeWidth) {
+    Path2D getWayPath(OsmWay way) {
         // If the way has less than two nodes, draw nothing
-        setWayColor(way);
         if (way.getNodes() == null || way.getNodes().size() < 2) {
             return new Path2D.Double();
         }
 
         if (way.getNodes().size() == 2){
-            gc.setStroke(new BasicStroke(strokeWidth));
+            //gc.setStroke(new BasicStroke(strokeWidth));
 
             OsmNode a = way.getNodes().get(0);
             float x1 = a.getLon();
@@ -63,13 +62,13 @@ public class Renderer {
 
             // chatGPT siger det ik er optimalt det her
             if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()){
-                gc.setStroke(new BasicStroke(0));
+                //gc.setStroke(new BasicStroke(0));
                 polygon.closePath();
-                gc.fill(polygon);
+                //gc.fill(polygon);
                 return polygon;
 
             } else {
-                gc.setStroke(new BasicStroke(strokeWidth));
+                //gc.setStroke(new BasicStroke(strokeWidth));
                 return polygon;
             }
 
@@ -109,9 +108,7 @@ public class Renderer {
         }
     }
 
-    Path2D getHcBoundaryPath(HeightCurve curve, Integer strokeWidth) {
-        gc.setStroke(new BasicStroke(strokeWidth));
-        gc.setColor(Color.BLACK);
+    Path2D getHcBoundaryPath(HeightCurve curve) {
         Path2D hc = new Path2D.Double();
         // problemer opstår hvis heightcurve ikke er parsed
         float x1 = curve.getCoords().getFirst().getLon();
@@ -124,9 +121,9 @@ public class Renderer {
         }
         return hc;
     }
-    Path2D getHcRegionPath(HeightCurve curve, Integer strokeWidth) {
+    Path2D getHcRegionPath(HeightCurve curve) {
         Path2D hc = new Path2D.Double(Path2D.WIND_EVEN_ODD);
-        hc.append(getHcBoundaryPath(curve,strokeWidth),false);
+        hc.append(getHcBoundaryPath(curve),false);
         for (HeightCurve heightcurve : curve.getChildren())
             hc.append(heightcurve.getBoundaryPath(),false);
         return hc;
