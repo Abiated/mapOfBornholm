@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 
 public class App extends DrawingApp {
 
-    private static final float SEA_LEVEL = 0.0F; // (default: 0.0)
+    private static final float SEA_LEVEL = 5.0F; // (default: 0.0)
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
     private float screenX = 0;
@@ -91,6 +91,8 @@ public class App extends DrawingApp {
             OsmWay wayski = (OsmWay)element;
             ways.add(wayski);
         }
+        HcData.getSea().resetSubmerged();
+        HcData.getSea().submerge(SEA_LEVEL);
         for (HeightCurve curve : HcData.getCurves()) {
             if (!curve.getCoords().isEmpty())
                 heightcurves.add(curve);
@@ -134,10 +136,15 @@ public class App extends DrawingApp {
             gc.draw(projected);
         }
 
-        gc.setColor(Color.BLACK);
-
         for (HeightCurve heightcurve : heightcurves) {
-            gc.draw(project(renderer.getHcRegionPath(heightcurve),parser));
+            Shape projected = project(renderer.getHcRegionPath(heightcurve),parser);
+            if (heightcurve.getFillColor(SEA_LEVEL) != null) {
+                gc.setColor(heightcurve.getFillColor(SEA_LEVEL));
+                gc.fill(projected);
+            }
+            else
+                gc.setColor(Color.BLACK);
+            gc.draw(projected);
         }
 /*
         for (HeightCurve curve : data.curves) {

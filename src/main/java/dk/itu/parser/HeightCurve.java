@@ -39,6 +39,9 @@ public class HeightCurve {
 
         if (elevation < 0 && submerged)
             return Color.decode("#2b8cbe");
+        else
+            return null;
+        /*
         else if (elevation < 0)
             return Color.decode("#ffffcc");
         else if (elevation >= 0 && elevation < 2.5)
@@ -49,6 +52,8 @@ public class HeightCurve {
             return Color.decode("#31a354");
         else
             return Color.decode("#006837");
+
+         */
 
     }
 

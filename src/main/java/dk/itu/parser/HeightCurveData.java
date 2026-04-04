@@ -38,5 +38,7 @@ public class HeightCurveData {
     public List<HeightCurve> getCurves() {
         return curves;
     }
+
+    public HeightCurve getSea() { return sea; }
 }
 
