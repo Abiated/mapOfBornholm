@@ -3,9 +3,9 @@ package dk.itu.parser.interfaces;
 import java.util.HashMap;
 import java.util.List;
 
-import dk.itu.parser.models.OsmNode;
-import dk.itu.parser.models.OsmRelation;
-import dk.itu.parser.models.OsmWay;
+import dk.itu.renderer.osm.OsmNode;
+import dk.itu.renderer.osm.OsmRelation;
+import dk.itu.renderer.osm.OsmWay;
 
 public interface IParser {
 
