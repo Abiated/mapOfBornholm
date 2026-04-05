@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Refs og tags Start. &#10;Til fredag d. 20/3">
-      <change afterPath="$PROJECT_DIR$/src/main/java/TagHelper/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/TagHelper/LandscapeType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/TagHelper/PointsOfInterestType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/BarrierType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/BuildingType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TagHelper/StructureType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/HighwayType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TagHelper/TransportationType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/LandUseType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/ManMadeType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/NaturalType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TourismType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/WaterWayType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/wayType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/data/tags.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/tags.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -63,27 +51,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;TagToLife&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.customizations",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/target/test-classes/jsonData" />

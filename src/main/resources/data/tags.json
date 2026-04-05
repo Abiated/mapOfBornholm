@@ -143,13 +143,13 @@
     "greenhouse":  { "color": "#c8e6c9", "fill": true }
   },
   "man_made": {
-    "pier":        { "color": "#a0a0a0", "fill": false },
-    "breakwater":  { "color": "#9e9e9e", "fill": false },
-    "lighthouse":  { "color": "#ff5722", "fill": false }
+    "pier":        { "color": "#4caf50", "fill": false },
+    "breakwater":  { "color": "#4caf50", "fill": false },
+    "lighthouse":  { "color": "#4caf50", "fill": false }
   },
   "barrier": {
-    "fence":       { "color": "#9e9e9e", "fill": false },
-    "wall":        { "color": "#8d8d8d", "fill": false },
+    "fence":       { "color": "#4caf50", "fill": false },
+    "wall":        { "color": "#4caf50", "fill": false },
     "hedge":       { "color": "#4caf50", "fill": false }
   }
 },
