@@ -1,140 +1,171 @@
 {
-  "highway": {
-    "motorway": {
-      "driveable": true,
-      "walkable": false
-    },
-    "primary": {
-      "driveable": true,
-      "walkable": false
-    },
-    "residential": {
-      "driveable": false,
-      "walkable": true
-    },
-    "pedestrian": {
-      "driveable": false,
-      "walkable": true
-    },
-    "footway": {
-      "driveable": false,
-      "walkable": true
-    },
-    "cycleway": {
-      "driveable": false,
-      "walkable": false
-    },
-    "path": {
-      "driveable": false,
-      "walkable": true
-    },
-    "Unknown": {
-      "driveable": false,
-      "walkable": false
+  "transportation": {
+    "highway": {
+      "motorway": {
+        "driveable": true,
+        "walkable": false,
+        "color": "#e85555",
+        "width": 5
+      },
+      "primary": {
+        "driveable": true,
+        "walkable": false,
+        "color": "#e85555",
+        "width": 5
+      },
+      "residential": {
+        "driveable": false,
+        "walkable": true,
+        "color": "#e85555",
+        "width": 5
+      },
+      "pedestrian": {
+        "driveable": false,
+        "walkable": true,
+        "color": "#e85555",
+        "width": 5
+      },
+      "footway": {
+        "driveable": false,
+        "walkable": true,
+        "color": "#e85555",
+        "width": 5
+      },
+      "cycleway": {
+        "driveable": false,
+        "walkable": false,
+        "color": "#e85555",
+        "width": 5
+      },
+      "path": {
+        "driveable": false,
+        "walkable": true,
+        "color": "#e85555",
+        "width": 5
+      },
+      "Unknown": {
+        "driveable": false,
+        "walkable": false,
+        "color": "#e85555",
+        "width": 5
+      }
     }
   },
 
-  "natural": {
-    "bay": {
-      "render": true, "color": "#FFFF" },
-    "_comment": "//render kan bruges senere, hvis vi vil finde ud af om det skal tegnes eller ej"
+ "landscape": {
+   "natural": {
+     "water": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "bay": {
+       "color": "#FFFF",
+       "fill": true
+     },
+     "beach": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "shingle": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "wood": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "scrub": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "grassland": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "wetland": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "coastline": {
+       "color": "#e85555",
+       "fill": false
+     },
+     "cliff": {
+       "color": "#e85555",
+       "fill": false
+     },
+     "peak": {
+       "color": "#e85555",
+       "fill": false
+     }
+   },
+   "landuse": {
+     "forest": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "farmland": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "farmyard": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "meadow": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "grass": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "cemetery": {
+       "color": "#e85555",
+       "fill": true
+     },
+     "residential": {
+       "color": "#e85555",
+       "fill": true
+     }
+   }
+ },
+  "structures": {
+    "building": {
+
+    "yes":         { "color": "#d4a574", "fill": true },
+    "house":       { "color": "#d4a574", "fill": true },
+    "detached":    { "color": "#d4a574", "fill": true },
+    "farm":        { "color": "#c4956a", "fill": true },
+    "church":      { "color": "#b39ddb", "fill": true },
+    "retail":      { "color": "#ef9a9a", "fill": true },
+    "shed":        { "color": "#bcaaa4", "fill": true },
+    "greenhouse":  { "color": "#c8e6c9", "fill": true }
   },
-  "landuse": {
-    "residential": {
-      "render": true,
-      "color": "???"
-    }
+  "man_made": {
+    "pier":        { "color": "#a0a0a0", "fill": false },
+    "breakwater":  { "color": "#9e9e9e", "fill": false },
+    "lighthouse":  { "color": "#ff5722", "fill": false }
   },
-  "bulding": {
-    "yes": {
-      "render": true,
-      "color": "???"
-    }
-    "andet": {
-      "_comment": Main
-      roads: motoway,
-      trunk,
-      primary,
-      secondary,
-      tertiary,
-      unclassified,
-      residential,
-      herefter
-      kan
-      der
-      forekomme
-      de
-      samme
-      klassifikationer
-      med
-      "-link"
-      som
-      viser
-      at
-      vejen
-      leder
-      til
-      eller
-      fra
-      klassifikationenrne.
+  "barrier": {
+    "fence":       { "color": "#9e9e9e", "fill": false },
+    "wall":        { "color": "#8d8d8d", "fill": false },
+    "hedge":       { "color": "#4caf50", "fill": false }
+  }
+},
+"pointsOfInterest" : {
+  "amenity" : {
+      "school" :  { "color":  "#4caf50", "fill": true, "symbol":  "school"},
+    "hospital" :  { "color":  "#4caf50", "fill": true, "symbol":  "hospital" },
+    "parking" : { "color":  "#4caf50", "fill": true, "symbol":  "parking"},
+    "restaurant" : { "color":  "#4caf50", "fill": true, "symbol":  "restaurant"}
+  },
 
-      Special
-      Road
-      TYpes: living_street
-      service
-      pedestrian
-      track
-      bus_guideway
-      escape
-      raceway
-      road,
-      busway
-
-      Paths: path
-      -
-      path
-      er
-      en
-      uspecifik
-      vej
-      -
-      her
-      vil
-      der
-      være
-      et
-      tilhørende
-      tag
-      som
-      footway
-      eller
-      cycleway
-      footway
-      bridleway
-      steps,
-      corridor
-      path
-      via_ferrata
-
-      When
-      sidewalk/crosswalk
-      is
-      tagged
-      as
-      a
-      separate
-      way: Alle
-      hører
-      under
-      footway
-      sidewalk
-      crossing
-      traffic_island
-
-
-      Cycleway
-
-      busway
+  "tourism": {
+    "camp_site": {"color":  "#4caf50", "fill": true, "symbol":  "camp_site"},
+    "hotel": {"color":  "#4caf50", "fill": true, "symbol":  "hotel"},
+    "viewpoint": {"color":  "#4caf50", "fill": true, "symbol":  "viewpoint"},
+    "museum": {"color":  "#4caf50", "fill": true, "symbol":  "museum"}
+  }
     }
   }
-}
