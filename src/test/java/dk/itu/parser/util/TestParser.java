@@ -2,7 +2,6 @@ package dk.itu.parser.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,10 +58,10 @@ public class TestParser implements IParser {
     private void parseBoundingBox(JsonNode root) {
         JsonNode bounds = root.path("osm").path("bounds");
 
-        Float minLat = BigDecimal.valueOf(bounds.path("@minlat").asDouble()).floatValue();
-        Float minLon = BigDecimal.valueOf(bounds.path("@minlon").asDouble()).floatValue();
-        Float maxLat = BigDecimal.valueOf(bounds.path("@maxlat").asDouble()).floatValue();
-        Float maxLon = BigDecimal.valueOf(bounds.path("@maxlon").asDouble()).floatValue();
+        float minLat = (float) bounds.path("@minlat").asDouble();
+        float minLon = (float) bounds.path("@minlon").asDouble();
+        float maxLat = (float) bounds.path("@maxlat").asDouble();
+        float maxLon = (float) bounds.path("@maxlon").asDouble();
 
         boundingBox.addAll(List.of(minLat, minLon, maxLat, maxLon));
     }
@@ -72,8 +71,8 @@ public class TestParser implements IParser {
 
         for (JsonNode n : nodes) {
             long id = n.path("@id").asLong();
-            float lat = BigDecimal.valueOf(n.path("@lat").asDouble()).floatValue();
-            float lon = BigDecimal.valueOf(n.path("@lon").asDouble()).floatValue();
+            float lat = (float)  n.path("@lat").asDouble();
+            float lon = (float)  n.path("@lon").asDouble();
 
             osmNodeMap.put(id, new OsmNode(id, lat, lon));
         }
@@ -188,17 +187,17 @@ public class TestParser implements IParser {
     }
 
     @Override
-    public HashMap<Long, dk.itu.renderer.osm.OsmNode> getOsmNodeMap() {
+    public HashMap<Long, OsmNode> getOsmNodeMap() {
         return osmNodeMap;
     }
 
     @Override
-    public HashMap<Long, dk.itu.renderer.osm.OsmWay> getOsmWayMap() {
+    public HashMap<Long, OsmWay> getOsmWayMap() {
         return osmWayMap;
     }
 
     @Override
-    public HashMap<Long, dk.itu.renderer.osm.OsmRelation> getOsmRelationMap() {
+    public HashMap<Long, OsmRelation> getOsmRelationMap() {
         return osmRelationMap;
     }
 

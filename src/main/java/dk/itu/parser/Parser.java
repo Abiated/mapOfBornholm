@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dk.itu.parser.interfaces.IParser;
-import dk.itu.renderer.osm.*;
-
+import dk.itu.parser.models.*;
+import dk.itu.parser.interfaces.*;
 public class Parser implements IParser {
 
     private final String fileName;
+
     private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
