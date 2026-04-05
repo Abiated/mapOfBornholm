@@ -1,6 +1,7 @@
 package TagHelper;
 
-public enum BuildingType {
+public enum StructureType {
+    //building, barrier og manmade
     YES,
     HOUSE,
     DETACHED,
@@ -12,5 +13,8 @@ public enum BuildingType {
     SHED,
     ROOF,
     CONSTRUCTION,
+    GATE,
+    HEDGE,
+    WALL,
     UNKNOWN
 }

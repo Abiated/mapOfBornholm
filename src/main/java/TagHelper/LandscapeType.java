@@ -1,6 +1,7 @@
 package TagHelper;
+public enum LandscapeType {
 
-public enum LandUseType {
+    //Landuse
     //Eksempler fundet på OSM Wiki
     //Residential & Built-up
     RESIDENTIAL,
@@ -27,19 +28,28 @@ public enum LandUseType {
     SALT_POND,
     CEMETERY,
 
+
+    //Natural
+    BAY,
+    COASTLINE,
+    SHOAL,
+    WATER,
+
+    GRASSLAND,
+    SCRUB,
+    SHRUB,
+    TREE,
+    TREE_ROW,
+    WETLAND,
+    WOOD,
+
+    BEACH,
+    CAPE,
+    CLIFF,
+    PEAK,
+    SCREE,
+    SHINGLE,
+
     UNKNOWN,
-    /*
-        cemetery
-        farmland
-        farmyard
-        flowerbed
-        forest
-        grass
-        industrial
-        meadow
-        orchard
-        recreation_ground
-        residential
-    UNKNOWN,
-         */
+
 }
