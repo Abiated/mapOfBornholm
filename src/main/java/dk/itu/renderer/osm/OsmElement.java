@@ -1,11 +1,9 @@
 package dk.itu.renderer.osm;
 
-import dk.itu.renderer.Drawable;
-
-public abstract class OsmElement implements Drawable {
+public abstract class OsmElement {
 
     private final long id;
-    private double area;
+    private float area;
 
     public OsmElement(long id) {
         this.id = id;
@@ -19,7 +17,7 @@ public abstract class OsmElement implements Drawable {
         return this.area;
     }
 
-    protected void setArea(double area) {
+    protected void setArea(float area) {
         this.area = area;
     }
 }

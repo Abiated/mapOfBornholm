@@ -4,14 +4,46 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Refs og tags Start. &#10;Til fredag d. 20/3">
+    <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Merge branch 'main' of https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15 into Dijkstra-Model&#10;&#10;# Conflicts:&#10;#&#9;.DS_Store&#10;#&#9;.gitignore&#10;#&#9;.idea/workspace.xml&#10;#&#9;pom.xml&#10;#&#9;src/.DS_Store&#10;#&#9;src/main/java/dk/itu/parser/Parser.java">
+      <change afterPath="$PROJECT_DIR$/.idea/BFST2026GroupNo15.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/data/tunoe.hc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/FakeParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/tags.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/tags.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HcParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Drawable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmElement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/extensions/DependsOn.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/extensions/DependsOnExtension.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/DrawingTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/DrawingTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="101" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -23,7 +55,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="TagToLife-merge-render" />
+        <entry key="$PROJECT_DIR$" value="Test-Parse" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -37,11 +69,28 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15.git&quot;,
-    &quot;accountId&quot;: &quot;9c0980cb-7ff3-44bc-94dd-744f81feaf2e&quot;
+    &quot;accountId&quot;: &quot;3ea05b30-591d-41c4-9e0a-bfe863f74920&quot;
   }
 }</component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+  <component name="McpProjectServerCommands">
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -54,36 +103,43 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "JUnit.DrawingTests.executor": "Run",
+    "JUnit.renderer in parser.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Merging Dijkstra-Model",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.customizations",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.file-colors",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\resources\data" />
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\java\dk\itu\parser" />
+      <recent name="C:\Users\AB\IdeaProjects\BFST2026GroupNo15\src\main\data" />
       <recent name="$PROJECT_DIR$/target/test-classes/jsonData" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="dk.itu.parser" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="dk.itu.parser.Main" />
+      <option name="MAIN_CLASS_NAME" value="dk.itu.renderer.Main" />
       <module name="parser" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="dk.itu.parser.*" />
+          <option name="PATTERN" value="dk.itu.renderer.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -91,28 +147,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
+    <configuration name="renderer in parser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="parser" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/dk/itu/renderer" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="parser" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.renderer in parser" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
       </set>
     </attachedChunks>
   </component>
@@ -124,25 +177,64 @@
       <option name="presentableId" value="Default" />
       <updated>1773002391436</updated>
       <workItem from="1773002392665" duration="2995000" />
-      <workItem from="1773829849663" duration="11817000" />
-      <workItem from="1774007907362" duration="15071000" />
     </task>
-    <task id="LOCAL-00001" summary="Refs og tags Start">
+    <task id="LOCAL-00001" summary="mere arbejde">
       <option name="closed" value="true" />
-      <created>1773833623268</created>
+      <created>1773667454923</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1773833623268</updated>
+      <updated>1773667454923</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="mere arbejde">
+      <option name="closed" value="true" />
+      <created>1773685539011</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1773685539011</updated>
+    </task>
+    <task id="LOCAL-00003" summary="vi kan tegne osm data nu">
+      <option name="closed" value="true" />
+      <created>1774012845454</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1774012845454</updated>
+    </task>
+    <task id="LOCAL-00004" summary="arbejde">
+      <option name="closed" value="true" />
+      <created>1774270545166</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1774270545166</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refs og tags Start" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refs og tags Start" />
+    <MESSAGE value="mere arbejde" />
+    <MESSAGE value="vi kan tegne osm data nu" />
+    <MESSAGE value="arbejde" />
+    <option name="LAST_COMMIT_MESSAGE" value="arbejde" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

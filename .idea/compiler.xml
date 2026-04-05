@@ -7,10 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="parser" />
+        <module name="renderer" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="renderer" target="21" />
-    </bytecodeTargetLevel>
   </component>
 </project>

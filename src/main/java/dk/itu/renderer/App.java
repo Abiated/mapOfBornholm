@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import dk.itu.parser.HeightCurveData;
-import dk.itu.parser.HeightCurveParser;
-import dk.itu.parser.Parser;
+import dk.itu.parser.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
@@ -29,13 +27,12 @@ import javafx.stage.Stage;
 
 public class App extends DrawingApp {
 
-    private static final double SEA_LEVEL = 0.0; // (default: 0.0)
+    private static final float SEA_LEVEL = 5.0F; // (default: 0.0)
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
-    private double screenX = 0;
-    private double screenY = 0;
+    private float screenX = 0;
+    private float screenY = 0;
     private final SuperAffine superAffine = new SuperAffine();
-    private final List<Drawable> drawableList = new ArrayList<>();
 
     private final PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(
             WIDTH,
@@ -52,6 +49,12 @@ public class App extends DrawingApp {
 
     private final ImageView imageView = new ImageView();
     Graphics2D gc = bufferedImage.createGraphics();
+    List<OsmWay> ways = new ArrayList<>();
+    List<HeightCurve> heightcurves = new ArrayList<>();
+    private Renderer renderer;
+    private Parser parser;
+    private HeightCurveParser HcParser;
+    private HeightCurveData HcData;
 
     @Override
     public void start(Stage stage) {
@@ -77,18 +80,24 @@ public class App extends DrawingApp {
         );
         stage.show(); // Sets the stage as visible
 
-        /* DRAWING */
-        // Example with line across screen
-
-        Parser parser = new Parser("tunoe.osm");
+        parser = new Parser("hc-osm-files/samso/samso.osm");
         parser.parse();
         List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
         DrawingUtils.sortOsmElementsByArea(waylist);
-        Renderer renderer = new Renderer(gc,parser,WIDTH,HEIGHT);
+        HcParser = new HeightCurveParser("hc-osm-files/samso/samso.hc");
+        HcData = HcParser.parse();
+        renderer = new Renderer(gc);
         for (OsmElement element : waylist) {
             OsmWay wayski = (OsmWay)element;
-            renderer.drawWay(wayski,Color.BLACK,1);
+            ways.add(wayski);
         }
+        HcData.getSea().resetSubmerged();
+        HcData.getSea().submerge(SEA_LEVEL);
+        for (HeightCurve curve : HcData.getCurves()) {
+            if (!curve.getCoords().isEmpty())
+                heightcurves.add(curve);
+        }
+
         this.draw();
 
         this.render(); // This will actually show what has been drawn
@@ -96,8 +105,6 @@ public class App extends DrawingApp {
 
     public void draw() {
         // This provides our main drawing API
-        //Graphics2D gc = getNewGraphicsContext();
-
         /*
         gc.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
@@ -113,34 +120,33 @@ public class App extends DrawingApp {
         );
 
          */
-
-        // Uncomment if drawing actual OSM data
-        DrawingUtils.applyTransformation(gc);
-        // IMPORTANT - IF DRAWING BONDEHOLM, ENABLE THIS AND MULTIPLY LONGITUDE BY 0.56 AND LATITUDE BY -1 (the reason why will be explained later in the course)
         // Here we can do any pre-processing such a setting the background or transformations
         gc.setColor(Color.BLUE); // Sets the color
         gc.fillRect(0, 0, getWIDTH(), getHEIGHT()); // Fills the rectangle with the set color
-        gc.setTransform(superAffine);
+        //gc.setTransform(superAffine);
 
 
-
-        /*
-        HeightCurveData data = Tunoe.create();
-
-        HeightCurve sea = data.sea;
-        sea.resetSubmerged();
-        sea.submerge(SEA_LEVEL);
-
-
-         */
-        // Draws our drawables
-        for (Drawable drawable : drawableList) {
+        for (OsmWay way : ways) {
             // In the actual project, color and strokeWidth arguments won't be in the draw method signature
             // Color and strokeWidth are only there for test purposes in the assignment
-            drawable.drawForTest(gc, Color.BLACK, 1);
-
+            Shape projected = project(renderer.getWayPath(way),parser);
+            renderer.setWayColor(way);
+            if (way.getNodes().getFirst()==way.getNodes().getLast())
+                gc.fill(projected);
+            gc.draw(projected);
         }
-        /*
+
+        for (HeightCurve heightcurve : heightcurves) {
+            Shape projected = project(renderer.getHcRegionPath(heightcurve),parser);
+            if (heightcurve.getFillColor(SEA_LEVEL) != null) {
+                gc.setColor(heightcurve.getFillColor(SEA_LEVEL));
+                gc.fill(projected);
+            }
+            else
+                gc.setColor(Color.BLACK);
+            gc.draw(projected);
+        }
+/*
         for (HeightCurve curve : data.curves) {
             if (curve == sea) {
                 continue;
@@ -164,28 +170,33 @@ public class App extends DrawingApp {
         // This updates our graphical component with the buffer
         this.imageView.setImage(new WritableImage(this.pixelBuffer));
     }
+
+    /*
     private void handleMousePressed(MouseEvent event) {
         this.screenX = event.getX();
         this.screenY = event.getY();
     }
 
+     */
+
     /**
      * Pans by following the mouse.
      * @param event The screen mouse drag event that was triggered.
      */
+    /*
     private void handleMouseDragged(MouseEvent event) {
         double dx = event.getX() - this.screenX, dy = event.getY() - this.screenY;
         superAffine.prependTranslation(dx, dy);
-        handleMousePressed(event);
+        //handleMousePressed(event);
 
         draw();
         render();
     }
 
-    /**
+
      * Zooms in-and-out around the mouse.
      * @param event The screen scroll event that was triggered.
-     */
+
     private void handleScroll(ScrollEvent event) {
         double zoom = event.getDeltaY() > 0 ? 1.05 : 1/1.05;
         superAffine
@@ -197,11 +208,11 @@ public class App extends DrawingApp {
         render();
     }
 
-    /**
+
      * Re-centers the screen against some world lat/lon bounds.
      * The function will add the projection transformation of 0.56 to the bounds.
      * @param bounds An array in the format {minLon, minLat, maxLon, maxLat}.
-     */
+
     public void reCenter(double[] bounds) {
         double scale = getHEIGHT() / (bounds[3] - bounds[1]);
         superAffine
@@ -216,15 +227,22 @@ public class App extends DrawingApp {
                 );
     }
 
-    private static Shape project(Shape s, HeightCurveData d) {
-        double p = 20, c = Math.cos(Math.toRadians((d.minLat + d.maxLat) / 2));
-        double w = (d.maxLon - d.minLon) * c, h = d.maxLat - d.minLat;
-        double k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+     */
+
+    private static Shape project(Shape s, Parser parser) {
+        float minLat = parser.getBoundingBox().get(0);
+        float minLon = parser.getBoundingBox().get(1);
+        float maxLat = parser.getBoundingBox().get(2);
+        float maxLon = parser.getBoundingBox().get(3);
+        float p = 20, c = (float) Math.cos(Math.toRadians((minLat + maxLat) / 2));
+        float w = (maxLon - minLon) * c, h = maxLat - minLat;
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
         AffineTransform t = new AffineTransform();
         t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
         t.scale(k, -k);
         t.scale(c, 1);
-        t.translate(-d.minLon, -d.minLat);
+        t.translate(-minLon, -minLat);
         return t.createTransformedShape(s);
     }
+
 }

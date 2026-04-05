@@ -2,7 +2,7 @@ package TagHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.itu.parser.models.OsmWay;
+import dk.itu.renderer.osm.OsmWay;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -228,16 +228,41 @@ switch (dir) {
     }
 */
 
-    public static Address getAddress(OsmWay way) {
-        HashMap<String, String> tags = way.getTags();
-        if (!tags.containsKey("addr:street")) return null;
-        return new Address(
-                tags.getOrDefault("addr:street", ""),
-                tags.getOrDefault("addr:housenumber", ""),
-                tags.getOrDefault("addr:city", ""),
-                tags.getOrDefault("addr:postcode", ""),
-                tags.getOrDefault("addr:country", "")
+//    public static Address getAddress(OsmWay way) {
+//        HashMap<String, String> tags = way.getTags();
+//        if (!tags.containsKey("addr:street")) return null;
+//        return new Address(
+//                tags.getOrDefault("addr:street", ""),
+//                tags.getOrDefault("addr:housenumber", ""),
+//                tags.getOrDefault("addr:city", ""),
+//                tags.getOrDefault("addr:postcode", ""),
+//                tags.getOrDefault("addr:country", "")
+//        );
+//    }
+
+    public static int getWidth(OsmWay way){
+        if (config==null) return 1;
+        Map<String, String> keyToCategory= Map.of(
+                "highway", "transportation"
         );
+        for (Map.Entry<String, String> entry : keyToCategory.entrySet()) {
+            String tagKey = entry.getKey();
+            String category = entry.getValue();
+            String value = way.getTags().get(tagKey);
+            if(value!=null){
+                JsonNode widthNode = config
+                        .path(category)
+                        .path(tagKey)
+                        .path(value)
+                        .path("width");
+
+                if (!widthNode.isMissingNode()) {
+                    return widthNode.asInt(1);
+                }
+            }
+        }
+        return 1;
+
     }
 
     public static String getColor(OsmWay way) {
@@ -315,4 +340,3 @@ switch (dir) {
 
     }
 }
-

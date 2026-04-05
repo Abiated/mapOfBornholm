@@ -2,19 +2,19 @@ package dk.itu.parser;
 
 public class Coordinate {
 
-    private final double lat;
-    private final double lon;
+    private final float lat;
+    private final float lon;
 
-    public Coordinate(double lat, double lon) {
+    public Coordinate(float lat, float lon) {
         this.lat = lat;
         this.lon = lon;
     }
 
-    public double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public double getLon() {
+    public float getLon() {
         return lon;
     }
 }

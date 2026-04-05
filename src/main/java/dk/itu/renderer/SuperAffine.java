@@ -1,5 +1,5 @@
 package dk.itu.renderer;
-
+// doubles used here
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
