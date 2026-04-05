@@ -4,7 +4,7 @@ public class DirectedEdge {
     //TODO: deicide if we use this class or directed weighted edge data type p. 642
     int from;
     int to;
-    double weight; //Might change to float for memory - see if we get issues when trying to calculate with it.
+    float weight; //float for memory - see if we get issues when trying to calculate with it.
     float length; //set as a float to preserve memory. Might have to be a double for precision.
     float speedLimit;
 
@@ -29,11 +29,7 @@ public class DirectedEdge {
         else{return edge.length;} //gives the distance for bike and walk
     }
 
-    enum VehicleType{
-        CAR,
-        BIKE,
-        WALK
-    }
+
     //this has been rewritten with enum. Previously we had abstract class vehicle with subclasses Car, Bike, Walk
     //seems to be more minimalistic and saves us a bunch of classes.
     //can be written back with type instance of Car if we need more information stored and have use of polymorphism
@@ -41,7 +37,7 @@ public class DirectedEdge {
         if(edge.driveable && type == VehicleType.CAR) {return true;}
         if(edge.bikeable && type == VehicleType.BIKE) {return true;}
         if(edge.walkable && type == VehicleType.WALK) {return true;}
-        else {return false;} //if none of the above combinations
+        else {return false;} //if none of the above allowed combinations
 
     }
 
@@ -55,3 +51,14 @@ public class DirectedEdge {
         return speedLimit;
     }
 }
+
+
+
+
+/* Vi holder referencen til objektet når DE og EWG refererer til hinanden
+Ny instant => 8 bytes
+
+ADJ list
+*
+*
+* */

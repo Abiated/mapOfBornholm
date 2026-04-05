@@ -1,45 +1,67 @@
 package main.java.dk.itu.Model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue; //standard is min oriented heap which we need for shortest path
 
 public class Dijkstra {
 //from book p. 655
     private DirectedEdge[] edgeTo;
-    private float[] distTo; //should it be float for memory?
-    private PriorityQueue<Float> pq; //should double be float for memory?
+    private float[] distTo; //float for memory
+    private PriorityQueue<Node> pq; //pq af nodes der kan indeholde
 
-    //TA: PQ på Nodes og sætter startnode ind.
-
-    public Dijkstra(EdgeWeightedDigraph G, int start) {
-        edgeTo = new DirectedEdge[G.V()]; //array edgeTo
-        distTo = new float[G.V()]; //array disTo
-        pq = new PriorityQueue<Float>(G.V()); //min oriented priority queue
+    public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type) {
+        edgeTo = new DirectedEdge[G.V]; //array edgeTo
+        distTo = new float[G.V]; //array disTo
+        pq = new PriorityQueue<Node>(G.V); //min oriented priority queue
 
         //initialize all distances to infinity
-        for(int v = 0; v < G.V(); v++){
+        for(int v = 0; v < G.V; v++){
             distTo[v] = Float.POSITIVE_INFINITY;
         }
 
         // set dist to starting vertex to 0
         distTo[start] = 0;
 
-        pq.insert(start, 0.0);
+        //add the start Node to priorityqueue
+        pq.add(new Node(start, 0));
+
         while(!pq.isEmpty()){
-            relax(G, pq.delMin());
+            Node current = pq.poll(); //keeps track of the 'head' of the priority queue
+            if (current.distance > distTo[current.vertex]) continue; //ignores doublets ex if we have B(5) and B(10), then there is no reason to relax for B(10) it is a waste of time.
+
+            if (current.vertex == target) break; //stop dijkstra's algorithm if we have reached target. No need to check shortest path to ALL other vertices when we are only interested in this one.
+
+            relax(G, current.vertex); //relax the current head vertex in our graph
         }
 
     }
-    private void relax(EdgeWeightedDigraph G, int v){
-        for(DirectedEdge e: G.adj(v)){
+
+    //in our relax we do not update existing Nodes as Java's PirorityQueue does not support change() which is shown in the book. We instead insert a new Node. It works the same way because of the priority
+    private void relax(EdgeWeightedDigraph G, int v) {
+        for (DirectedEdge e : G.adj(v)) {
             int w = e.to;
-            if(distTo[w] > distTo[v] + e.weight){ //should .weight be a methos instead to only calculate when going through this step?
+
+            float weight = e.weight(e, type); //find out how to access the vehicle type
+            if (distTo[w] > distTo[v] + e.weight) { //should .weight be a methos instead to only calculate when going through this step?
                 distTo[w] = distTo[v] + e.weight; //save the shorter/cheaper path
                 edgeTo[w] = e; //remember last step to get to the vertex
 
-                //if it is already in queue update it
-                if(pq.contains(w)){pq.change(w, distTo[w]);}
-                else{pq.insert(w,distTo[w]);} //else insert into queue
+                pq.add(new Node(w, distTo[w])); //insert new Node into queue regardless of whether it exists already. The priority will ensure we get a hold of the one with the shortest dist first
+
             }
+        }
+    }
+
+        // Builds the route backwards
+        public List<DirectedEdge> pathTo(int v) {
+            List<DirectedEdge> path = new ArrayList<>();
+
+            for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from]) {
+                path.add(0, e);
+            }
+
+            return path;
         }
 
         //the following might be useful, but look into that later on
