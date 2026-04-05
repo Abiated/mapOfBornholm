@@ -76,20 +76,9 @@ public class TagtoLife {
         // landUse{ Forrest, Residential, farmland, industrial}
     }
 
-
-    /*public static boolean isAeroway(OsmWay osmway){
-        return  osmway.getTags().containsKey("aeroway");
-    }
-
-     */
     public static boolean isAmenity(OsmWay osmway) {
         return osmway.getTags().containsKey("amenity");
     }
-
-
-    /*public static boolean isStation(OsmWay way) {
-        return "station".equals(way.getTags().get("railway")); // fixed!
-    } */
 
 
     public static TransportationType getTransportationType(OsmWay osmway) {
@@ -103,21 +92,12 @@ public class TagtoLife {
             case "residential" -> TransportationType.RESIDENTIAL;
             case "path" -> TransportationType.PATH;
             case "footway" -> TransportationType.FOOTWAY;
-            //case "cycleway" -> HighwayType.CYCLEWAY; //findes ikke på tunoe
+            case "cycleway" -> TransportationType.CYCLEWAY; //findes ikke på tunoe
             case "primary" -> TransportationType.PRIMARY; //findes ikke på tunoe
 
             default -> TransportationType.UNKNOWN;
         };
 
-
-
-    /*TIL RENDERING:
-    HighwayType type = TagToLife.getHighwayType(way);
-
-        if (type.driveable) { skal tegnes som vej }
-        if (type.walkable)  { // skal tegnes som sti }
-        if (type.cyclable)  { // være kreativ }
-     */
     }
 
 
@@ -334,5 +314,5 @@ switch (dir) {
         return false;
 
     }
-    }
+}
 
