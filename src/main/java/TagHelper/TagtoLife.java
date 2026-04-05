@@ -240,6 +240,31 @@ switch (dir) {
         );
     }
 
+    public static int getWidth(OsmWay way){
+        if (config==null) return 1;
+        Map<String, String> keyToCategory= Map.of(
+                "highway", "transportation"
+        );
+        for (Map.Entry<String, String> entry : keyToCategory.entrySet()) {
+            String tagKey = entry.getKey();
+            String category = entry.getValue();
+            String value = way.getTags().get(tagKey);
+            if(value!=null){
+                JsonNode widthNode = config
+                        .path(category)
+                        .path(tagKey)
+                        .path(value)
+                        .path("width");
+
+                if (!widthNode.isMissingNode()) {
+                    return widthNode.asInt(1);
+                }
+            }
+        }
+        return 1;
+
+    }
+
     public static String getColor(OsmWay way) {
         if (config == null) return "#ffff";
         Map<String, String> keyToCategory = Map.of(
