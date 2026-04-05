@@ -80,11 +80,11 @@ public class App extends DrawingApp {
         );
         stage.show(); // Sets the stage as visible
 
-        parser = new Parser("tunoe.osm");
+        parser = new Parser("hc-osm-files/samso/samso.osm");
         parser.parse();
         List<OsmElement> waylist = new ArrayList<OsmElement>(parser.getOsmWayMap().values());
         DrawingUtils.sortOsmElementsByArea(waylist);
-        HcParser = new HeightCurveParser("tunoe.hc");
+        HcParser = new HeightCurveParser("hc-osm-files/samso/samso.hc");
         HcData = HcParser.parse();
         renderer = new Renderer(gc);
         for (OsmElement element : waylist) {

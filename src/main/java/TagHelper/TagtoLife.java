@@ -228,17 +228,17 @@ switch (dir) {
     }
 */
 
-    public static Address getAddress(OsmWay way) {
-        HashMap<String, String> tags = way.getTags();
-        if (!tags.containsKey("addr:street")) return null;
-        return new Address(
-                tags.getOrDefault("addr:street", ""),
-                tags.getOrDefault("addr:housenumber", ""),
-                tags.getOrDefault("addr:city", ""),
-                tags.getOrDefault("addr:postcode", ""),
-                tags.getOrDefault("addr:country", "")
-        );
-    }
+//    public static Address getAddress(OsmWay way) {
+//        HashMap<String, String> tags = way.getTags();
+//        if (!tags.containsKey("addr:street")) return null;
+//        return new Address(
+//                tags.getOrDefault("addr:street", ""),
+//                tags.getOrDefault("addr:housenumber", ""),
+//                tags.getOrDefault("addr:city", ""),
+//                tags.getOrDefault("addr:postcode", ""),
+//                tags.getOrDefault("addr:country", "")
+//        );
+//    }
 
     public static int getWidth(OsmWay way){
         if (config==null) return 1;

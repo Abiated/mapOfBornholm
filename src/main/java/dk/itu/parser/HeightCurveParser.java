@@ -50,8 +50,10 @@ public class HeightCurveParser {
 
                 }
                 if (line.contains("<hc")) {
-                    id = Long.parseLong(getAttribute(line, "id"));
-                    height = Float.parseFloat(getAttribute(line, "height"));
+                    if (getAttribute(line, "id")!=null)
+                        id = Long.parseLong(getAttribute(line, "id"));
+                    if (getAttribute(line, "height") != null)
+                        height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
 
                 } else if (line.contains("<coord")) {
@@ -60,8 +62,11 @@ public class HeightCurveParser {
                     coords.add(new Coordinate(lat, lon));
 
                 } else if(line.contains("</hc")) {
-                    HeightCurve curve = new HeightCurve(id, height, coords, new ArrayList<>());
-                    curves.add(curve);
+                    if (id != -1) {
+                        curves.add(new HeightCurve(id, height, coords, new ArrayList<>()));
+                    }
+//                    HeightCurve curve = new HeightCurve(id, height, coords, new ArrayList<>());
+//                    curves.add(curve);
 
                 }
 
