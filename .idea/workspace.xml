@@ -5,36 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Merge branch 'main' of https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15 into Dijkstra-Model&#10;&#10;# Conflicts:&#10;#&#9;.DS_Store&#10;#&#9;.gitignore&#10;#&#9;.idea/workspace.xml&#10;#&#9;pom.xml&#10;#&#9;src/.DS_Store&#10;#&#9;src/main/java/dk/itu/parser/Parser.java">
-      <change afterPath="$PROJECT_DIR$/.idea/BFST2026GroupNo15.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/data/tunoe.hc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/FakeParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HcParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Drawable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmElement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/ParserTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/TestParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/extensions/DependsOn.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/parser/util/extensions/DependsOnExtension.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/DrawingTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/DrawingTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dk/itu/renderer/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/tags.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/tags.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,24 +44,8 @@
   }
 }</component>
   <component name="McpProjectServerCommands">
-    <McpServerCommand sourceId="UserConfigurationSource">
-      <option name="allowedToolsNames" />
-      <option name="enabled" value="true" />
-      <option name="name" value="" />
-      <option name="programPath" value="" />
-      <option name="arguments" value="" />
-      <option name="workingDirectory" value="" />
-      <envs />
-    </McpServerCommand>
-    <McpServerCommand sourceId="UserConfigurationSource">
-      <option name="allowedToolsNames" />
-      <option name="enabled" value="true" />
-      <option name="name" value="" />
-      <option name="programPath" value="" />
-      <option name="arguments" value="" />
-      <option name="workingDirectory" value="" />
-      <envs />
-    </McpServerCommand>
+    <commands />
+    <urls />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -109,7 +64,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Merging Dijkstra-Model",
+    "git-widget-placeholder": "Abdallah-og-Frederik-legeplads",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

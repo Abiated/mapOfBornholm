@@ -1,51 +1,124 @@
 {
   "transportation": {
     "highway": {
+      "defaultColor": "#e85555",
       "motorway": {
         "driveable": true,
         "walkable": false,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 130,
+        "zoom": 0
+      },
+      "trunk": {
+        "color": "#e85555",
+        "width": 5,
+        "driveable": true,
+        "walkable": false,
+        "cyclable": false,
+        "speed": 90,
+        "zoom": 0
       },
       "primary": {
         "driveable": true,
         "walkable": false,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 80,
+        "zoom": 0
+      },
+      "secondary": {
+        "color": "#e85555",
+        "width": 5,
+        "driveable": true,
+        "walkable": false,
+        "cyclable": false,
+        "speed": 60,
+        "zoom": 5
+      },
+      "tertiary": {
+        "color": "#e85555",
+        "width": 5,
+        "driveable": true,
+        "walkable": false,
+        "cyclable": false,
+        "speed": 50,
+        "zoom": 10
+      },
+      "service": {
+        "color": "#e85555",
+        "width": 5,
+        "driveable": true,
+        "walkable": false,
+        "cyclable": false,
+        "speed": 20,
+        "zoom": 15
       },
       "residential": {
         "driveable": false,
         "walkable": true,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 30,
+        "zoom": 15
       },
       "pedestrian": {
         "driveable": false,
         "walkable": true,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 5,
+        "zoom": 20
       },
       "footway": {
         "driveable": false,
         "walkable": true,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 5,
+        "zoom": 25
+      },
+      "steps": {
+        "color": "#e85555",
+        "width": 5,
+        "drivable": false,
+        "speed": 4,
+        "zoom": 25
       },
       "cycleway": {
         "driveable": false,
         "walkable": false,
+        "cyclable": true,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 20,
+        "zoom": 20
       },
       "path": {
         "driveable": false,
         "walkable": true,
+        "cyclable": false,
         "color": "#e85555",
-        "width": 5
+        "width": 5,
+        "speed": 5,
+        "zoom": 25
+      },
+      "track": {
+        "color": "#e85555",
+        "width": 1,
+        "drivable": false,
+        "speed": 10,
+        "zoom": 25
       },
       "Unknown": {
         "driveable": false,
-        "walkable": false,
+        "walkable": true,
+        "cyclable": false,
         "color": "#e85555",
         "width": 5
       }
