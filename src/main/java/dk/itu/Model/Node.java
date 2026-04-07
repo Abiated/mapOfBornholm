@@ -1,4 +1,4 @@
-package main.java.dk.itu.Model;
+package dk.itu.Model;
 
 //helper class for Dijkstra when using insert() into pq
 //TODO: see of osmNode is a goo enough class to use for this or if I should keep this helper class

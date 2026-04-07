@@ -1,4 +1,4 @@
-package main.java.dk.itu.Model;
+package dk.itu.Model;
 
 public enum VehicleType {
 
