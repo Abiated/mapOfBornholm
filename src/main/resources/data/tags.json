@@ -6,6 +6,7 @@
         "walkable": false,
         "color": "#e85555",
         "width": 5
+
       },
       "primary": {
         "driveable": true,
@@ -55,23 +56,23 @@
  "landscape": {
    "natural": {
      "water": {
-       "color": "#e85555",
+       "color": "#0000FF",
        "fill": true
      },
      "bay": {
-       "color": "#FFFF",
+       "color": "#FFE4C4",
        "fill": true
      },
      "beach": {
-       "color": "#e85555",
+       "color": "#FFE4C4",
        "fill": true
      },
      "shingle": {
-       "color": "#e85555",
+       "color": "#778899",
        "fill": true
      },
      "wood": {
-       "color": "#e85555",
+       "color": "#008000",
        "fill": true
      },
      "scrub": {
@@ -79,7 +80,7 @@
        "fill": true
      },
      "grassland": {
-       "color": "#e85555",
+       "color": "#7FFF00",
        "fill": true
      },
      "wetland": {
@@ -101,31 +102,31 @@
    },
    "landuse": {
      "forest": {
-       "color": "#e85555",
+       "color": "#006400",
        "fill": true
      },
      "farmland": {
-       "color": "#e85555",
+       "color": "#DAA520",
        "fill": true
      },
      "farmyard": {
-       "color": "#e85555",
+       "color": "#DEB887",
        "fill": true
      },
      "meadow": {
-       "color": "#e85555",
+       "color": "#ADFF2F",
        "fill": true
      },
      "grass": {
-       "color": "#e85555",
+       "color": "#e85ADFF2F555",
        "fill": true
      },
      "cemetery": {
-       "color": "#e85555",
+       "color": "#808080",
        "fill": true
      },
      "residential": {
-       "color": "#e85555",
+       "color": "#D2691E",
        "fill": true
      }
    }
@@ -133,19 +134,19 @@
   "structures": {
     "building": {
 
-    "yes":         { "color": "#d4a574", "fill": true },
-    "house":       { "color": "#d4a574", "fill": true },
-    "detached":    { "color": "#d4a574", "fill": true },
-    "farm":        { "color": "#c4956a", "fill": true },
-    "church":      { "color": "#b39ddb", "fill": true },
-    "retail":      { "color": "#ef9a9a", "fill": true },
-    "shed":        { "color": "#bcaaa4", "fill": true },
-    "greenhouse":  { "color": "#c8e6c9", "fill": true }
+    "yes":         { "color": "#D2691E", "fill": true },
+    "house":       { "color": "#D2691E", "fill": true },
+    "detached":    { "color": "#D2691E", "fill": true },
+    "farm":        { "color": "#D2691E", "fill": true },
+    "church":      { "color": "#D2691E", "fill": true },
+    "retail":      { "color": "#D2691E", "fill": true },
+    "shed":        { "color": "#D2691E", "fill": true },
+    "greenhouse":  { "color": "#D2691E", "fill": true }
   },
   "man_made": {
-    "pier":        { "color": "#4caf50", "fill": false },
+    "pier":        { "color": "#FFF8DC", "fill": false },
     "breakwater":  { "color": "#4caf50", "fill": false },
-    "lighthouse":  { "color": "#4caf50", "fill": false }
+    "lighthouse":  { "color": "#FFF8DC", "fill": false }
   },
   "barrier": {
     "fence":       { "color": "#4caf50", "fill": false },
@@ -156,7 +157,7 @@
 "pointsOfInterest" : {
   "amenity" : {
       "school" :  { "color":  "#4caf50", "fill": true, "symbol":  "school"},
-    "hospital" :  { "color":  "#4caf50", "fill": true, "symbol":  "hospital" },
+    "hospital" :  { "color":  "#FFF8DC", "fill": true, "symbol":  "hospital" },
     "parking" : { "color":  "#4caf50", "fill": true, "symbol":  "parking"},
     "restaurant" : { "color":  "#4caf50", "fill": true, "symbol":  "restaurant"}
   },
