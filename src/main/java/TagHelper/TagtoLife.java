@@ -14,7 +14,7 @@ public class TagtoLife {
     private static JsonNode loadConfig() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            InputStream is = TagtoLife.class.getClassLoader().getResourceAsStream("/tags.json");
+            InputStream is = TagtoLife.class.getClassLoader().getResourceAsStream("data/tags.json");
             if (is == null) {
                 System.out.println("tags.json not found");
             }
@@ -39,10 +39,33 @@ public class TagtoLife {
     public static boolean isWalkable(OsmWay way) {
         String value = way.getTags().get("highway");
         if (value == null || config == null) return false;
-        return config.path("highway")
+        return config.path("transportation")
+                .path("highway")
                 .path(value)
                 .path("walkable")
                 .asBoolean(false);
+    }
+
+    public static boolean isBikeable(OsmWay way) {
+        String value = way.getTags().get("highway");
+        if (value == null || config == null) return false;
+
+        return config.path("transportation")
+                .path("highway")
+                .path(value)
+                .path("cyclable")
+                .asBoolean(false);
+    }
+
+    public static float getSpeedLimit(OsmWay way) {
+        String value = way.getTags().get("highway");
+        if (value == null || config == null) return 1.0f;
+
+        return (float) config.path("transportation")
+                .path("highway")
+                .path(value)
+                .path("speed")
+                .asDouble(1.0);
     }
 
 

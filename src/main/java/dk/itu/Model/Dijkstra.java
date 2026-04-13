@@ -42,9 +42,9 @@ public class Dijkstra {
     //in our relax we do not update existing Nodes as Java's PriorityQueue does not support change() which is shown in the book. We instead insert a new Node. It works the same way because of the priority
     private void relax(EdgeWeightedDigraph G, int v) { //is it overkill to have vehicletype as an argument?
         for (DirectedEdge e : G.adj(v)) {
-            int w = e.to;
+            int w = e.to();
 
-            float weight = e.weight(e, vehicleType); //calculate the weight (currently time for car and dist for bike/walk - TODO: make it all the same. Ex. by setting an estimated walking and biking speed)
+            float weight = e.weight(vehicleType); //calculate the weight (currently time for car and dist for bike/walk - TODO: make it all the same. Ex. by setting an estimated walking and biking speed)
 
             if (distTo[w] > distTo[v] + weight) { //should .weight be a method instead to only calculate when going through this step?
                 distTo[w] = distTo[v] + weight; //save the shorter/cheaper path
@@ -60,11 +60,19 @@ public class Dijkstra {
     public List<DirectedEdge> pathTo(int v) {
         List<DirectedEdge> path = new ArrayList<>();
 
-        for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from]) {
+        for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
             path.add(0, e);
         }
 
         return path;
+    }
+
+    public boolean hasPathTo(int v) {
+        return distTo[v] < Float.POSITIVE_INFINITY;
+    }
+
+    public float distTo(int v) {
+        return distTo[v];
     }
 
     //the following might be useful, but look into that later on
@@ -73,4 +81,3 @@ public class Dijkstra {
     //public boolean hasPathTo(int v)
     //public Iterable<Edge> pathTo(int v)
 }
-

@@ -19,25 +19,28 @@ public class EdgeWeightedDigraph {
     private int E; //edges
     private List<DirectedEdge>[] adj; //array in adjancency list to answer "What edges go out from vertex v"
 
-    //Should we have HashMaps to go from id to index *AND* back again??
+    //HashMaps to go from id to index *AND* back again
     protected Map<Long, Integer> idToIndex;
+    protected Map<Integer, Long> indexToId;
 
     public EdgeWeightedDigraph(int V) {
         this.V = V;
         this.E = 0;
-        adj = new ArrayList[V]; //why, what, hvorfor?? Hvad sker der in linjerne her i bogen overhovedet??
+        adj = new ArrayList[V]; //creating instance of arraylist
 
         for(int v = 0; v < V; v++){
-            adj[v] = new ArrayList(); //her laver vi arrayList der er i hvert index i array
+            adj[v] = new ArrayList<>(); //creating instance of the arraylist in each arraylist index
         }
 
         idToIndex = new HashMap<>();
+        indexToId = new HashMap<>();
     }
 
     /** Adds a DirectedEdge to the weighted digraph used in dijkstra.
+     * It is a helper method to make the program more readable.
      * Increments the number of total edges by one as E++ * */
     public void addEdge(DirectedEdge e) {
-        adj[e.from].add(e); //was originally from(). Read this line again and make sure you fully understand what is happening: we look into the array at index edge e's 'from' field. We then add edge e to?? //TODO: do we use fields directly or get methods
+        adj[e.from()].add(e);
         E++;
     }
 
@@ -72,15 +75,27 @@ public class EdgeWeightedDigraph {
 
     /**Constructs and returns a digraph with all possible ways to travel between nodes in the map*/
     public EdgeWeightedDigraph constructGraph(Parser input) {
-
         //mapping long id names to array indexes
         int index = 0;
-        for (Long id : input.getOsmNodeMap().keySet()) {
-            idToIndex.put(id, index++);
+        Map<Long, Integer> newIdToIndex = new HashMap<>();
+        Map<Integer, Long> newIndexToId = new HashMap<>();
+
+        for (OsmWay way : input.getOsmWayMap().values()) {
+            if(!TagtoLife.isHighway(way)) {continue;} //skip if OsmWay is not marked highway
+
+            for (OsmNode node : way.getNodes()) {
+                if (!newIdToIndex.containsKey(node.getId())) {
+                    newIdToIndex.put(node.getId(), index);
+                    newIndexToId.put(index, node.getId());
+                    index++;
+                }
+            }
         }
 
-        //create graph
-        EdgeWeightedDigraph graph = new EdgeWeightedDigraph(idToIndex.size());
+        EdgeWeightedDigraph graph = new EdgeWeightedDigraph(index);
+        graph.idToIndex.putAll(newIdToIndex);
+        graph.indexToId.putAll(newIndexToId);
+
         for (OsmWay way : input.getOsmWayMap().values()) {
             //filter relevant ways (OsmWay can ex be a building - not relevant for this graph)
             if(!TagtoLife.isHighway(way)) {continue;} //skip the way if it is not highway
@@ -88,22 +103,26 @@ public class EdgeWeightedDigraph {
             List<OsmNode> nodes = way.getNodes(); //grab the list of all nodes
 
             for(int i = 0; i < nodes.size() - 1; i++ ) {
-                OsmNode from = nodes.get(i);
-                OsmNode to = nodes.get(i+1);
-
-                DirectedEdge e = new DirectedEdge();
-                e.from = idToIndex.get(from.getId());
-                e.to = idToIndex.get(to.getId());
-                e.length = distance(from, to); //create distance method to calculate distance between nodes
+                OsmNode from = nodes.get(i); //set current node as from
+                OsmNode to = nodes.get(i+1); //set next node as to
 
                 //using TagtoLife
-                e.driveable = TagtoLife.isDriveable(way);
-                e.walkable = TagtoLife.isWalkable(way);
-                e.bikeable = true; //should be same format as the others if we decide to keep bikeable. For now all roads are bikeable
-                //possible enhancement for bikeable
-                // e.bikeable = TagtoLife.getTransportationType(way) != MOTORWAY;
+                boolean driveable = TagtoLife.isDriveable(way);
+                boolean walkable = TagtoLife.isWalkable(way);
+                boolean bikeable = TagtoLife.isBikeable(way);
+                float speedLimit = TagtoLife.getSpeedLimit(way);
 
-                Direction direction = TagtoLife.getDirection(way); //create method or find another way to access this information
+                DirectedEdge e = new DirectedEdge(
+                        graph.idToIndex.get(from.getId()),
+                        graph.idToIndex.get(to.getId()),
+                        distance(from, to),
+                        speedLimit,
+                        driveable,
+                        bikeable,
+                        walkable
+                );
+
+                Direction direction = TagtoLife.getDirection(way);
 
                 if(direction == Direction.ONEWAY) {
                     graph.addEdge(e); //only add in this specific direction. Can be moved out and do an opposite if to add rev if != ONEWAY
@@ -111,14 +130,15 @@ public class EdgeWeightedDigraph {
                     graph.addEdge(e);
 
                     //create the reverse edge and add as well
-                    DirectedEdge reverse = new DirectedEdge();
-                    reverse.from = e.to;
-                    reverse.to = e.from;
-                    reverse.length = e.length;
-
-                    reverse.driveable = TagtoLife.isDriveable(way);
-                    reverse.walkable = TagtoLife.isWalkable(way);
-                    reverse.bikeable = true; //TODO: update when we have decided if we want this information
+                    DirectedEdge reverse = new DirectedEdge(
+                            e.to(),
+                            e.from(),
+                            e.getLength(),
+                            speedLimit,
+                            driveable,
+                            bikeable,
+                            walkable
+                    );
 
                     graph.addEdge(reverse);
                 }
@@ -129,6 +149,26 @@ public class EdgeWeightedDigraph {
     }
 
 
+    //Helper methods. Might be relevant later but are currently not in use
+    //TODO: decide if we need them. Else delete.
+    public int indexOf(long nodeId) {
+        Integer index = idToIndex.get(nodeId);
+        if (index == null) {
+            throw new IllegalArgumentException("Unknown node id: " + nodeId);
+        }
+        return index;
+    }
 
+    public Long nodeIdOf(int index) {
+        return indexToId.get(index);
+    }
+
+    public int vertexCount() {
+        return V;
+    }
+
+    public int edgeCount() {
+        return E;
+    }
 
 }
