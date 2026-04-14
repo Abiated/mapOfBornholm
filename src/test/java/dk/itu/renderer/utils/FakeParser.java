@@ -1,6 +1,6 @@
 package dk.itu.renderer.utils;
 
-import dk.itu.parser.Parser;
+import parser.Parser;
 
 import java.util.List;
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import GUI.ScaleBar;
 import interfaces.Data;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -48,6 +49,7 @@ public class App extends DrawingApp {
     private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
     private JsonNode jRoot;
     private Renderer renderer;
+    private ScaleBar scale = new ScaleBar();
     private List<OsmWay> coastlines = new ArrayList<>();
 
 
@@ -157,6 +159,7 @@ public class App extends DrawingApp {
         }
 
         //---------GUI CODE---------//
+        //TODO: MOVE THIS INTO IT'S OWN CLASSES TO CLEAN THIS UP
         //Slider to control the SEA_LEVEL
         //Slider(minValue, maxValue, startValue)
         Slider slider = new Slider(0, 20, 0);
@@ -185,12 +188,12 @@ public class App extends DrawingApp {
 
         //ScaleBar
         //Coole nu skal jeg bare opdatere den ved zoom
-        Canvas scale = new Canvas(150, 40);
-        GraphicsContext SBar = scale.getGraphicsContext2D();
-        SBar.strokeLine(10, 30, 110, 30);
-        //Vertical strokelines
-        SBar.strokeLine(10, 30, 10, 20); SBar.strokeLine(110, 30, 110, 20);
-        SBar.fillText("500 m", 45, 20);
+//        Canvas scale = new Canvas(150, 40);
+//        GraphicsContext SBar = scale.getGraphicsContext2D();
+//        SBar.strokeLine(10, 25, 110, 25);
+//        //Vertical strokelines
+//        SBar.strokeLine(10, 30, 10, 20); SBar.strokeLine(110, 30, 110, 20);
+//        SBar.fillText("500 m", 45, 20);
 
         HBox scaleBar = new HBox(scale);
         scaleBar.setStyle("-fx-padding: 20; -fx-alignment: center-right;");
@@ -331,13 +334,18 @@ public class App extends DrawingApp {
         gc.fillRect(0, 0, WIDTH, HEIGHT);
 
         //Zoom
-        float zoom = (float) Math.sqrt(superAffine.getDeterminant());
+        float zoom = getZoom(OSMdata);
+        scale.update(zoom);
+
+        //Midlertidig løsning måske?
+        zoom = zoom/1000; //Making the zoom level manageable for rendering with zoom
+        System.out.println("Manageable zoom level: " + zoom);
+
+        //TODO: REMOVE THIS SHIT AND MAKE A ABSOLUT STROKEWIDTH FOR ALLE ELEMENTS
         float strokeWidth = (float)(1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
         )));
         strokeWidth = Math.max(0.5f, Math.min(strokeWidth, 3.0f));
-
-        System.out.println("Current zoom: " + zoom);
 
         sea.resetSubmerged();
         sea.submerge(SEA_LEVEL);
@@ -430,6 +438,16 @@ public class App extends DrawingApp {
         combined.concatenate(t);
 
         return combined.createTransformedShape(s);
+    }
+
+    private static float getZoom(Data d) {
+        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
+        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+
+        float superAffineZoom = (float) Math.sqrt(superAffine.getDeterminant());
+
+        return k * superAffineZoom;
     }
 
 }
