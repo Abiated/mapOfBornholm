@@ -5,87 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Merge branch 'main' of https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15 into Dijkstra-Model&#10;&#10;# Conflicts:&#10;#&#9;.DS_Store&#10;#&#9;.gitignore&#10;#&#9;.idea/workspace.xml&#10;#&#9;pom.xml&#10;#&#9;src/.DS_Store&#10;#&#9;src/main/java/dk/itu/parser/Parser.java">
-      <change afterPath="$PROJECT_DIR$/src/main/java/PathFinder/Dijkstra.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/PathFinder/DirectedEdge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/PathFinder/EdgeWeightedDigraph.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/PathFinder/Node.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/PathFinder/VehicleType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interfaces/Data.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interfaces/IParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/CoastlineStitcher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/Coordinate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/HeightCurve.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/HeightCurveData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/Member.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/OsmElement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/OsmNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/OsmRelation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/OsmWay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/parser/HcParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/parser/Parser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/DrawingApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/Renderer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/SuperAffine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/rendering/wayType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/LandscapeType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/PointsOfInterestType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/StructureType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/bornholm/bornholm.hc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/bornholm/bornholm.osm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/bornholm/bornholm.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/samso/samso.hc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/samso/samso.osm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/samso/samso.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/tuna/tuna.hc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/tuna/tuna.osm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/hc-osm-files/tuna/tuna.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testMain/resources/data/tags.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/Address.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/Direction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/LandscapeType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/PointsOfInterestType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/StructureType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TagtoLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/TagtoLife.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TagHelper/TransportationType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/TagHelper/TransportationType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/Model/Dijkstra.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/Model/Dijkstra.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/Model/DirectedEdge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/Model/DirectedEdge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/Model/EdgeWeightedDigraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/Model/EdgeWeightedDigraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/Model/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/Model/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/Model/VehicleType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/Model/VehicleType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Coordinate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/Coordinate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HcParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/HcParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurve.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/HeightCurve.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/HeightCurveData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/HeightCurveParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/HeightCurveParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/parser/interfaces/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/parser/interfaces/IParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/DrawingApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/DrawingUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/DrawingUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/Renderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/SuperAffine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/SuperAffine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/osm/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/osm/OsmElement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/osm/OsmNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/osm/OsmRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dk/itu/renderer/osm/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/testMain/java/dk/itu/renderer/osm/OsmWay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.hc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.hc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.osm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.zip" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/bornholm/bornholm.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.hc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.hc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.osm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.zip" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/samso/samso.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.hc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.hc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.osm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.osm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.zip" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/hc-osm-files/tuna/tuna.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/OsmWay.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,15 +20,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Test-Parse" />
+        <entry key="$PROJECT_DIR$" value="Abdallah-og-Frederik-legeplads" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -125,8 +46,24 @@
   }
 }</component>
   <component name="McpProjectServerCommands">
-    <commands />
-    <urls />
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -147,7 +84,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Abdallah-og-Frederik-legeplads",
+    "git-widget-placeholder": "R-træ-legeplads",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/frederiktermansen/Documents/GitHub/BFST2026GroupNo15/src/main/resources",
     "node.js.detected.package.eslint": "true",
