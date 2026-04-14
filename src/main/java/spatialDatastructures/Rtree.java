@@ -5,7 +5,7 @@ import models.OsmWay;
 import java.util.ArrayList;
 import java.util.List;
 
-class Rtree {
+public class Rtree {
     RtreeNode root;
 
     public Rtree(List<OsmWay> items, int M) {

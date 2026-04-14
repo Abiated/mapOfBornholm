@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import parser.HcParser;
 import parser.Parser;
+import spatialDatastructures.Rtree;
 
 public class App extends DrawingApp {
 
@@ -49,7 +50,7 @@ public class App extends DrawingApp {
     private JsonNode jRoot;
     private Renderer renderer;
     private List<OsmWay> coastlines = new ArrayList<>();
-
+    private Rtree rtree;
 
     @Override
     public void start(Stage stage) {
@@ -59,9 +60,9 @@ public class App extends DrawingApp {
         chooser.setTitle("Open map file (.zip) or HeightCurve files (.hc)"); //Message when selecting files
         //Filters which files can be chosen for the FileChooser
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
+               new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
 //                new FileChooser.ExtensionFilter("HeightCurve files", "*.hc"),
-//                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm"),
+//                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm")
 //                new FileChooser.ExtensionFilter("Zip files", "*.zip")
         );
 
@@ -117,14 +118,17 @@ public class App extends DrawingApp {
             }
         }
 
-        //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
-        if (HCdata == null || OSMdata == null) {
+        //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem // har udkommenteret HCData == null ||
+        if (OSMdata == null) {
             throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
         }
 
         //Get sea from HCdata and ways
-        sea = HCdata.sea;
+        //sea = HCdata.sea;
         ways = OSMdata.getOsmWayMap();
+
+        // RTREE KOM NU LIDT // CHATTEN SIGER M=32 ER GODT
+        rtree = new Rtree(new ArrayList<OsmWay>(ways.values()),32);
 
         //Classify wayTypes
         for (wayType type : wayType.values()) {
@@ -339,8 +343,8 @@ public class App extends DrawingApp {
 
         System.out.println("Current zoom: " + zoom);
 
-        sea.resetSubmerged();
-        sea.submerge(SEA_LEVEL);
+        //sea.resetSubmerged();
+        //sea.submerge(SEA_LEVEL);
 
         //Draws polygon for coastline
         drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
@@ -405,6 +409,7 @@ public class App extends DrawingApp {
     }
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
+        //rtree.search();
         for (OsmWay way : waysByType.get(type)) {
             if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
 
@@ -431,5 +436,7 @@ public class App extends DrawingApp {
 
         return combined.createTransformedShape(s);
     }
+
+    // jeg skal lave den inverse funktion til project() altså gå fra pixel-koordinater til lat og lon
 
 }

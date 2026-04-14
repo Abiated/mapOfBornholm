@@ -4,7 +4,7 @@ import models.OsmWay;
 
 import java.util.*;
 
-class BulkLoader {
+public class BulkLoader {
 
     public static RtreeNode bulkLoad(List<OsmWay> items, int M) {
         List<RtreeNode> level = buildLeafLevel(items, M);
