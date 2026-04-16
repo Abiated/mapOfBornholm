@@ -2,6 +2,8 @@ package rendering;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -60,7 +62,7 @@ public class App extends DrawingApp {
         chooser.setTitle("Open map file (.zip) or HeightCurve files (.hc)"); //Message when selecting files
         //Filters which files can be chosen for the FileChooser
         chooser.getExtensionFilters().addAll(
-               new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
+                new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
 //                new FileChooser.ExtensionFilter("HeightCurve files", "*.hc"),
 //                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm")
 //                new FileChooser.ExtensionFilter("Zip files", "*.zip")
@@ -128,24 +130,25 @@ public class App extends DrawingApp {
         ways = OSMdata.getOsmWayMap();
 
         // RTREE KOM NU LIDT // CHATTEN SIGER M=32 ER GODT
-        rtree = new Rtree(new ArrayList<OsmWay>(ways.values()),32);
+        rtree = new Rtree(new ArrayList<OsmWay>(ways.values()), 32);
 
         //Classify wayTypes
         for (wayType type : wayType.values()) {
-            if(type == wayType.COASTLINE) continue;;
+            if (type == wayType.COASTLINE) continue;
+            ;
             waysByType.put(type, new ArrayList<>());
         }
 
         waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
-        for(OsmWay way : ways.values()) {
-            if(way.isWater()) waysByType.get(wayType.WATER).add(way);
-            else if(way.hasTag("natural", "coastline")) continue;
-            else if(way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
-            else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
-            else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if(way.isRoad()) waysByType.get(wayType.ROAD).add(way);
-            else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
+        for (OsmWay way : ways.values()) {
+            if (way.isWater()) waysByType.get(wayType.WATER).add(way);
+            else if (way.hasTag("natural", "coastline")) continue;
+            else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
+            else if (way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
+            else if (way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
+            else if (way.isRoad()) waysByType.get(wayType.ROAD).add(way);
+            else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
             else waysByType.get(wayType.OTHER).add(way);
         }
 
@@ -193,7 +196,8 @@ public class App extends DrawingApp {
         GraphicsContext SBar = scale.getGraphicsContext2D();
         SBar.strokeLine(10, 30, 110, 30);
         //Vertical strokelines
-        SBar.strokeLine(10, 30, 10, 20); SBar.strokeLine(110, 30, 110, 20);
+        SBar.strokeLine(10, 30, 10, 20);
+        SBar.strokeLine(110, 30, 110, 20);
         SBar.fillText("500 m", 45, 20);
 
         HBox scaleBar = new HBox(scale);
@@ -336,7 +340,7 @@ public class App extends DrawingApp {
 
         //Zoom
         float zoom = (float) Math.sqrt(superAffine.getDeterminant());
-        float strokeWidth = (float)(1.0 / Math.sqrt(Math.abs(
+        float strokeWidth = (float) (1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
         )));
         strokeWidth = Math.max(0.5f, Math.min(strokeWidth, 3.0f));
@@ -395,12 +399,10 @@ public class App extends DrawingApp {
         else if (way.isLeisure()) {
             key = "leisure";
             return (float) jRoot.path(key).path("zoom").asDouble();
-        }
-        else if (way.isBuilding()) {
+        } else if (way.isBuilding()) {
             key = "building";
             return (float) jRoot.path(key).path("zoom").asDouble();
-        }
-        else return 0;
+        } else return 0;
         JsonNode jPath = jRoot.path(key).path(way.getValue()).path("zoom");
 
         if (jPath.isMissingNode()) return 0;
@@ -409,16 +411,22 @@ public class App extends DrawingApp {
     }
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
-        //rtree.search();
+        List<OsmWay> ways = rtree.search(getViewportBounds(OSMdata));
+        for (OsmWay way : ways) {
+
+        }
+        /*
         for (OsmWay way : waysByType.get(type)) {
-            if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
+            if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
             renderer.setWayColor(way, sw);
-            if(way.getNodes().getFirst()==way.getNodes().getLast()) gc.fill(projected);
+            if (way.getNodes().getFirst() == way.getNodes().getLast()) gc.fill(projected);
             else gc.draw(projected);
 
         }
+
+         */
     }
 
     private static Shape project(Shape s, Data d) {
@@ -438,5 +446,51 @@ public class App extends DrawingApp {
     }
 
     // jeg skal lave den inverse funktion til project() altså gå fra pixel-koordinater til lat og lon
+    public static Point2D inverseProject(float sx, float sy, Data d) {
+        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
+        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+        AffineTransform t = new AffineTransform();
+        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
+        t.scale(k, -k);
+        t.scale(c, 1);
+        t.translate(-d.getMinLon(), -d.getMinLat());
 
+        AffineTransform combined = new AffineTransform(superAffine);
+        combined.concatenate(t);
+
+        try {
+            AffineTransform inverse = combined.createInverse();
+
+            Point2D screenPt = new Point2D.Double(sx, sy);
+            Point2D worldPt = new Point2D.Double();
+
+            inverse.transform(screenPt, worldPt);
+
+            return worldPt; // (lon, lat)
+        } catch (NoninvertibleTransformException e) {
+            throw new RuntimeException("Transform not invertible", e);
+        }
+    }
+
+    public static float[] getViewportBounds (Data d){
+        Point2D p1 = inverseProject(0, 0, d);
+        Point2D p2 = inverseProject(WIDTH, 0, d);
+        Point2D p3 = inverseProject(0, HEIGHT, d);
+        Point2D p4 = inverseProject(WIDTH, HEIGHT, d);
+
+        double minX = Math.min(Math.min(p1.getX(), p2.getX()),
+                    Math.min(p3.getX(), p4.getX()));
+
+        double maxX = Math.max(Math.max(p1.getX(), p2.getX()),
+                    Math.max(p3.getX(), p4.getX()));
+
+        double minY = Math.min(Math.min(p1.getY(), p2.getY()),
+                    Math.min(p3.getY(), p4.getY()));
+
+        double maxY = Math.max(Math.max(p1.getY(), p2.getY()),
+                    Math.max(p3.getY(), p4.getY()));
+
+        return new float[]{(float) minX, (float) maxX, (float) minY, (float) maxY};
+    }
 }
