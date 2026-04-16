@@ -83,8 +83,8 @@ public class Renderer {
             gc.setColor(Color.yellow);
         }
         if (way.isWater()) {
-            gc.setColor(Color.decode(jn.path("waterColor").asText()));
-            gc.setStroke(new BasicStroke(strokeWidth));
+            gc.setColor(Color.decode("#2b8cbe"));
+            //gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
         if(way.isBuilding()) {

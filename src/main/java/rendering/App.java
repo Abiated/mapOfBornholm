@@ -142,7 +142,12 @@ public class App extends DrawingApp {
             else if(way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
             else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
             else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if(way.isRoad()) waysByType.get(wayType.ROAD).add(way);
+            else if(way.isRoad()) {
+                if(hasOutOfBoundsNode(way)) {
+                    System.out.println("Out of bounds road: " + way.getTags());
+                    continue; // skip it
+                }  waysByType.get(wayType.ROAD).add(way); }
+                //waysByType.get(wayType.ROAD).add(way);
             else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
             else waysByType.get(wayType.OTHER).add(way);
         }
@@ -185,15 +190,6 @@ public class App extends DrawingApp {
         HBox controls = new HBox(12.0, slider, sliderLabel);
         //Styles controls with 10px padding and alignment
         controls.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
-
-        //ScaleBar
-        //Coole nu skal jeg bare opdatere den ved zoom
-//        Canvas scale = new Canvas(150, 40);
-//        GraphicsContext SBar = scale.getGraphicsContext2D();
-//        SBar.strokeLine(10, 25, 110, 25);
-//        //Vertical strokelines
-//        SBar.strokeLine(10, 30, 10, 20); SBar.strokeLine(110, 30, 110, 20);
-//        SBar.fillText("500 m", 45, 20);
 
         HBox scaleBar = new HBox(scale);
         scaleBar.setStyle("-fx-padding: 20; -fx-alignment: center-right;");
@@ -350,12 +346,14 @@ public class App extends DrawingApp {
         sea.resetSubmerged();
         sea.submerge(SEA_LEVEL);
 
+        //Draws waterways, lakes, ponds and so on
+        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
         //Draws polygon for coastline
         drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
-        //Draws otherwise non categorized ways
-        drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
         //Draws natural ways
         drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
+        //Draws otherwise non categorized ways
+        drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
         //Draws landuse ways
         drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
         //Draws leisure ways, needs some fixing
@@ -371,12 +369,12 @@ public class App extends DrawingApp {
 //            gc.fill(project(curve.getRegionPath(), OSMdata));
 //        }
 
-        //Draws waterways, lakes, ponds and so on
-        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
-        //Draws buildings
-        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
+//        //Draws waterways, lakes, ponds and so on
+//        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
         //Draws roads
         drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+        //Draws buildings
+        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
         //Draw Layer 7
 //        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -418,7 +416,7 @@ public class App extends DrawingApp {
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
             renderer.setWayColor(way, sw);
-            if(way.getNodes().getFirst()==way.getNodes().getLast()) gc.fill(projected);
+            if(way.getNodes().getFirst()==way.getNodes().getLast() && !way.isRoad()) gc.fill(projected);
             else gc.draw(projected);
 
         }
@@ -450,4 +448,14 @@ public class App extends DrawingApp {
         return k * superAffineZoom;
     }
 
+    //Debug midlertidig
+    private boolean hasOutOfBoundsNode(OsmWay way) {
+        for (OsmNode node : way.getNodes()) {
+            if (node.getLat() < OSMdata.getMinLat() || node.getLat() > OSMdata.getMaxLat() ||
+                    node.getLon() < OSMdata.getMinLon() || node.getLon() > OSMdata.getMaxLon()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

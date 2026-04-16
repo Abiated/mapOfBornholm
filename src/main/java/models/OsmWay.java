@@ -72,8 +72,10 @@ public class OsmWay extends OsmElement{
 
     //Checker for water body
     public boolean isWater() {
-        return hasTag("natural", "water"); //||
-        //hasTag("landuse", "reservoir");
+        return !hasTag("seamark:type", "ferry_route") &&
+                (tags.get("seamark:type") != null ||
+                        hasTag("natural", "shoal") ||
+                        hasTag("natural", "bay"));
     }
     //Checker for building tag
     public boolean isBuilding() {

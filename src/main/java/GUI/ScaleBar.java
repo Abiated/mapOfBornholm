@@ -47,7 +47,7 @@ public class ScaleBar extends Canvas {
     }
 
     public String formatDistance(float meters) {
-           if(meters >= 500) {
+           if(meters >= 750) {
                float km = meters / 1000;
 
                float[] rangeKM = new float[]{0.5F, 1, 2, 5, 10, 20, 50, 100};
@@ -56,7 +56,7 @@ public class ScaleBar extends Canvas {
                }
                return Math.round(km) + "km";
            } else {
-               int[] rangeMeters = new int[]{10, 20, 30, 40, 50, 100, 250};
+               int[] rangeMeters = new int[]{10, 20, 30, 40, 50, 100, 250, 500};
                for (int n : rangeMeters) {
                    if(meters <= n * 1.5) return n + "m";
                }
