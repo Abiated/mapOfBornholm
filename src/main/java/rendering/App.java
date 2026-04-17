@@ -2,8 +2,6 @@ package rendering;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -12,6 +10,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import GUI.ScaleBar;
 import interfaces.Data;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -32,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import parser.HcParser;
 import parser.Parser;
-import spatialDatastructures.Rtree;
 
 public class App extends DrawingApp {
 
@@ -49,13 +47,11 @@ public class App extends DrawingApp {
     private HeightCurve sea;
     private HashMap<Long, OsmWay> ways;
     private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
-    // prøver lige noget her
-    private HashMap<OsmWay, wayType> waysByType2 = new HashMap<>();
-    //
     private JsonNode jRoot;
     private Renderer renderer;
+    private ScaleBar scale = new ScaleBar();
     private List<OsmWay> coastlines = new ArrayList<>();
-    private Rtree rtree;
+
 
     @Override
     public void start(Stage stage) {
@@ -67,7 +63,7 @@ public class App extends DrawingApp {
         chooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
 //                new FileChooser.ExtensionFilter("HeightCurve files", "*.hc"),
-//                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm")
+//                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm"),
 //                new FileChooser.ExtensionFilter("Zip files", "*.zip")
         );
 
@@ -123,48 +119,42 @@ public class App extends DrawingApp {
             }
         }
 
-        //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem // har udkommenteret HCData == null ||
-        if (OSMdata == null) {
+        //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
+        if (HCdata == null || OSMdata == null) {
             throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
         }
 
         //Get sea from HCdata and ways
-        //sea = HCdata.sea;
+        sea = HCdata.sea;
         ways = OSMdata.getOsmWayMap();
-
-        // RTREE KOM NU LIDT // CHATTEN SIGER M=32 ER GODT
-        rtree = new Rtree(new ArrayList<OsmWay>(ways.values()), 32);
 
         //Classify wayTypes
         for (wayType type : wayType.values()) {
-            if (type == wayType.COASTLINE) continue;
-            ;
+            if(type == wayType.COASTLINE) continue;;
             waysByType.put(type, new ArrayList<>());
         }
 
         waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
-        for (OsmWay way : ways.values()) {
-
-            if (way.isWater()) waysByType2.put(way,wayType.WATER);
-            else if (way.hasTag("natural", "coastline")) continue;
-            else if (way.isNatural()) waysByType2.put(way,wayType.NATURAL);
-            else if (way.isLandues()) waysByType2.put(way,wayType.LANDUSE);
-            else if (way.isBuilding()) waysByType2.put(way,wayType.BUILDING);
-            else if (way.isRoad()) waysByType2.put(way,wayType.ROAD);
-            else if (way.isLeisure()) waysByType2.put(way,wayType.LEISURE);
-            else waysByType2.put(way,wayType.OTHER);
-
-            /*
-            if (way.isWater()) waysByType.get(wayType.WATER).add(way);
-            else if (way.hasTag("natural", "coastline")) continue;
-            else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
-            else if (way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
-            else if (way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if (way.isRoad()) waysByType.get(wayType.ROAD).add(way);
-            else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
-            else waysByType.get(wayType.OTHER).add(way);
-             */
+        for(OsmWay way : ways.values()) {
+            if (way.hasTag("location", "underground")) continue;
+            else if(way.isWater()) waysByType.get(wayType.WATER).add(way);
+            else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
+            else if(way.hasTag("natural", "coastline")) continue;
+            else if(way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
+            else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
+            else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
+            else if(way.isRoad())
+//                if(hasOutOfBoundsNode(way)) {
+//                    System.out.println("Out of bounds road: " + way.getTags());
+//                    continue; // skip it
+//                }  waysByType.get(wayType.ROAD).add(way); }
+                waysByType.get(wayType.ROAD).add(way);
+            else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
+//            else {
+//                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
+//                    waysByType.get(wayType.OTHER).add(way);
+//            }
         }
 
         //---------CONFIG PARSING---------//
@@ -179,6 +169,7 @@ public class App extends DrawingApp {
         }
 
         //---------GUI CODE---------//
+        //TODO: MOVE THIS INTO IT'S OWN CLASSES TO CLEAN THIS UP
         //Slider to control the SEA_LEVEL
         //Slider(minValue, maxValue, startValue)
         Slider slider = new Slider(0, 20, 0);
@@ -204,16 +195,6 @@ public class App extends DrawingApp {
         HBox controls = new HBox(12.0, slider, sliderLabel);
         //Styles controls with 10px padding and alignment
         controls.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
-
-        //ScaleBar
-        //Coole nu skal jeg bare opdatere den ved zoom
-        Canvas scale = new Canvas(150, 40);
-        GraphicsContext SBar = scale.getGraphicsContext2D();
-        SBar.strokeLine(10, 30, 110, 30);
-        //Vertical strokelines
-        SBar.strokeLine(10, 30, 10, 20);
-        SBar.strokeLine(110, 30, 110, 20);
-        SBar.fillText("500 m", 45, 20);
 
         HBox scaleBar = new HBox(scale);
         scaleBar.setStyle("-fx-padding: 20; -fx-alignment: center-right;");
@@ -354,46 +335,53 @@ public class App extends DrawingApp {
         gc.fillRect(0, 0, WIDTH, HEIGHT);
 
         //Zoom
-        float zoom = (float) Math.sqrt(superAffine.getDeterminant());
-        float strokeWidth = (float) (1.0 / Math.sqrt(Math.abs(
+        float zoom = getZoom(OSMdata);
+        scale.update(zoom);
+
+        //Midlertidig løsning måske?
+        zoom = zoom/1000; //Making the zoom level manageable for rendering with zoom
+        System.out.println("Manageable zoom level: " + zoom);
+
+        //TODO: REMOVE THIS SHIT AND MAKE A ABSOLUT STROKEWIDTH FOR ALLE ELEMENTS
+        float strokeWidth = (float)(1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
         )));
-        strokeWidth = Math.max(0.5f, Math.min(strokeWidth, 3.0f));
+        strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
-        System.out.println("Current zoom: " + zoom);
+        sea.resetSubmerged();
+        sea.submerge(SEA_LEVEL);
 
-        //sea.resetSubmerged();
-        //sea.submerge(SEA_LEVEL);
-
-        List<OsmWay> ways = rtree.search(getViewportBounds(OSMdata));
-
+        //Draws waterways, lakes, ponds and so on
+        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+        //Draws ferry routes and other sea route
+        drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
         //Draws polygon for coastline
-        drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, ways);
-        //Draws otherwise non categorized ways
-        drawLayer(wayType.OTHER, gc, strokeWidth, zoom, ways);
+        drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
         //Draws natural ways
-        drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, ways);
+        drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
+        //Draws otherwise non categorized ways
+        //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
         //Draws landuse ways
-        drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, ways);
+        drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
         //Draws leisure ways, needs some fixing
         //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
 
         //Draw Layer 4 - heightCurves raw paths
-        //gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//        for (HeightCurve curve : HCdata.curves) {
-//            if (curve == sea) {
-//                continue;
-//            }
-//            gc.setColor(curve.getFillColor(SEA_LEVEL));
-//            gc.fill(project(curve.getRegionPath(), OSMdata));
-//        }
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        for (HeightCurve curve : HCdata.curves) {
+            if (curve == sea) {
+                continue;
+            }
+            gc.setColor(curve.getFillColor(SEA_LEVEL));
+            gc.fill(project(curve.getRegionPath(), OSMdata));
+        }
 
-        //Draws waterways, lakes, ponds and so on
-        drawLayer(wayType.WATER, gc, strokeWidth, zoom, ways);
-        //Draws buildings
-        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, ways);
+//        //Draws waterways, lakes, ponds and so on
+//        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
         //Draws roads
-        drawLayer(wayType.ROAD, gc, strokeWidth, zoom, ways);
+        drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+        //Draws buildings
+        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
         //Draw Layer 7
 //        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -416,10 +404,12 @@ public class App extends DrawingApp {
         else if (way.isLeisure()) {
             key = "leisure";
             return (float) jRoot.path(key).path("zoom").asDouble();
-        } else if (way.isBuilding()) {
+        }
+        else if (way.isBuilding()) {
             key = "building";
             return (float) jRoot.path(key).path("zoom").asDouble();
-        } else return 0;
+        }
+        else return 0;
         JsonNode jPath = jRoot.path(key).path(way.getValue()).path("zoom");
 
         if (jPath.isMissingNode()) return 0;
@@ -427,29 +417,19 @@ public class App extends DrawingApp {
         return (float) jPath.asDouble();
     }
 
-    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, List<OsmWay> ways) {
-        for (OsmWay way : ways) {
-            if (waysByType2.get(way) == type) {
-                if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
-
-                Shape projected = project(renderer.getWayPath(way), OSMdata);
-                renderer.setWayColor(way, sw);
-                if (way.getNodes().getFirst() == way.getNodes().getLast()) gc.fill(projected);
-                else gc.draw(projected);
-            }
-        }
-        /*
+    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
         for (OsmWay way : waysByType.get(type)) {
-            if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
+            if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
             renderer.setWayColor(way, sw);
-            if (way.getNodes().getFirst() == way.getNodes().getLast()) gc.fill(projected);
+            if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
+                    && !(way.isRoad() && !way.hasTag("highway", "rest_area"))
+                    && !way.isSeaRoute())
+                gc.fill(projected);
             else gc.draw(projected);
 
         }
-
-         */
     }
 
     private static Shape project(Shape s, Data d) {
@@ -468,52 +448,24 @@ public class App extends DrawingApp {
         return combined.createTransformedShape(s);
     }
 
-    // jeg skal lave den inverse funktion til project() altså gå fra pixel-koordinater til lat og lon
-    public static Point2D inverseProject(float sx, float sy, Data d) {
+    private static float getZoom(Data d) {
         float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
         float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
         float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-        AffineTransform t = new AffineTransform();
-        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
-        t.scale(k, -k);
-        t.scale(c, 1);
-        t.translate(-d.getMinLon(), -d.getMinLat());
 
-        AffineTransform combined = new AffineTransform(superAffine);
-        combined.concatenate(t);
+        float superAffineZoom = (float) Math.sqrt(superAffine.getDeterminant());
 
-        try {
-            AffineTransform inverse = combined.createInverse();
-
-            Point2D screenPt = new Point2D.Double(sx, sy);
-            Point2D worldPt = new Point2D.Double();
-
-            inverse.transform(screenPt, worldPt);
-
-            return worldPt; // (lon, lat)
-        } catch (NoninvertibleTransformException e) {
-            throw new RuntimeException("Transform not invertible", e);
-        }
+        return k * superAffineZoom;
     }
 
-    public static float[] getViewportBounds (Data d){
-        Point2D p1 = inverseProject(0, 0, d);
-        Point2D p2 = inverseProject(WIDTH, 0, d);
-        Point2D p3 = inverseProject(0, HEIGHT, d);
-        Point2D p4 = inverseProject(WIDTH, HEIGHT, d);
-
-        double minX = Math.min(Math.min(p1.getX(), p2.getX()),
-                    Math.min(p3.getX(), p4.getX()));
-
-        double maxX = Math.max(Math.max(p1.getX(), p2.getX()),
-                    Math.max(p3.getX(), p4.getX()));
-
-        double minY = Math.min(Math.min(p1.getY(), p2.getY()),
-                    Math.min(p3.getY(), p4.getY()));
-
-        double maxY = Math.max(Math.max(p1.getY(), p2.getY()),
-                    Math.max(p3.getY(), p4.getY()));
-
-        return new float[]{(float) minX, (float) maxX, (float) minY, (float) maxY};
+    //Debug midlertidig
+    private boolean hasOutOfBoundsNode(OsmWay way) {
+        for (OsmNode node : way.getNodes()) {
+            if (node.getLat() < OSMdata.getMinLat() || node.getLat() > OSMdata.getMaxLat() ||
+                    node.getLon() < OSMdata.getMinLon() || node.getLon() > OSMdata.getMaxLon()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

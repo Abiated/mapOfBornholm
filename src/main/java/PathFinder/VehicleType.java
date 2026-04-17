@@ -1,4 +1,4 @@
-package dk.itu.Model;
+package PathFinder;
 
 public enum VehicleType {
 

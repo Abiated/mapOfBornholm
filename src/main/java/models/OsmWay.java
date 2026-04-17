@@ -68,7 +68,7 @@ public class OsmWay extends OsmElement{
 
     //Checker for road
     public boolean isRoad() {
-        return tags.get("highway") != null;
+        return !hasTag("highway", "proposed") && tags.get("highway") != null;
     }
     public String getHighWayType() {
         if (!isRoad()) return null;
@@ -97,8 +97,10 @@ public class OsmWay extends OsmElement{
 
     //Checker for water body
     public boolean isWater() {
-        return hasTag("natural", "water"); //||
-        //hasTag("landuse", "reservoir");
+        return !hasTag("seamark:type", "ferry_route") &&
+                (tags.get("seamark:type") != null ||
+                        hasTag("natural", "shoal") ||
+                        hasTag("natural", "bay"));
     }
     //Checker for building tag
     public boolean isBuilding() {
@@ -108,5 +110,7 @@ public class OsmWay extends OsmElement{
     public boolean isLeisure() {
         return tags.get("leisure") != null;
     }
+
+    public boolean isSeaRoute(){ return hasTag("route", "ferry") || hasTag("seamark:type", "ferry_route");}
 
 }
