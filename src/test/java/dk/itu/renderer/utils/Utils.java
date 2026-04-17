@@ -11,9 +11,9 @@ import javax.imageio.ImageIO;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import dk.itu.renderer.osm.OsmElement;
-import dk.itu.renderer.osm.OsmNode;
-import dk.itu.renderer.osm.OsmWay;
+import models.OsmElement;
+import models.OsmNode;
+import models.OsmWay;
 
 public final class Utils {
 
