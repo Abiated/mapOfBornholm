@@ -1,4 +1,4 @@
-package dk.itu.parser.util.extensions;
+package dk.itu.renderer.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ public class DependsOnExtension implements BeforeTestExecutionCallback, AfterTes
     private static final Map<String, Boolean> results = new HashMap<>();
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) {
         DependsOn dependsOn = context.getTestMethod()
                 .flatMap(m -> Optional.ofNullable(m.getAnnotation(DependsOn.class)))
                 .orElse(null);
@@ -27,7 +27,7 @@ public class DependsOnExtension implements BeforeTestExecutionCallback, AfterTes
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         boolean testPassed = context.getExecutionException().isEmpty();
         results.put(context.getTestMethod().get().getName(), testPassed);
     }

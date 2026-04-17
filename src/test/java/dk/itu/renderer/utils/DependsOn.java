@@ -1,4 +1,4 @@
-package dk.itu.parser.util.extensions;
+package dk.itu.renderer.utils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

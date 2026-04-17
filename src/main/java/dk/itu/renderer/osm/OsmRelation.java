@@ -1,5 +1,7 @@
-package dk.itu.parser.models;
+package dk.itu.renderer.osm;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,4 +31,4 @@ public class OsmRelation extends OsmElement {
     public void setTags(HashMap<String, String> tags) {
         this.tags = tags;
     }
-}
+    }

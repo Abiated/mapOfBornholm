@@ -20,14 +20,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import dk.itu.parser.interfaces.IParser;
-import dk.itu.parser.models.Member;
-import dk.itu.parser.models.OsmElement;
-import dk.itu.parser.models.OsmNode;
-import dk.itu.parser.models.OsmRelation;
-import dk.itu.parser.models.OsmWay;
-import dk.itu.parser.util.extensions.DependsOn;
-import dk.itu.parser.util.extensions.DependsOnExtension;
 import dk.itu.parser.util.models.ParserResult;
+import dk.itu.renderer.osm.Member;
+import dk.itu.renderer.osm.OsmElement;
+import dk.itu.renderer.osm.OsmNode;
+import dk.itu.renderer.osm.OsmRelation;
+import dk.itu.renderer.osm.OsmWay;
+import dk.itu.renderer.utils.DependsOn;
+import dk.itu.renderer.utils.DependsOnExtension;
 
 @ExtendWith(DependsOnExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

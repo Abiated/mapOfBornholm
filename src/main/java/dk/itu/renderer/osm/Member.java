@@ -1,4 +1,4 @@
-package dk.itu.parser.models;
+package dk.itu.renderer.osm;
 
 public class Member {
 
