@@ -137,19 +137,24 @@ public class App extends DrawingApp {
         waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
         for(OsmWay way : ways.values()) {
-            if(way.isWater()) waysByType.get(wayType.WATER).add(way);
+            if (way.hasTag("location", "underground")) continue;
+            else if(way.isWater()) waysByType.get(wayType.WATER).add(way);
+            else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
             else if(way.hasTag("natural", "coastline")) continue;
             else if(way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
             else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
             else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if(way.isRoad()) {
-                if(hasOutOfBoundsNode(way)) {
-                    System.out.println("Out of bounds road: " + way.getTags());
-                    continue; // skip it
-                }  waysByType.get(wayType.ROAD).add(way); }
-                //waysByType.get(wayType.ROAD).add(way);
+            else if(way.isRoad())
+//                if(hasOutOfBoundsNode(way)) {
+//                    System.out.println("Out of bounds road: " + way.getTags());
+//                    continue; // skip it
+//                }  waysByType.get(wayType.ROAD).add(way); }
+                waysByType.get(wayType.ROAD).add(way);
             else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
-            else waysByType.get(wayType.OTHER).add(way);
+//            else {
+//                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
+//                    waysByType.get(wayType.OTHER).add(way);
+//            }
         }
 
         //---------CONFIG PARSING---------//
@@ -341,33 +346,35 @@ public class App extends DrawingApp {
         float strokeWidth = (float)(1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
         )));
-        strokeWidth = Math.max(0.5f, Math.min(strokeWidth, 3.0f));
+        strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
         sea.resetSubmerged();
         sea.submerge(SEA_LEVEL);
 
         //Draws waterways, lakes, ponds and so on
         drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+        //Draws ferry routes and other sea route
+        drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
         //Draws polygon for coastline
         drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
         //Draws natural ways
         drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
         //Draws otherwise non categorized ways
-        drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
+        //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
         //Draws landuse ways
         drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
         //Draws leisure ways, needs some fixing
         //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
 
         //Draw Layer 4 - heightCurves raw paths
-        //gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//        for (HeightCurve curve : HCdata.curves) {
-//            if (curve == sea) {
-//                continue;
-//            }
-//            gc.setColor(curve.getFillColor(SEA_LEVEL));
-//            gc.fill(project(curve.getRegionPath(), OSMdata));
-//        }
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        for (HeightCurve curve : HCdata.curves) {
+            if (curve == sea) {
+                continue;
+            }
+            gc.setColor(curve.getFillColor(SEA_LEVEL));
+            gc.fill(project(curve.getRegionPath(), OSMdata));
+        }
 
 //        //Draws waterways, lakes, ponds and so on
 //        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
@@ -416,7 +423,10 @@ public class App extends DrawingApp {
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
             renderer.setWayColor(way, sw);
-            if(way.getNodes().getFirst()==way.getNodes().getLast() && !way.isRoad()) gc.fill(projected);
+            if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
+                    && !(way.isRoad() && !way.hasTag("highway", "rest_area"))
+                    && !way.isSeaRoute())
+                gc.fill(projected);
             else gc.draw(projected);
 
         }
