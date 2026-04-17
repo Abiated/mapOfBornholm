@@ -51,13 +51,14 @@ public class HeightCurve {
             if (submerged) return Color.decode("#2b8cbe");
             else return Color.decode("#ffffcc");
         } else if (elevation < 2.5) {
-            return Color.decode("#c2e699");
+            //return Color.decode("#c2e699");
+            return new Color(194, 230, 153, 0);
         } else if (elevation < 5) {
-            return Color.decode("#78c679");
+            return new Color(120, 198, 121, 0);
         } else if (elevation < 7.5) {
-            return Color.decode("#31a354");
+            return new Color(49, 163, 84, 0);
         } else {
-            return Color.decode("#006837");
+            return new Color(0, 104, 55, 0);
         }
     }
 

@@ -340,9 +340,8 @@ public class App extends DrawingApp {
 
         //Midlertidig løsning måske?
         zoom = zoom/1000; //Making the zoom level manageable for rendering with zoom
-        System.out.println("Manageable zoom level: " + zoom);
+        //System.out.println("Manageable zoom level: " + zoom);
 
-        //TODO: REMOVE THIS SHIT AND MAKE A ABSOLUT STROKEWIDTH FOR ALLE ELEMENTS
         float strokeWidth = (float)(1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
         )));
@@ -365,9 +364,13 @@ public class App extends DrawingApp {
         drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
         //Draws leisure ways, needs some fixing
         //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
+        //Draws roads
+        drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+        //Draws buildings
+        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
         //Draw Layer 4 - heightCurves raw paths
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        //gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for (HeightCurve curve : HCdata.curves) {
             if (curve == sea) {
                 continue;
@@ -378,10 +381,10 @@ public class App extends DrawingApp {
 
 //        //Draws waterways, lakes, ponds and so on
 //        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
-        //Draws roads
-        drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
-        //Draws buildings
-        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
+//        //Draws roads
+//        drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+//        //Draws buildings
+//        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
         //Draw Layer 7
 //        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
