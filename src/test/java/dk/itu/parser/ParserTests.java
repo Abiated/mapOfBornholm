@@ -19,13 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import dk.itu.parser.interfaces.IParser;
+import interfaces.IParser;
 import dk.itu.parser.util.models.ParserResult;
-import dk.itu.renderer.osm.Member;
-import dk.itu.renderer.osm.OsmElement;
-import dk.itu.renderer.osm.OsmNode;
-import dk.itu.renderer.osm.OsmRelation;
-import dk.itu.renderer.osm.OsmWay;
+import models.Member;
+import models.OsmElement;
+import models.OsmNode;
+import models.OsmRelation;
+import models.OsmWay;
 import dk.itu.renderer.utils.DependsOn;
 import dk.itu.renderer.utils.DependsOnExtension;
 

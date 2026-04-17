@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import dk.itu.parser.interfaces.IParser;
-import dk.itu.renderer.osm.Member;
-import dk.itu.renderer.osm.OsmElement;
-import dk.itu.renderer.osm.OsmNode;
-import dk.itu.renderer.osm.OsmRelation;
-import dk.itu.renderer.osm.OsmWay;
+import interfaces.IParser;
+import models.Member;
+import models.OsmElement;
+import models.OsmNode;
+import models.OsmRelation;
+import models.OsmWay;
 
 /// This 'parser' is solely used for testing and is not relevant for the assignment
 public class TestParser implements IParser {

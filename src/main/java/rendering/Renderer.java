@@ -44,7 +44,7 @@ public class Renderer {
         }
 
         if (way.getNodes().size() > 2) {
-            Path2D.Float polygon = new Path2D.Float();
+            Path2D.Float polygon = new Path2D.Float(Path2D.WIND_EVEN_ODD);
             OsmNode first = way.getNodes().getFirst();
             float x1 = first.getLon();
             float y1 = first.getLat();
@@ -77,14 +77,14 @@ public class Renderer {
         //Map<String, String> tags = way.getTags();
 
         // Default color
-        gc.setColor(Color.LIGHT_GRAY);
+        gc.setColor(Color.red);
 
         if(way.hasTag("natural", "coastline")) {
             gc.setColor(Color.yellow);
         }
         if (way.isWater()) {
-            gc.setColor(Color.decode(jn.path("waterColor").asText()));
-            gc.setStroke(new BasicStroke(strokeWidth));
+            gc.setColor(Color.decode("#2b8cbe"));
+            //gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
         if(way.isBuilding()) {

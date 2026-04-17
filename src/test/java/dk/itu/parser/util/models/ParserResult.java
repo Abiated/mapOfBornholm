@@ -1,7 +1,7 @@
 package dk.itu.parser.util.models;
 
-import dk.itu.parser.Parser;
-import dk.itu.parser.interfaces.IParser;
+import parser.Parser;
+import interfaces.IParser;
 import dk.itu.parser.util.TestParser;
 
 public class ParserResult {

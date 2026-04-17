@@ -64,5 +64,6 @@ workspace.xml
 .DS_Store
 .DS_Store
 src/.DS_Store
-src/testMain/resources/.DS_Store
-src/testMain/resources/data/.DS_Store
+src/main/resources/.DS_Store
+src/main/resources/data/.DS_Store
+.idea/workspace.xml
