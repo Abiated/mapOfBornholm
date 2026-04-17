@@ -1,24 +1,29 @@
 package dk.itu.Model;
 
 import TagHelper.TagtoLife;
+import dk.itu.parser.HeightCurveData;
+import dk.itu.parser.HeightCurveParser;
 import dk.itu.parser.Parser;
 import dk.itu.renderer.osm.OsmNode;
 import dk.itu.renderer.osm.OsmWay;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static dk.itu.Model.SubmergedVertexFinder.findSubmergedVertices;
 
 public class DijkstraDemo {
 
     public static void main(String[] args) {
         String fileName = args.length > 0 ? args[0] : "hc-osm-files/samso/samso.osm";
-        VehicleType vehicleType = parseVehicleType(args);
+        VehicleType vehicleType = parseVehicleType(args, 3);
+        double seaLevel = parseSeaLevel(args, 4);
 
         Parser parser = new Parser(fileName);
         parser.parse();
 
-        EdgeWeightedDigraph graph = new EdgeWeightedDigraph(0).constructGraph(parser);
+        String hcFileName = toHeightCurveFileName(fileName);
+        HeightCurveData hcData = loadHeightCurveData(hcFileName);
+        EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser);
         OsmWay demoWay = findDemoWay(parser, vehicleType);
 
         if (demoWay == null) {
@@ -26,8 +31,8 @@ public class DijkstraDemo {
             return;
         }
 
-        int startPosition = parseNodePosition(args, 2, 0, demoWay.getNodes().size() - 1);
-        int targetPosition = parseNodePosition(args, 3, demoWay.getNodes().size() - 1, demoWay.getNodes().size() - 1);
+        int startPosition = parseNodePosition(args, 1, 0, demoWay.getNodes().size() - 1);
+        int targetPosition = parseNodePosition(args, 2, demoWay.getNodes().size() - 1, demoWay.getNodes().size() - 1);
 
         //choose real map nodes from the selected way
         OsmNode startNode = demoWay.getNodes().get(startPosition);
@@ -37,19 +42,25 @@ public class DijkstraDemo {
         int startIndex = graph.indexOf(startNode.getId());
         int targetIndex = graph.indexOf(targetNode.getId());
 
-//        int startIndex = graph.indexOf(chosenStartId); //try and play around with these. Remember ID is the NodeID from osm data
-//        int targetIndex = graph.indexOf(chosenTargetId);
+        //PLACEHOLDER: hardcoded info on submerged vertices
+        //Set<Integer> submergedVertices = new HashSet<>(); //Standard is none are submerged and thus set to an empty set for now
+
+        //get information on submerged vertices
+        Set<Integer> submergedVertices = findSubmergedVertices(graph, parser, hcData, seaLevel);
 
         //run Dijkstra on the start and target node with the specified vehicle type
-        Dijkstra dijkstra = new Dijkstra(graph, startIndex, targetIndex, vehicleType);
+        Dijkstra dijkstra = new Dijkstra(graph, startIndex, targetIndex, vehicleType, submergedVertices);
 
         System.out.println("File: " + fileName);
+        System.out.println("Height curve file: " + hcFileName);
         System.out.println("Vehicle: " + vehicleType);
+        System.out.println("Sea level: " + seaLevel);
         System.out.println("Demo way node count: " + demoWay.getNodes().size());
         System.out.println("Start position inside chosen way: " + startPosition);
         System.out.println("Target position inside chosen way: " + targetPosition);
         System.out.println("Vertices in graph: " + graph.vertexCount());
         System.out.println("Edges in graph: " + graph.edgeCount());
+        System.out.println("Submerged vertices: " + submergedVertices.size());
         System.out.println("Start node id: " + startNode.getId() + " -> index " + startIndex);
         System.out.println("Target node id: " + targetNode.getId() + " -> index " + targetIndex);
 
@@ -59,7 +70,7 @@ public class DijkstraDemo {
         }
 
         List<DirectedEdge> path = dijkstra.pathTo(targetIndex);
-        float totalLength = 0.0f;
+        float totalLength = 0.0f; //format
 
         System.out.println("Path found.");
         System.out.println("Number of directed edges in path: " + path.size());
@@ -112,15 +123,15 @@ public class DijkstraDemo {
         };
     }
 
-    private static VehicleType parseVehicleType(String[] args) {
-        if (args.length < 2 || args[1] == null || args[1].isBlank()) {
+    private static VehicleType parseVehicleType(String[] args, int argIndex) {
+        if (args.length <= argIndex || args[argIndex] == null || args[argIndex].isBlank()) {
             return VehicleType.CAR;
         }
 
         try {
-            return VehicleType.valueOf(args[1].trim().toUpperCase());
+            return VehicleType.valueOf(args[argIndex].trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            System.out.println("Unknown vehicle type '" + args[1] + "'. Defaulting to CAR.");
+            System.out.println("Unknown vehicle type '" + args[argIndex] + "'. Defaulting to CAR.");
             return VehicleType.CAR;
         }
     }
@@ -140,6 +151,35 @@ public class DijkstraDemo {
         } catch (NumberFormatException e) {
             System.out.println("Could not parse node position '" + args[argIndex] + "'. Using default " + defaultValue + ".");
             return defaultValue;
+        }
+    }
+
+    private static double parseSeaLevel(String[] args, int argIndex) {
+        if (args.length <= argIndex || args[argIndex] == null || args[argIndex].isBlank()) {
+            return 0.0;
+        }
+
+        try {
+            return Double.parseDouble(args[argIndex].trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Could not parse sea level '" + args[argIndex] + "'. Using default 0.0.");
+            return 0.0;
+        }
+    }
+
+    private static String toHeightCurveFileName(String osmFileName) {
+        if (osmFileName.endsWith(".osm")) {
+            return osmFileName.substring(0, osmFileName.length() - 4) + ".hc";
+        }
+        return osmFileName;
+    }
+
+    private static HeightCurveData loadHeightCurveData(String hcFileName) {
+        try {
+            return new HeightCurveParser(hcFileName).parse();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Could not load height curve file '" + hcFileName + "'. Using no submersion.");
+            return null;
         }
     }
 }

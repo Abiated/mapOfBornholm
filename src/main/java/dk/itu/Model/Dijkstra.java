@@ -1,34 +1,50 @@
 package dk.itu.Model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue; //standard is min oriented heap which we need for shortest path
+import java.util.Set;
 
 public class Dijkstra {
-    //from book p. 655
     private DirectedEdge[] edgeTo;
-    private float[] distTo; //float for memory
-    private PriorityQueue<Node> pq; //pq af nodes der kan indeholde
+    private float[] distTo;
+    private PriorityQueue<Node> pq;
     private VehicleType vehicleType;
+    private Set<Integer> submergedVertices;
 
+    // overloaded constructor which sends information on to Dijkstra.
+    //it creates a new empty hashset to pass on to Dijkstra. In case no vertices are submerged it uses the empty hashset. Perhaps we can find a more readable way to do this
     public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type) {
+        //calls the other constructor for Dijkstra
+        this(G, start, target, type, new HashSet<>());
+    }
+
+    public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type, Set<Integer> submergedVertices) {
         vehicleType = type;
+        this.submergedVertices = submergedVertices != null ? submergedVertices : new HashSet<>();
         edgeTo = new DirectedEdge[G.V]; //array edgeTo
         distTo = new float[G.V]; //array disTo
-        pq = new PriorityQueue<Node>(G.V); //min oriented priority queue
+        pq = new PriorityQueue<>(G.V); //min oriented priority queue
 
-        //initialize all distances to infinity to make them less desireable than the ones we fill with actual weights along the way
+        //initialize all distances to positive infinity to make them less desireable than the ones we fill with actual weights along the way
         for(int v = 0; v < G.V; v++){
             distTo[v] = Float.POSITIVE_INFINITY;
         }
 
-        // set dist to starting vertex to 0
+        if (this.submergedVertices.contains(start) || this.submergedVertices.contains(target)) {
+            return;
+        }
+
+        // set distance to starting vertex to 0
         distTo[start] = 0;
 
         //add the start Node to priority queue
         pq.add(new Node(start, 0));
 
         while(!pq.isEmpty()){
+
+
             Node current = pq.poll(); //keeps track of the 'head' of the priority queue
             if (current.distance > distTo[current.vertex]) continue; //ignores doublets ex if we have B(5) and B(10), then there is no reason to relax for B(10) it is a waste of time.
 
@@ -40,13 +56,17 @@ public class Dijkstra {
     }
 
     //in our relax we do not update existing Nodes as Java's PriorityQueue does not support change() which is shown in the book. We instead insert a new Node. It works the same way because of the priority
-    private void relax(EdgeWeightedDigraph G, int v) { //is it overkill to have vehicletype as an argument?
+    private void relax(EdgeWeightedDigraph G, int v) {
+       if(submergedVertices.contains(v)){return;} //if the current vertex is submerged do not relax edge. Distance remains infinity and Dijkstra looks to other vertices and their edges
+
         for (DirectedEdge e : G.adj(v)) {
+
             int w = e.to();
+            if(submergedVertices.contains(w)){continue;} //if the current neighbor to v, w, is submerged skip this point in relaxation and look to other neighbor vertices instead. Do not return or else we miss out on potentially not submerged neighbors
 
-            float weight = e.weight(vehicleType); //calculate the weight (currently time for car and dist for bike/walk - TODO: make it all the same. Ex. by setting an estimated walking and biking speed)
+            float weight = e.weight(vehicleType); //calculate the weight (currently time for car, bike & walk
 
-            if (distTo[w] > distTo[v] + weight) { //should .weight be a method instead to only calculate when going through this step?
+            if (distTo[w] > distTo[v] + weight) {
                 distTo[w] = distTo[v] + weight; //save the shorter/cheaper path
                 edgeTo[w] = e; //remember last step to get to the vertex
 
@@ -75,9 +95,5 @@ public class Dijkstra {
         return distTo[v];
     }
 
-    //the following might be useful, but look into that later on
-    //Standard client query methods for SPT implementations (see page 649)
-    //public double distTo(int v)
-    //public boolean hasPathTo(int v)
-    //public Iterable<Edge> pathTo(int v)
+
 }

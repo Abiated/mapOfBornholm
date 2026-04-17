@@ -20,25 +20,17 @@ public class DirectedEdge {
         this.walkable = walkable;
     }
 
-    public int from() {
-        return from;
-    }
-
-    public int to() {
-        return to;
-    }
-
-    public float getLength() {
-        return length;
-    }
-
     public float weight(VehicleType type){
         //if the vehicle type is not allowed to traverse an edge set the distance to positive infinity
         // any other allowed edge will thus be shorter and this edge is not in the final shortest path
         if(!isAllowed(type)){return Float.POSITIVE_INFINITY;}
 
-        if(type == VehicleType.CAR){return length / speedLimit;} //gives the time it takes to traverse for the car
-        else{return length;} //gives the distance for bike and walk
+        if(type == VehicleType.CAR){return length / speedLimit;}//gives the time it takes to traverse for the car
+        else if (type == VehicleType.WALK){
+            float speed = 5; //TODO: decide if this is a good speed
+            return length /speed;}
+        else{float speed = 20; //TODO: decide if this is a good speed
+            return length / speed;} //gives the distance for bike
     }
 
     private boolean isAllowed(VehicleType type){
@@ -49,5 +41,13 @@ public class DirectedEdge {
 
     }
 
-}
+    public int from() {
+        return from;
+    }
 
+    public int to() {return to;}
+
+    public float getLength() {
+        return length;
+    }
+}

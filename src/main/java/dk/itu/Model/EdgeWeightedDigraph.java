@@ -14,12 +14,17 @@ import java.util.Map;
 //TODO: Find out where to call constructGraph()
 // Thoughts: Do it in main/app or wherever we run the program from. Have a check to see if the file already exists and if so read our binary file of the graph rather than construct a new one
 
+
+//TODO: this class should be called in the background as soon as the program opens, to have the graph before the user clicks to make the program seem smoother
+
+
 public class EdgeWeightedDigraph {
-    protected int V; //vertices. is originally set as final in Sedgewick & Wayne but compiler does not like. How to deal with that
-    private int E; //edges
+    protected int V;
+    private int E;
     private List<DirectedEdge>[] adj; //array in adjancency list to answer "What edges go out from vertex v"
 
     //HashMaps to go from id to index *AND* back again
+    //They are here bacuse we need them AFTER the graph is built
     protected Map<Long, Integer> idToIndex;
     protected Map<Integer, Long> indexToId;
 
@@ -29,7 +34,7 @@ public class EdgeWeightedDigraph {
         adj = new ArrayList[V]; //creating instance of arraylist
 
         for(int v = 0; v < V; v++){
-            adj[v] = new ArrayList<>(); //creating instance of the arraylist in each arraylist index
+            adj[v] = new ArrayList<>(); //creating instance of an arraylist in each arraylist-index
         }
 
         idToIndex = new HashMap<>();
@@ -55,7 +60,7 @@ public class EdgeWeightedDigraph {
 
         //calculations made in double to keep precision and to be able to use the methods
         //get information on lat (convert from lat and lon-degrees to radians)
-        //only saving lat
+        //only saving lat asw e use it again i application of formula
         double lat1 = Math.toRadians(node1.getLat());
         double lat2 = Math.toRadians(node2.getLat());
 
@@ -74,27 +79,31 @@ public class EdgeWeightedDigraph {
     }
 
     /**Constructs and returns a digraph with all possible ways to travel between nodes in the map*/
-    public EdgeWeightedDigraph constructGraph(Parser input) {
+    public static EdgeWeightedDigraph constructGraph(Parser input) {
         //mapping long id names to array indexes
-        int index = 0;
-        Map<Long, Integer> newIdToIndex = new HashMap<>();
-        Map<Integer, Long> newIndexToId = new HashMap<>();
+        int index = 0; //counter
+        //These are different from the fields, because they are local values
+        //We use them to calculate the num of V before vi instantiate EdgeWeightedDigraph
+        Map<Long, Integer> idToIndex = new HashMap<>();
+        Map<Integer, Long> indexToId = new HashMap<>();
 
-        for (OsmWay way : input.getOsmWayMap().values()) {
+        for (OsmWay way : input.getOsmWayMap().values()) { //in way map
             if(!TagtoLife.isHighway(way)) {continue;} //skip if OsmWay is not marked highway
 
-            for (OsmNode node : way.getNodes()) {
-                if (!newIdToIndex.containsKey(node.getId())) {
-                    newIdToIndex.put(node.getId(), index);
-                    newIndexToId.put(index, node.getId());
+            for (OsmNode node : way.getNodes()) { //in list of nodes within way
+                if (!idToIndex.containsKey(node.getId())) {
+                    idToIndex.put(node.getId(), index);
+                    indexToId.put(index, node.getId());
                     index++;
                 }
             }
         }
 
+        //New instance
         EdgeWeightedDigraph graph = new EdgeWeightedDigraph(index);
-        graph.idToIndex.putAll(newIdToIndex);
-        graph.indexToId.putAll(newIndexToId);
+        //fill fields with the local values
+        graph.idToIndex.putAll(idToIndex);
+        graph.indexToId.putAll(indexToId);
 
         for (OsmWay way : input.getOsmWayMap().values()) {
             //filter relevant ways (OsmWay can ex be a building - not relevant for this graph)
@@ -170,5 +179,4 @@ public class EdgeWeightedDigraph {
     public int edgeCount() {
         return E;
     }
-
 }
