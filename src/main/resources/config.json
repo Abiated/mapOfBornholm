@@ -1,0 +1,219 @@
+{
+  "default_sealevel": 0.0,
+  "waterColor": "#aad3e0",
+
+  "highway": {
+    "defaultColor": "#000",
+    "footway": {
+      "color": "#E6A8A8",
+      "width": 3,
+      "drivable": false,
+      "speed": 5,
+      "zoom": 25
+    },
+    "steps": {
+      "color": "#C97C7C",
+      "width": 3,
+      "drivable": false,
+      "speed": 4,
+      "zoom": 25
+    },
+    "path": {
+      "color": "#D8C68F",
+      "width": 3,
+      "drivable": false,
+      "speed": 5,
+      "zoom": 25
+    },
+    "cycleway": {
+      "color": "#6EC1A6",
+      "width": 3,
+      "drivable": false,
+      "speed": 20,
+      "zoom": 20
+    },
+    "track": {
+      "color": "#A98B5E",
+      "width": 3,
+      "drivable": false,
+      "speed": 10,
+      "zoom": 25
+    },
+    "motorway": {
+      "color": "#e87e04",
+      "width": 8,
+      "drivable": true,
+      "speed": 130,
+      "zoom": 0
+    },
+    "trunk": {
+      "color": "#e87e04",
+      "width": 7,
+      "drivable": true,
+      "speed": 90,
+      "zoom": 0
+    },
+    "primary": {
+      "color": "#fcd6a4",
+      "width": 6,
+      "drivable": true,
+      "speed": 80,
+      "zoom": 0
+    },
+    "secondary": {
+      "color": "#f7fabf",
+      "width": 5,
+      "drivable": true,
+      "speed": 60,
+      "zoom": 5
+    },
+    "tertiary": {
+      "color": "#f7fabf",
+      "width": 4,
+      "drivable": true,
+      "speed": 50,
+      "zoom": 10
+    },
+    "residential": {
+      "color": "#D3D3D3",
+      "width": 3,
+      "drivable": true,
+      "speed": 30,
+      "zoom": 15
+    },
+    "service": {
+      "color": "#D3D3D3",
+      "width": 3,
+      "drivable": true,
+      "speed": 20,
+      "zoom": 15
+    }
+  },
+
+  "landuse": {
+    "width": 1,
+    "defaultColor" : "#e6e2d3",
+    "meadow": {
+      "color": "#BFD8A6",
+      "zoom": 0
+    },
+    "forest": {
+      "color": "#7FB06E",
+      "zoom": 0
+    },
+    "grass": {
+      "color": "#A9C98C",
+      "zoom": 0
+    },
+    "orchard": {
+      "color": "#8FC07C",
+      "zoom": 0
+    },
+    "vineyard": {
+      "color": "#9FD28F",
+      "zoom": 0
+    },
+    "farmland": {
+      "color": "#D6D2A5",
+      "zoom": 0
+    },
+    "saltpond": {
+      "color": "#8FB9C6",
+      "zoom": 0
+    },
+    "basin": {
+      "color": "#8FB9C6",
+      "zoom": 0
+    },
+    "quarry": {
+      "color": "#BDBDBD",
+      "zoom": 0
+    },
+    "landfill": {
+      "color": "#AFAF8C",
+      "zoom": 0
+    },
+    "brownfield": {
+      "color": "#AFAF8C",
+      "zoom": 0
+    }
+  },
+
+  "natural": {
+    "width": 1,
+    "defaultColor" : "#cfe8c8",
+    "wood": {
+      "color": "#8FBF7A",
+      "zoom": 0
+    },
+    "scrub": {
+      "color": "#A8C686",
+      "zoom": 0
+    },
+    "heath": {
+      "color": "#C6C88E",
+      "zoom": 0
+    },
+    "grassland": {
+      "color": "#A9C98C",
+      "zoom": 0
+    },
+    "sand": {
+      "color": "#E6D6A8",
+      "zoom": 0
+    },
+    "beach": {
+      "color": "#E6D6A8",
+      "zoom": 0
+    },
+    "shoal": {
+      "color": "#E6D6A8",
+      "zoom": 0
+    },
+    "//Comment" : "Slash at the end of the tag to not create error reading as it has not yet gotten color and zoom",
+    "peak": {
+      "color": "#9E9E9E",
+      "zoom": 10
+    },
+    "tree": {
+      "color": "#5E9E6A",
+      "zoom": 30
+    },
+    "cape": {
+      "color": "#C8D8B0",
+      "zoom": 20
+    },
+    "shrub": {
+      "color": "#A8C686",
+      "zoom": 40
+    },
+    "cliff": {
+      "color": "#888888",
+      "zoom": 15
+    },
+    "wetland" : {
+      "color": "#cfe8c8",
+      "zoom": 0
+    },
+    "bay" : {
+      "color": "#aad3e0",
+      "zoom": 8
+    }
+  },
+
+  "leisure" : {
+    "defaultColor" : "#405621",
+    "zoom": 0
+  },
+
+  "building": {
+    "color": "#D1715E",
+    "width": 1,
+    "zoom": 15
+  },
+
+  "other" : {
+    "defaultColor" : "#f2efe9",
+    "width": 1
+  }
+}
