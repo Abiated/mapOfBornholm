@@ -61,7 +61,7 @@
       "driveable": true,
       "walkable": true,
       "cyclable": false,
-      "color": "#fff",
+      "color": "#ffffff",
       "width": 4,
       "zoom": 10
     },

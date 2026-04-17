@@ -367,14 +367,14 @@ public class App extends DrawingApp {
         //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
 
         //Draw Layer 4 - heightCurves raw paths
-        //gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//        for (HeightCurve curve : HCdata.curves) {
-//            if (curve == sea) {
-//                continue;
-//            }
-//            gc.setColor(curve.getFillColor(SEA_LEVEL));
-//            gc.fill(project(curve.getRegionPath(), OSMdata));
-//        }
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        for (HeightCurve curve : HCdata.curves) {
+            if (curve == sea) {
+                continue;
+            }
+            gc.setColor(curve.getFillColor(SEA_LEVEL));
+            gc.fill(project(curve.getRegionPath(), OSMdata));
+        }
 
 //        //Draws waterways, lakes, ponds and so on
 //        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
