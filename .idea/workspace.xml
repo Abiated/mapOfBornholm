@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a0728b8f-f003-40c6-9bf3-c39bee8324db" name="Changes" comment="Merge branch 'main' of https://github.itu.dk/SWU-FYP-Spring2026/BFST2026GroupNo15 into Dijkstra-Model&#10;&#10;# Conflicts:&#10;#&#9;.DS_Store&#10;#&#9;.gitignore&#10;#&#9;.idea/workspace.xml&#10;#&#9;pom.xml&#10;#&#9;src/.DS_Store&#10;#&#9;src/main/java/dk/itu/parser/Parser.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/ScaleBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/ScaleBar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/models/OsmWay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/OsmWay.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rendering/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rendering/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/rendering/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rendering/Renderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/rendering/wayType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rendering/wayType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
