@@ -265,6 +265,9 @@ public class Parser implements IParser {
         return Long.parseLong(val);
     }
 
+    public int getNodeCount(){
+        return osmNodeMap.size();
+    }
 
     //DO NOT MODIFY BELOW GETTER METHODS
     @Override

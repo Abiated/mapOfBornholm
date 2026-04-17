@@ -10,6 +10,8 @@ import dk.itu.renderer.osm.OsmWay;
 import java.util.*;
 
 import static dk.itu.Model.SubmergedVertexFinder.findSubmergedVertices;
+import static dk.itu.Model.SubVerFindAttempt.findSubmergedVertices2;
+
 
 public class DijkstraDemo {
 
@@ -46,7 +48,7 @@ public class DijkstraDemo {
         //Set<Integer> submergedVertices = new HashSet<>(); //Standard is none are submerged and thus set to an empty set for now
 
         //get information on submerged vertices
-        Set<Integer> submergedVertices = findSubmergedVertices(graph, parser, hcData, seaLevel);
+        Set<Integer> submergedVertices = findSubmergedVertices2(graph, parser, hcData, seaLevel);
 
         //run Dijkstra on the start and target node with the specified vehicle type
         Dijkstra dijkstra = new Dijkstra(graph, startIndex, targetIndex, vehicleType, submergedVertices);
