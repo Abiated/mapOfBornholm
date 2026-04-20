@@ -1,6 +1,9 @@
 package spatialDatastructures;
 
+import java.util.PriorityQueue;
+import models.OsmElement;
 import models.OsmWay;
+import models.OsmNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,4 +37,27 @@ public class Rtree {
             }
         }
     }
+
+//    private OsmNode getNearestNeighbor(long lat, long lon, RtreeNode root) {
+//        PriorityQueue<PQWrapper> Search = new PriorityQueue<>();
+//        OsmElement shortestNode = null;
+//        Long bestDistance = Long.MAX_VALUE;
+//
+//        for(int i = 0; i<root.children.size(); i++ ){
+//
+//        }
+//
+//        shortestNode = getNearestNeighborrecursive(Search,shortestNode,bestDistance);
+//
+//        return (OsmNode) shortestNode;
+//    }
+//
+//    private OsmNode getNearestNeighborrecursive(PriorityQueue s, OsmElement m, long bestDistance) {
+//
+//
+//
+//        if (s.p)
+//        return n;
+//    }
+
 }
