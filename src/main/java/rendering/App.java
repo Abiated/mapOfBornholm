@@ -2,6 +2,8 @@ package rendering;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import parser.HcParser;
 import parser.Parser;
+import spatialDatastructures.Rtree;
 
 public class App extends DrawingApp {
 
@@ -50,7 +53,7 @@ public class App extends DrawingApp {
     private JsonNode jRoot;
     private Renderer renderer;
     private ScaleBar scale = new ScaleBar();
-    private List<OsmWay> coastlines = new ArrayList<>();
+    private EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
 
 
     @Override
@@ -128,7 +131,7 @@ public class App extends DrawingApp {
         sea = HCdata.sea;
         ways = OSMdata.getOsmWayMap();
 
-        //Classify wayTypes
+
         for (wayType type : wayType.values()) {
             if(type == wayType.COASTLINE) continue;;
             waysByType.put(type, new ArrayList<>());
@@ -156,6 +159,19 @@ public class App extends DrawingApp {
 //                    waysByType.get(wayType.OTHER).add(way);
 //            }
         }
+
+        // CREATE R TREES
+
+        RtreesByType.put(wayType.COASTLINE,new Rtree(waysByType.get(wayType.COASTLINE),32));
+        RtreesByType.put(wayType.WATER,new Rtree(waysByType.get(wayType.WATER),32));
+        RtreesByType.put(wayType.SEAROUTE,new Rtree(waysByType.get(wayType.SEAROUTE),32));
+        RtreesByType.put(wayType.NATURAL,new Rtree(waysByType.get(wayType.NATURAL),32));
+        RtreesByType.put(wayType.LANDUSE,new Rtree(waysByType.get(wayType.LANDUSE),32));
+        RtreesByType.put(wayType.BUILDING,new Rtree(waysByType.get(wayType.BUILDING),32));
+        RtreesByType.put(wayType.ROAD,new Rtree(waysByType.get(wayType.ROAD),32));
+        RtreesByType.put(wayType.LEISURE,new Rtree(waysByType.get(wayType.LEISURE),32));
+
+
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -418,7 +434,7 @@ public class App extends DrawingApp {
     }
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
-        for (OsmWay way : waysByType.get(type)) {
+        for (OsmWay way : RtreesByType.get(type).search(getRtreeBoundingBox(OSMdata))) {
             if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
@@ -446,6 +462,49 @@ public class App extends DrawingApp {
         combined.concatenate(t);
 
         return combined.createTransformedShape(s);
+    }
+
+    private static Point2D reverseProject(float sx, float sy, Data d) {
+        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
+        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+        AffineTransform t = new AffineTransform();
+        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
+        t.scale(k, -k);
+        t.scale(c, 1);
+        t.translate(-d.getMinLon(), -d.getMinLat());
+
+        AffineTransform combined = new AffineTransform(superAffine);
+        combined.concatenate(t);
+
+        // taget fra chatGPT
+
+        try {
+            AffineTransform inverse = combined.createInverse();
+
+            Point2D screenPt = new Point2D.Double(sx, sy);
+            Point2D worldPt = new Point2D.Double();
+
+            inverse.transform(screenPt, worldPt);
+
+            return worldPt; // (lon, lat)
+        } catch (NoninvertibleTransformException e) {
+            throw new RuntimeException("Transform not invertible", e);
+        }
+    }
+
+    private static float[] getRtreeBoundingBox(Data d) {
+        Point2D topleft = reverseProject(0,0,d);
+        Point2D topright = reverseProject(WIDTH,0,d);
+        Point2D bottomright = reverseProject(WIDTH,HEIGHT,d);
+        Point2D bottomleft = reverseProject(0,HEIGHT,d);
+
+        float minX = (float) Math.min(bottomleft.getX(),Math.min(bottomright.getX(),Math.min(topleft.getX(),topright.getX())));
+        float maxX = (float) Math.max(bottomleft.getX(),Math.max(bottomright.getX(),Math.max(topleft.getX(),topright.getX())));
+        float minY = (float) Math.min(bottomleft.getY(),Math.min(bottomright.getY(),Math.min(topleft.getY(),topright.getY())));
+        float maxY = (float) Math.max(bottomleft.getY(),Math.max(bottomright.getY(),Math.max(topleft.getY(),topright.getY())));
+
+        return new float[] {minX,maxX,minY,maxY};
     }
 
     private static float getZoom(Data d) {
