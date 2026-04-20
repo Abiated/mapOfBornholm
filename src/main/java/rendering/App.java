@@ -49,6 +49,9 @@ public class App extends DrawingApp {
     private HeightCurve sea;
     private HashMap<Long, OsmWay> ways;
     private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
+    // prøver lige noget her
+    private HashMap<OsmWay, wayType> waysByType2 = new HashMap<>();
+    //
     private JsonNode jRoot;
     private Renderer renderer;
     private List<OsmWay> coastlines = new ArrayList<>();
@@ -142,6 +145,17 @@ public class App extends DrawingApp {
         waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
         for (OsmWay way : ways.values()) {
+
+            if (way.isWater()) waysByType2.put(way,wayType.WATER);
+            else if (way.hasTag("natural", "coastline")) continue;
+            else if (way.isNatural()) waysByType2.put(way,wayType.NATURAL);
+            else if (way.isLandues()) waysByType2.put(way,wayType.LANDUSE);
+            else if (way.isBuilding()) waysByType2.put(way,wayType.BUILDING);
+            else if (way.isRoad()) waysByType2.put(way,wayType.ROAD);
+            else if (way.isLeisure()) waysByType2.put(way,wayType.LEISURE);
+            else waysByType2.put(way,wayType.OTHER);
+
+            /*
             if (way.isWater()) waysByType.get(wayType.WATER).add(way);
             else if (way.hasTag("natural", "coastline")) continue;
             else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
@@ -150,6 +164,7 @@ public class App extends DrawingApp {
             else if (way.isRoad()) waysByType.get(wayType.ROAD).add(way);
             else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
             else waysByType.get(wayType.OTHER).add(way);
+             */
         }
 
         //---------CONFIG PARSING---------//
@@ -350,14 +365,16 @@ public class App extends DrawingApp {
         //sea.resetSubmerged();
         //sea.submerge(SEA_LEVEL);
 
+        List<OsmWay> ways = rtree.search(getViewportBounds(OSMdata));
+
         //Draws polygon for coastline
-        drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
+        drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, ways);
         //Draws otherwise non categorized ways
-        drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
+        drawLayer(wayType.OTHER, gc, strokeWidth, zoom, ways);
         //Draws natural ways
-        drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
+        drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, ways);
         //Draws landuse ways
-        drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
+        drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, ways);
         //Draws leisure ways, needs some fixing
         //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
 
@@ -372,11 +389,11 @@ public class App extends DrawingApp {
 //        }
 
         //Draws waterways, lakes, ponds and so on
-        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+        drawLayer(wayType.WATER, gc, strokeWidth, zoom, ways);
         //Draws buildings
-        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
+        drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, ways);
         //Draws roads
-        drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+        drawLayer(wayType.ROAD, gc, strokeWidth, zoom, ways);
 
         //Draw Layer 7
 //        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -410,10 +427,16 @@ public class App extends DrawingApp {
         return (float) jPath.asDouble();
     }
 
-    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
-        List<OsmWay> ways = rtree.search(getViewportBounds(OSMdata));
+    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, List<OsmWay> ways) {
         for (OsmWay way : ways) {
+            if (waysByType2.get(way) == type) {
+                if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
 
+                Shape projected = project(renderer.getWayPath(way), OSMdata);
+                renderer.setWayColor(way, sw);
+                if (way.getNodes().getFirst() == way.getNodes().getLast()) gc.fill(projected);
+                else gc.draw(projected);
+            }
         }
         /*
         for (OsmWay way : waysByType.get(type)) {
