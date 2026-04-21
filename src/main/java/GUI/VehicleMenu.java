@@ -10,7 +10,7 @@ public class VehicleMenu extends MenuButton {
     private VehicleType vehicleType;
 
     public VehicleMenu() {
-        super("Click to choose mode of transportation");
+        super("Choose mode of transportation");
 
         MenuItem Car = new MenuItem("CAR");
         MenuItem Bike = new MenuItem("BIKE");
@@ -18,11 +18,11 @@ public class VehicleMenu extends MenuButton {
 
         this.getItems().addAll(Car, Bike, None);
 
-        label = new Label("Mode of transportation has yet to be chosen");
+        label = new Label("Mode of transportation:");
 
-        Car.setOnAction(event -> { label.setText("Mode of transportation: Car"); vehicleType = VehicleType.CAR; System.out.println(vehicleType);});
-        Bike.setOnAction(event -> { label.setText("Mode of transportation: Bike"); vehicleType = VehicleType.BIKE; System.out.println(vehicleType);});
-        None.setOnAction(event -> { label.setText("Mode of transportation: Walking"); vehicleType = VehicleType.WALK; System.out.println(vehicleType);});
+        Car.setOnAction(event -> { label.setText("Mode of transportation: Car"); vehicleType = VehicleType.CAR;});
+        Bike.setOnAction(event -> { label.setText("Mode of transportation: Bike"); vehicleType = VehicleType.BIKE;});
+        None.setOnAction(event -> { label.setText("Mode of transportation: Walking"); vehicleType = VehicleType.WALK;});
     }
 
     public Label getLabel() {return label;}
