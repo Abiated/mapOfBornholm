@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import GUI.BottomControls;
+import GUI.UpperControls;
 import interfaces.Data;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -158,8 +159,11 @@ public class App extends DrawingApp {
             draw();
         }));
 
+        UpperControls upperControls = new UpperControls();
+
         BorderPane root = new BorderPane();
         root.setBottom(bottomControls);
+        root.setTop(upperControls);
 
         //Stage title is set to fileName
         if (chosen != null) {
