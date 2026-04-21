@@ -21,4 +21,6 @@ public class OsmNode extends OsmElement {
         return lon;
     }
 
+
+
 }

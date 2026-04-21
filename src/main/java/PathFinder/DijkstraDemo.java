@@ -1,11 +1,27 @@
-package dk.itu.Model;
+package PathFinder;
 
-import TagHelper.TagtoLife;
-import dk.itu.parser.HeightCurveData;
-import dk.itu.parser.HeightCurveParser;
-import dk.itu.parser.Parser;
-import dk.itu.renderer.osm.OsmNode;
-import dk.itu.renderer.osm.OsmWay;
+//import TagHelper.TagtoLife;
+//import dk.itu.parser.HeightCurveData;
+//import dk.itu.parser.HeightCurveParser;
+//import dk.itu.parser.Parser;
+//import dk.itu.renderer.osm.OsmNode;
+//import dk.itu.renderer.osm.OsmWay;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import models.HeightCurveData;
+import parser.HcParser;
+import parser.Parser;
+import models.OsmNode;
+import models.OsmWay;
+
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import java.util.*;
 
@@ -17,16 +33,54 @@ public class DijkstraDemo {
 
     public static void main(String[] args) {
         String fileName = args.length > 0 ? args[0] : "hc-osm-files/samso/samso.osm";
+        InputStream osmStream = DijkstraDemo.class.getResourceAsStream("/hc-osm-files/samso/samso.osm");
         VehicleType vehicleType = parseVehicleType(args, 3);
         double seaLevel = parseSeaLevel(args, 4);
 
-        Parser parser = new Parser(fileName);
+        //Parser parser = new Parser(fileName);
+        Parser parser = new Parser(osmStream);
         parser.parse();
 
         String hcFileName = toHeightCurveFileName(fileName);
         HeightCurveData hcData = loadHeightCurveData(hcFileName);
         EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser);
         OsmWay demoWay = findDemoWay(parser, vehicleType);
+
+
+        /*
+        * InputStream osmStream = DijkstraDemo.class.getResourceAsStream("/hc-osm-files/samso/samso.osm");
+            Parser parser = new Parser(osmStream);
+
+            parser.parse();
+            System.out.println("OSM parsed");
+
+            InputStream hcStream = DijkstraDemo.class.getResourceAsStream("/hc-osm-files/samso/samso.hc");
+            HcParser hcParser = new HcParser(hcStream);
+            System.out.println("Hc parsed");
+
+
+            InputStream configStream = DijkstraDemo.class.getResourceAsStream("/config.json");
+            JsonNode jRoot = new ObjectMapper().readTree(configStream);
+            TagHelper tagHelper = new TagHelper(jRoot);
+
+            // Parsing height data
+
+            HeightCurveData hcData = hcParser.parse();
+
+
+
+            // Build graph
+            EdgeWeightedDigraph graph = new EdgeWeightedDigraph(parser);
+            graph.constructGraph(parser, hcData.sea, tagHelper);
+        * */
+
+
+
+
+
+
+
+
 
         if (demoWay == null) {
             System.out.println("Could not find a suitable highway for " + vehicleType);
@@ -89,24 +143,24 @@ public class DijkstraDemo {
             DirectedEdge edge = path.get(i);
             System.out.println(
                     "  " + (i + 1) +
-                    ": " + graph.nodeIdOf(edge.from()) +
-                    " -> " + graph.nodeIdOf(edge.to()) +
-                    " | length=" + edge.getLength()
+                            ": " + graph.nodeIdOf(edge.from()) +
+                            " -> " + graph.nodeIdOf(edge.to()) +
+                            " | length=" + edge.getLength()
             );
         }
     }
 
-    private static OsmWay findDemoWay(Parser parser, VehicleType vehicleType) {
+    private static OsmWay findDemoWay(Parser parser, VehicleType vehicleType, TagHelper tagHelper) {
         List<OsmWay> highways = new ArrayList<>();
 
         for (OsmWay way : parser.getOsmWayMap().values()) {
-            if (!TagtoLife.isHighway(way)) {
+            if (!tagHelper.isHighway(way)) {
                 continue;
             }
             if (way.getNodes().size() < 2) {
                 continue;
             }
-            if (!isAllowedForVehicle(way, vehicleType)) {
+            if (!isAllowedForVehicle(way, vehicleType, tagHelper)) {
                 continue;
             }
             highways.add(way);
@@ -117,11 +171,11 @@ public class DijkstraDemo {
         return highways.isEmpty() ? null : highways.get(0);
     }
 
-    private static boolean isAllowedForVehicle(OsmWay way, VehicleType vehicleType) {
+    private static boolean isAllowedForVehicle(OsmWay way, VehicleType vehicleType, TagHelper tagHelper) {
         return switch (vehicleType) {
-            case CAR -> TagtoLife.isDriveable(way);
-            case BIKE -> TagtoLife.isBikeable(way);
-            case WALK -> TagtoLife.isWalkable(way);
+            case CAR -> tagHelper.isDriveable(way);
+            case BIKE -> tagHelper.isBikeable(way);
+            case WALK -> tagHelper.isWalkable(way);
         };
     }
 
@@ -185,3 +239,5 @@ public class DijkstraDemo {
         }
     }
 }
+
+
