@@ -26,6 +26,10 @@ public class TagHelper {
         JsonNode node = getHighwayNode(way);
         return node != null && node.path("driveable").asBoolean(false);
     }
+    public boolean isOneWay(OsmWay way){
+        JsonNode node= getHighwayNode(way);
+        return node!= null && node.path("oneway").asBoolean(false);
+    }
 
     public boolean isBikeable(OsmWay way) {
         JsonNode node = getHighwayNode(way);

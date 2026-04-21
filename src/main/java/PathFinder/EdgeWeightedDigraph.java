@@ -83,7 +83,7 @@ public class EdgeWeightedDigraph {
     }
 
     /**Constructs and returns a digraph with all possible ways to travel between nodes in the map*/
-    public static EdgeWeightedDigraph constructGraph(Parser input), TagHelper tagHelper {
+    public static EdgeWeightedDigraph constructGraph(Parser input, TagHelper tagHelper) {
         //mapping long id names to array indexes
         int index = 0; //counter
         //These are different from the fields, because they are local values
@@ -111,7 +111,7 @@ public class EdgeWeightedDigraph {
 
         for (OsmWay way : input.getOsmWayMap().values()) {
             //filter relevant ways (OsmWay can ex be a building - not relevant for this graph)
-            if(!TagtoLife.isHighway(way)) {continue;} //skip the way if it is not highway
+            if(!tagHelper.isHighway(way)) {continue;} //skip the way if it is not highway
 
             List<OsmNode> nodes = way.getNodes(); //grab the list of all nodes
 
@@ -120,10 +120,10 @@ public class EdgeWeightedDigraph {
                 OsmNode to = nodes.get(i+1); //set next node as to
 
                 //using TagtoLife
-                boolean driveable = TagtoLife.isDriveable(way);
-                boolean walkable = TagtoLife.isWalkable(way);
-                boolean bikeable = TagtoLife.isBikeable(way);
-                float speedLimit = TagtoLife.getSpeedLimit(way);
+                boolean driveable = tagHelper.isDriveable(way);
+                boolean walkable = tagHelper.isWalkable(way);
+                boolean bikeable = tagHelper.isBikeable(way);
+                float speedLimit = tagHelper.getSpeedLimit(way);
 
                 DirectedEdge e = new DirectedEdge(
                         graph.idToIndex.get(from.getId()),
@@ -135,9 +135,8 @@ public class EdgeWeightedDigraph {
                         walkable
                 );
 
-                Direction direction = TagtoLife.getDirection(way);
 
-                if(direction == Direction.ONEWAY) {
+                if(tagHelper.isOneWay(way)) {
                     graph.addEdge(e); //only add in this specific direction. Can be moved out and do an opposite if to add rev if != ONEWAY
                 } else { //assume it goes both ways (BOTH & UNKNOWN are in this else)
                     graph.addEdge(e);
