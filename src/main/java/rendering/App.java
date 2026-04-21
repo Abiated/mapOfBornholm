@@ -460,6 +460,7 @@ public class App extends DrawingApp {
 
         return k * superAffineZoom;
     }
+    public float getSEALEVEL() {return SEA_LEVEL;}
 
     //Debug midlertidig
     private boolean hasOutOfBoundsNode(OsmWay way) {
