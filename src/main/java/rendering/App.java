@@ -3,10 +3,8 @@ package rendering;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.io.*;
-import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -32,6 +30,7 @@ import models.*;
 import parser.HcParser;
 import parser.Parser;
 
+
 public class App extends DrawingApp {
 
     private static final int WIDTH = getWIDTH();
@@ -51,7 +50,9 @@ public class App extends DrawingApp {
     private Renderer renderer;
     private ScaleBar scale = new ScaleBar();
     private List<OsmWay> coastlines = new ArrayList<>();
-
+    private Set<Integer> submergedVertices = new HashSet<>();
+    private PathFinder.EdgeWeightedDigraph graph;
+    private PathFinder.TagHelper tagHelper;
 
     @Override
     public void start(Stage stage) {
@@ -126,6 +127,11 @@ public class App extends DrawingApp {
 
         //Get sea from HCdata and ways
         sea = HCdata.sea;
+        tagHelper = new PathFinder.TagHelper(jRoot);
+        graph = PathFinder.EdgeWeightedDigraph.constructGraph(OSMdata, tagHelper);
+        submergedVertices = PathFinder.SubmergedVertexFinder.findSubmergedVertices2(
+                graph, OSMdata, HCdata, SEA_LEVEL);
+
         ways = OSMdata.getOsmWayMap();
 
         //Classify wayTypes
@@ -164,6 +170,14 @@ public class App extends DrawingApp {
             if (is == null) System.out.println("File not found");
 
             jRoot = (new ObjectMapper()).readTree(is);
+//Initialiserer taghelper, graph og submerged vertices
+
+            tagHelper = new PathFinder.TagHelper(jRoot);
+            graph = PathFinder.EdgeWeightedDigraph.constructGraph(OSMdata, tagHelper);
+            submergedVertices = PathFinder.SubmergedVertexFinder.findSubmergedVertices2(
+                    graph, OSMdata, HCdata, SEA_LEVEL);
+
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -187,6 +201,8 @@ public class App extends DrawingApp {
             SEA_LEVEL = newValue.floatValue();
             //Updates label for sea level slider, with new sea level
             sliderLabel.setText(String.format("Sea level: %.1f m", SEA_LEVEL));
+            submergedVertices = PathFinder.SubmergedVertexFinder.findSubmergedVertices2(
+                    graph, OSMdata, HCdata, SEA_LEVEL);
             //Calls draw, to redraw the map
             draw();
         });
