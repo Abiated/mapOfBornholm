@@ -38,25 +38,22 @@ public class HcParser {
             float height = 0;
             float minLat = Float.MAX_VALUE;
             float minLon = Float.MAX_VALUE;
-            float maxLat = 0;
-            float maxLon = 0;
-            int count = 0;
-
+            float maxLat = Float.MIN_VALUE;
+            float maxLon = Float.MIN_VALUE;
 
             while ((line = br.readLine()) != null) {
-                // TODO: Implement parsing
 
-                if (line.contains("<bounds")) {
-                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
-                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
-                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
-                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
-                }
-                if (line.contains("<hc ")) {          // ← space added here
+//                if (line.contains("<bounds")) {
+//                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
+//                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
+//                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
+//                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
+//                }
+                if (line.contains("<hc ")) {
                     id = Long.parseLong(getAttribute(line, "id"));
                     height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
-                } else if (line.contains("<coord")) {
+                } else if (line.contains("<coords ")) {
                     float lat = Float.parseFloat(getAttribute(line, "lat"));
                     float lon = Float.parseFloat(getAttribute(line, "lon"));
                     coords.add(new Coordinate(lat, lon));
@@ -109,7 +106,6 @@ public class HcParser {
             System.out.println(e.getMessage());
         }
 
-        // TODO: Return the parsed HeightCurveData object.
         return null;
     }
 

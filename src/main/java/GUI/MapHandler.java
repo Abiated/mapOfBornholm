@@ -1,4 +1,4 @@
-package rendering;
+package GUI;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;

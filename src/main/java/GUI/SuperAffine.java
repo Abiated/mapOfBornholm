@@ -1,4 +1,4 @@
-package rendering;
+package GUI;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
