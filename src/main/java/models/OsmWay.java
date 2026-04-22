@@ -2,15 +2,25 @@ package models;
 
 import spatialDatastructures.RtreeNode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OsmWay extends OsmElement{
+public class OsmWay extends OsmElement implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final List<OsmNode> nodes;
     private final Map<String, String> tags;
     private float[] boundingBox;
+
+    //Exist for deserializable as it needs a no argument constructor, value does not matter
+    private OsmWay() {
+        super(0);
+        this.nodes = new ArrayList<>();
+        this.tags = new HashMap<>();
+    }
 
     public OsmWay(long id, List<OsmNode> nodes, Map<String, String> tags) {
         super(id);

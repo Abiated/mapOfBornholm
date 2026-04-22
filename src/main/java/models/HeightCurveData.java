@@ -2,6 +2,8 @@ package models;
 
 import interfaces.Data;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +12,8 @@ import java.util.List;
  * Intended as the output of the (optional) .hc parser as well as the hard-coded
  * examples
  */
-public class HeightCurveData implements Data {
+public class HeightCurveData implements Data, Serializable {
+    private static final long serialVersionUID = 1L;
 
     public final float minLat;
     public final float minLon;
@@ -35,6 +38,16 @@ public class HeightCurveData implements Data {
         this.maxLon = maxLon;
         this.sea = sea;
         this.curves = List.copyOf(curves);
+    }
+
+    //Exist for deserializable as it needs a no argument constructor, value does not matter
+    private HeightCurveData() {
+        this.minLat = 0;
+        this.minLon = 0;
+        this.maxLat = 0;
+        this.maxLon = 0;
+        this.sea = null;
+        this.curves = new ArrayList<>();
     }
 
     @Override

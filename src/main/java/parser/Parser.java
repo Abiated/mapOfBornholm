@@ -1,9 +1,6 @@
 package parser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,14 +13,15 @@ import models.OsmRelation;
 import models.OsmWay;
 import models.Member;
 
-public class Parser implements IParser, Data {
+public class Parser implements IParser, Data, Serializable {
+    private static final long serialVersionUID = 1L;
 
     //private final String fileName;
     private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
     private final HashMap<Long, OsmRelation> osmRelationMap = new HashMap<>();
-    private final InputStream inputStream;
+    private transient InputStream inputStream;
 
     public Parser(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -90,18 +88,18 @@ public class Parser implements IParser, Data {
                     inWay = true;
 
                     //Puts a key-value pair for ID in the map
-                    if (!osmWayMap.containsKey(ID)) {
-                        osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
-                    }
+//                    if (!osmWayMap.containsKey(ID)) {
+//                        osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
+//                    }
                 }
                 /*––––––––– WAY CONTENT –––––––––*/
                 else if (inWay && line.contains("<nd")) {
                     //Saves <nd to a list
                     long ref = getAttributeLong(line, "ref");
-                    wayNodeRef.add(osmNodeMap.get(ref));
+                    /*if(osmNodeMap.get(ref) != null)*/ wayNodeRef.add(osmNodeMap.get(ref));
 
                     //Updates map
-                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
+//                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
                 } else if (inWay && line.contains("<tag")) {
                     //Puts key-value pair for the "way"
                     String k = getAttribute(line, "k");
@@ -111,11 +109,12 @@ public class Parser implements IParser, Data {
                     if (tags != null) tags.put(k, v);
 
                     //Updates map
-                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
+//                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
                 }
                 /*––––––––– WAY END –––––––––*/
                 else if (inWay && line.contains("</way>")) {
                     //Resets the variables for the next "way"
+                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
                     ID = -1;
                     wayNodeRef = null;
                     tags = null;

@@ -2,9 +2,13 @@ package models;
 
 import com.sun.javafx.scene.shape.LineHelper;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class CoastlineStitcher {
+public class CoastlineStitcher implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private CoastlineStitcher() {}
 
     public static List<OsmWay> stitch(HashMap<Long, OsmWay> OsmWayMap) {
         List<OsmWay> result = new ArrayList<>();

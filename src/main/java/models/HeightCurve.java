@@ -2,10 +2,12 @@ package models;
 
 import java.awt.Color;
 import java.awt.geom.Path2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeightCurve {
+public class HeightCurve implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     long id;
     float height;

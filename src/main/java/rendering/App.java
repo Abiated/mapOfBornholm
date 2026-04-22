@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import Binary.MapData;
 import GUI.BottomControls;
 import GUI.UpperControls;
 import interfaces.Data;
@@ -25,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import models.*;
 import parser.HcParser;
 import parser.Parser;
+
+import static com.sun.javafx.scene.CameraHelper.project;
 
 public class App extends DrawingApp {
 
@@ -59,53 +62,52 @@ public class App extends DrawingApp {
         File chosen = chooser.showOpenDialog(stage);
 
         if (chosen == null) {
+            // No file chosen – loads default
             loadDefaultData();
-        } else if (chosen.getName().endsWith(".hc")) {
+
+        }
+        else if (chosen.getName().endsWith(".zip")) {
+            File cache = new File(chosen.getAbsolutePath().replace(".zip", ".bin"));
+
+            if (cache.exists()) {
+                try (ObjectInput ois = new ObjectInputStream(
+                        new BufferedInputStream(new FileInputStream(cache)))) {
+                    OSMdata = (Parser) ois.readObject();
+                    HCdata = (HeightCurveData) ois.readObject();
+                    System.out.println("Running cache");
+                } catch (Exception e) {
+                    System.err.println("Cache failed, reparsing: " + e.getMessage());
+                    try {
+                        parseZip(chosen);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    saveCache(cache);
+                }
+            } else {
+                try {
+                    parseZip(chosen);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                saveCache(cache);
+            }
+        }
+        else if (chosen.getName().endsWith(".hc")) {
             //Hc file chosen
             HCdata = new HcParser(openFile(chosen)).parse();
             //OSMdata = loadDefaultOsmData();
-        } else if (chosen.getName().endsWith(".osm")) {
+        }
+        else if (chosen.getName().endsWith(".osm")) {
             //Osm file chosen
             OSMdata = new Parser(openFile(chosen));
             OSMdata.parse();
             //HCdata = loadDefaultHeightCurveData();
-        } else if (chosen.getName().endsWith(".zip")) {
-            // Zip file chosen
-            try {
-                ZipInputStream zip = new ZipInputStream(new FileInputStream(chosen));
-                ZipEntry entry;
-                boolean loadedHc = false;
-                boolean loadedOsm = false;
-
-                while ((entry = zip.getNextEntry()) != null) {
-                    if (entry.isDirectory() || entry.getName().contains("__MACOSX") || entry.getName().contains(".DS_Store")) {
-                        zip.closeEntry();
-                        continue;
-                    }
-
-                    byte[] bytes = zip.readAllBytes();
-
-                    if (entry.getName().endsWith(".hc")) {
-                        HCdata = new HcParser(new ByteArrayInputStream(bytes)).parse();
-                        loadedHc = true;
-                    }
-                    if (entry.getName().endsWith(".osm")) {
-                        OSMdata = new Parser(new ByteArrayInputStream(bytes));
-                        OSMdata.parse();
-                        loadedOsm = true;
-                    }
-                    zip.closeEntry();
-                }
-
-                if (!loadedHc || !loadedOsm) {
-                    throw new IllegalArgumentException("Zip file must contain both .hc and .osm files");
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
         }
+//        System.out.println("HCdata: " + (HCdata != null ? "loaded" : "NULL"));
+//        System.out.println("OSMdata: " + (OSMdata != null ? "loaded" : "NULL"));
+//        System.out.println("Bounds: " + OSMdata.getMinLat() + " " + OSMdata.getMinLon()
+//                + " " + OSMdata.getMaxLat() + " " + OSMdata.getMaxLon());
 
         //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
         if (HCdata == null || OSMdata == null) {
@@ -140,6 +142,10 @@ public class App extends DrawingApp {
 //                    waysByType.get(wayType.OTHER).add(way);
 //            }
         }
+//        System.out.println("Ways loaded: " + ways.size());
+//        System.out.println("COASTLINE: " + waysByType.get(wayType.COASTLINE).size());
+//        System.out.println("ROAD: "      + waysByType.get(wayType.ROAD).size());
+//        System.out.println("LANDUSE: "   + waysByType.get(wayType.LANDUSE).size());
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -198,6 +204,52 @@ public class App extends DrawingApp {
     }
 
     //FOR DATA PARSER
+    public void parseZip(File zipFile) throws IOException {
+        try {
+            ZipInputStream zip = new ZipInputStream(new FileInputStream(zipFile));
+            ZipEntry entry;
+            boolean loadedHc = false;
+            boolean loadedOsm = false;
+
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.isDirectory() || entry.getName().contains("__MACOSX") || entry.getName().contains(".DS_Store")) {
+                    zip.closeEntry();
+                    continue;
+                }
+
+                byte[] bytes = zip.readAllBytes();
+
+                if (entry.getName().endsWith(".hc")) {
+                    HCdata = new HcParser(new ByteArrayInputStream(bytes)).parse();
+                    loadedHc = true;
+                }
+                if (entry.getName().endsWith(".osm")) {
+                    OSMdata = new Parser(new ByteArrayInputStream(bytes));
+                    OSMdata.parse();
+                    loadedOsm = true;
+                }
+                zip.closeEntry();
+            }
+
+            if (!loadedHc || !loadedOsm) {
+                throw new IllegalArgumentException("Zip file must contain both .hc and .osm files");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveCache(File cache) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new BufferedOutputStream(new FileOutputStream(cache)))) {
+            oos.writeObject(OSMdata);
+            oos.writeObject(HCdata);
+            System.out.println("Saved cache: " + cache.getName());
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void loadDefaultData() {
         HCdata = loadDefaultHeightCurveData();
         OSMdata = loadDefaultOsmData();
@@ -225,6 +277,13 @@ public class App extends DrawingApp {
 
     //FOR DRAWING AND RENDERING
     public void draw() {
+
+//        System.out.println("=== DRAW CALLED ===");
+//        System.out.println("COASTLINE ways to draw: " + waysByType.get(wayType.COASTLINE).size());
+//        OsmWay first = waysByType.get(wayType.COASTLINE).get(0);
+//        System.out.println("First coastline: nodes=" + first.getNodes().size()
+//                + " firstNode=" + first.getNodes().getFirst().getLat()
+//                + "," + first.getNodes().getFirst().getLon());
 
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
@@ -273,9 +332,7 @@ public class App extends DrawingApp {
         //Draw Layer 4 - heightCurves raw paths
         //gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for (HeightCurve curve : HCdata.curves) {
-            if (curve == sea) {
-                continue;
-            }
+            if (curve == sea) continue;
             gc.setColor(curve.getFillColor(SEA_LEVEL));
             gc.fill(project(curve.getRegionPath(), OSMdata));
         }
@@ -324,6 +381,12 @@ public class App extends DrawingApp {
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
         for (OsmWay way : waysByType.get(type)) {
             if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
+
+            if (type == wayType.COASTLINE) {
+                System.out.println("Drawing coastline way: nodes=" + way.getNodes().size()
+                        + " first=" + way.getNodes().getFirst().getLat()
+                        + "," + way.getNodes().getFirst().getLon());
+            }
 
             Shape projected = project(renderer.getWayPath(way), OSMdata);
             renderer.setWayColor(way, sw);
