@@ -86,7 +86,7 @@
       "zoom": 40
     },
     "residential": {
-      "driveable": false,
+      "driveable": true,
       "walkable": true,
       "cyclable": false,
       "color": "#ffffff",
@@ -107,22 +107,27 @@
       "driveable": false,
       "walkable": true,
       "cyclable": false,
+      "dashed": true,
       "color": "#f2f2f2",
       "width": 3,
       "speed": 5,
-      "zoom": 45
+      "zoom": 50
     },
     "steps": {
       "color": "#d0d0d0",
       "width": 5,
       "drivable": false,
+      "walkable": true,
+      "cyclable": false,
+      "dashed": true,
       "speed": 2,
-      "zoom": 45
+      "zoom": 50
     },
     "cycleway": {
       "driveable": false,
       "walkable": false,
       "cyclable": true,
+      "dashed": true,
       "color": "#cce6ff",
       "width": 3,
       "speed": 20,
@@ -132,6 +137,7 @@
       "driveable": false,
       "walkable": true,
       "cyclable": false,
+      "dashed": true,
       "color": "#d8d8d8",
       "width": 2,
       "speed": 5,
@@ -141,6 +147,7 @@
       "driveable": false,
       "walkable": true,
       "cyclable": false,
+      "dashed": true,
       "color": "#c2b280",
       "width": 3,
       "speed": 10,
@@ -159,9 +166,10 @@
       "driveable": false,
       "walkable": true,
       "cyclable": false,
+      "dashed": true,
       "color": "#d7c7a1",
       "width": 2,
-      "zoom": 45
+      "zoom": 50
     },
     "corridor": {
       "driveable": false,
@@ -170,7 +178,7 @@
       "visible": false,
       "color": "#e0e0e0",
       "width": 2,
-      "zoom": 45
+      "zoom": 50
     }
   },
 

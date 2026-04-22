@@ -282,7 +282,7 @@ public class App extends DrawingApp {
 
         //Midlertidig løsning måske?
         zoom = zoom / 1000; //Making the zoom level manageable for rendering with zoom
-        //System.out.println("Manageable zoom level: " + zoom);
+        System.out.println("Manageable zoom level: " + zoom);
 
         float strokeWidth = (float) (1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
@@ -357,12 +357,6 @@ public class App extends DrawingApp {
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
         for (OsmWay way : waysByType.get(type)) {
             if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
-
-            if (type == wayType.COASTLINE) {
-                System.out.println("Drawing coastline way: nodes=" + way.getNodes().size()
-                        + " first=" + way.getNodes().getFirst().getLat()
-                        + "," + way.getNodes().getFirst().getLon());
-            }
 
             Shape projected = project(renderer.getWayPath(way), projectionSource);
             renderer.setWayColor(way, sw);

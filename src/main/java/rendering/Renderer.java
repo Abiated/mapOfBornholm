@@ -114,7 +114,11 @@ public class Renderer {
 
         if(way.isRoad()) {
             int width = jPath.isMissingNode() ? 1 : jPath.path("width").asInt();
-            gc.setStroke(new BasicStroke(strokeWidth * width));
+            if(jPath.path("dashed").asBoolean()) {
+                gc.setStroke(new BasicStroke(strokeWidth * width,
+                        BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                        10.0f, new float[]{5.0f}, 0.0f));
+            } else gc.setStroke(new BasicStroke(strokeWidth * width));
         } else gc.setStroke(new BasicStroke(strokeWidth));
     }
 
