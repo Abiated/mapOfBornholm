@@ -1,12 +1,13 @@
 package spatialDatastructures;
 
+import interfaces.InsertableInRtree;
 import models.OsmWay;
 
 import java.util.*;
 
 public class BulkLoader {
 
-    public static RtreeNode bulkLoad(List<OsmWay> items, int M) {
+    public static RtreeNode bulkLoad(List<InsertableInRtree> items, int M) {
         List<RtreeNode> level = buildLeafLevel(items, M);
 
         while (level.size() > 1) {
@@ -16,7 +17,7 @@ public class BulkLoader {
         return level.get(0);
     }
 
-    private static List<RtreeNode> buildLeafLevel(List<OsmWay> items, int M) {
+    private static List<RtreeNode> buildLeafLevel(List<InsertableInRtree> items, int M) {
         if (items.size() <= M) {
             return List.of(new RtreeNode(new ArrayList<>(items), true));
         }
@@ -29,12 +30,12 @@ public class BulkLoader {
         int sliceSize = (int) Math.ceil((float) items.size() / S);
 
         for (int i = 0; i < items.size(); i += sliceSize) {
-            List<OsmWay> slice = items.subList(i, Math.min(i + sliceSize, items.size()));
+            List<InsertableInRtree> slice = items.subList(i, Math.min(i + sliceSize, items.size()));
 
             slice.sort(Comparator.comparing(i2 -> i2.getBoundingBox()[2]));
 
             for (int j = 0; j < slice.size(); j += M) {
-                List<OsmWay> group = slice.subList(j, Math.min(j + M, slice.size()));
+                List<InsertableInRtree> group = slice.subList(j, Math.min(j + M, slice.size()));
                 nodes.add(new RtreeNode(new ArrayList<>(group), true));
             }
         }

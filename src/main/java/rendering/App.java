@@ -14,6 +14,7 @@ import java.util.zip.ZipInputStream;
 
 import GUI.ScaleBar;
 import interfaces.Data;
+import interfaces.InsertableInRtree;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
@@ -54,7 +55,9 @@ public class App extends DrawingApp {
     private Renderer renderer;
     private ScaleBar scale = new ScaleBar();
     private EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
+    private Rtree HeightCurveRTree;
     private AffineTransform t;
+    private int CutOffToRtree = 7;
 
 
     @Override
@@ -124,12 +127,12 @@ public class App extends DrawingApp {
         }
 
         //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
-        if (OSMdata == null) {
+        if (HCdata == null || OSMdata == null) {
             throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
         }
 
         //Get sea from HCdata and ways // HEIGHTCURVES FÅR START TIL AT TAGE MARKANT LÆNGERE TID
-        //sea = HCdata.sea;
+        sea = HCdata.sea;
         ways = OSMdata.getOsmWayMap();
         t = getProjectionTransform(OSMdata);
 
@@ -162,14 +165,17 @@ public class App extends DrawingApp {
         }
 
         // CREATE R TREES
-        RtreesByType.put(wayType.COASTLINE,new Rtree(waysByType.get(wayType.COASTLINE),32));
-        RtreesByType.put(wayType.WATER,new Rtree(waysByType.get(wayType.WATER),32));
-        RtreesByType.put(wayType.SEAROUTE,new Rtree(waysByType.get(wayType.SEAROUTE),32));
-        RtreesByType.put(wayType.NATURAL,new Rtree(waysByType.get(wayType.NATURAL),32));
-        RtreesByType.put(wayType.LANDUSE,new Rtree(waysByType.get(wayType.LANDUSE),32));
-        RtreesByType.put(wayType.BUILDING,new Rtree(waysByType.get(wayType.BUILDING),32));
-        RtreesByType.put(wayType.ROAD,new Rtree(waysByType.get(wayType.ROAD),32));
-        RtreesByType.put(wayType.LEISURE,new Rtree(waysByType.get(wayType.LEISURE),32));
+        List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
+        curves.remove(sea);
+        HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves),32);
+        RtreesByType.put(wayType.COASTLINE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)),32));
+        RtreesByType.put(wayType.WATER,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.WATER)),32));
+        RtreesByType.put(wayType.SEAROUTE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.SEAROUTE)),32));
+        RtreesByType.put(wayType.NATURAL,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.NATURAL)),32));
+        RtreesByType.put(wayType.LANDUSE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LANDUSE)),32));
+        RtreesByType.put(wayType.BUILDING,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.BUILDING)),32));
+        RtreesByType.put(wayType.ROAD,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.ROAD)),32));
+        RtreesByType.put(wayType.LEISURE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LEISURE)),32));
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -362,8 +368,8 @@ public class App extends DrawingApp {
         )));
         strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
-        //sea.resetSubmerged();
-        //sea.submerge(SEA_LEVEL);
+        sea.resetSubmerged();
+        sea.submerge(SEA_LEVEL);
 
         //Draws waterways, lakes, ponds and so on
         drawLayer(wayType.WATER, gc, strokeWidth, zoom);
@@ -384,17 +390,20 @@ public class App extends DrawingApp {
             //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
 
         //Draw Layer 4 - heightCurves raw paths
-        /*
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        for (HeightCurve curve : HCdata.curves) {
+        List<InsertableInRtree> curves;
+        if (zoom>CutOffToRtree) {
+            curves = HeightCurveRTree.search(getViewPortBoundingBox(OSMdata));
+        }
+        else curves = new ArrayList<>(HCdata.curves);
+        for (InsertableInRtree element : curves) {
+            HeightCurve curve = (HeightCurve) element;
             if (curve == sea) {
                 continue;
             }
             gc.setColor(curve.getFillColor(SEA_LEVEL));
-            gc.fill(project(curve.getRegionPath(), OSMdata));
+            gc.fill(project(curve.getRegionPath(), t));
         }
-
-         */
 
 //        //Draws waterways, lakes, ponds and so on
 //        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
@@ -454,21 +463,17 @@ public class App extends DrawingApp {
     }
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
-        List<OsmWay> ways;
-        int cutoffToRtrees = 7;
-        if (zoom>cutoffToRtrees) ways = RtreesByType.get(type).search(getRtreeBoundingBox(OSMdata));
-        else ways = waysByType.get(type);
-        for (OsmWay way : ways) {
-            if(type != wayType.WATER && zoom < getZoomLevel(way)) continue;
-
+        List<InsertableInRtree> ways;
+        if (zoom>CutOffToRtree) ways = RtreesByType.get(type).search(getViewPortBoundingBox(OSMdata));
+        else ways = new ArrayList<>(waysByType.get(type));
+        for (InsertableInRtree element : ways) {
+            OsmWay way = (OsmWay) element;
+            if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
             Shape projected = project(renderer.getWayPath(way), t);
             renderer.setWayColor(way, sw);
-            if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
-                    && !(way.isRoad() && !way.hasTag("highway", "rest_area"))
-                    && !way.isSeaRoute())
+            if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId() && !(way.isRoad() && !way.hasTag("highway", "rest_area")) && !way.isSeaRoute())
                 gc.fill(projected);
             else gc.draw(projected);
-
         }
     }
 
@@ -510,7 +515,7 @@ public class App extends DrawingApp {
         }
     }
 
-    private float[] getRtreeBoundingBox(Data d) {
+    private float[] getViewPortBoundingBox(Data d) {
         Point2D topleft = reverseProject(0,0,t);
         Point2D topright = reverseProject(WIDTH,0,t);
         Point2D bottomright = reverseProject(WIDTH,HEIGHT,t);

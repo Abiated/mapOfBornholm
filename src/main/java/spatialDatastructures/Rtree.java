@@ -1,6 +1,9 @@
 package spatialDatastructures;
 
 import java.util.PriorityQueue;
+
+import interfaces.InsertableInRtree;
+import models.HeightCurve;
 import models.OsmElement;
 import models.OsmWay;
 import models.OsmNode;
@@ -11,24 +14,24 @@ import java.util.List;
 public class Rtree {
     RtreeNode root;
 
-    public Rtree(List<OsmWay> items, int M) {
+    public Rtree(List<InsertableInRtree> items, int M) {
         this.root = BulkLoader.bulkLoad(items, M);
     }
 
-    public List<OsmWay> search(float[] query) {
-        List<OsmWay> results = new ArrayList<>();
+    public List<InsertableInRtree> search(float[] query) {
+        List<InsertableInRtree> results = new ArrayList<>();
         searchRecursive(root, query, results);
         return results;
     }
 
-    private void searchRecursive(RtreeNode node, float[] query, List<OsmWay> results) {
+    private void searchRecursive(RtreeNode node, float[] query, List<InsertableInRtree> results) {
         if (!node.intersects(query)) return;
 
         if (node.leaf) {
             for (Object obj : node.children) {
-                OsmWay way = (OsmWay) obj;
-                if (way.intersects(query)) {
-                    results.add(way);
+                InsertableInRtree element = (InsertableInRtree) obj;
+                if (element.intersects(query)) {
+                    results.add(element);
                 }
             }
         } else {
