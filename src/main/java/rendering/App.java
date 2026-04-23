@@ -10,17 +10,11 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import GUI.ScaleBar;
+import GUI.BottomControls;
+import GUI.UpperControls;
 import interfaces.Data;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -36,8 +30,6 @@ public class App extends DrawingApp {
 
     private static final int WIDTH = getWIDTH();
     private static final int HEIGHT = getHEIGHT();
-    private float screenX = 0;
-    private float screenY = 0;
     private static final Color WATER_COLOR = Color.decode("#2b8cbe");
     private static final SuperAffine superAffine = new SuperAffine();
 
@@ -49,8 +41,7 @@ public class App extends DrawingApp {
     private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
     private JsonNode jRoot;
     private Renderer renderer;
-    private ScaleBar scale = new ScaleBar();
-    private List<OsmWay> coastlines = new ArrayList<>();
+    private BottomControls bottomControls;
 
 
     @Override
@@ -61,10 +52,7 @@ public class App extends DrawingApp {
         chooser.setTitle("Open map file (.zip) or HeightCurve files (.hc)"); //Message when selecting files
         //Filters which files can be chosen for the FileChooser
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip")
-//                new FileChooser.ExtensionFilter("HeightCurve files", "*.hc"),
-//                new FileChooser.ExtensionFilter("OpenStreetMap files", "*.osm"),
-//                new FileChooser.ExtensionFilter("Zip files", "*.zip")
+                new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip", "*.bin")
         );
 
         //Chosen file, returns null if none are chosen
@@ -145,10 +133,6 @@ public class App extends DrawingApp {
             else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
             else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
             else if(way.isRoad())
-//                if(hasOutOfBoundsNode(way)) {
-//                    System.out.println("Out of bounds road: " + way.getTags());
-//                    continue; // skip it
-//                }  waysByType.get(wayType.ROAD).add(way); }
                 waysByType.get(wayType.ROAD).add(way);
             else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
 //            else {
@@ -169,42 +153,17 @@ public class App extends DrawingApp {
         }
 
         //---------GUI CODE---------//
-        //TODO: MOVE THIS INTO IT'S OWN CLASSES TO CLEAN THIS UP
-        //Slider to control the SEA_LEVEL
-        //Slider(minValue, maxValue, startValue)
-        Slider slider = new Slider(0, 20, 0);
-        //Shows markings on slider
-        slider.setShowTickMarks(true);
-        slider.setShowTickLabels(true);
-
-        //Label for sea level slider
-        Label sliderLabel = new Label("Sea level: 0.0 m");
-
-        //Listener, that runs when the slider is moved
-        slider.valueProperty().addListener((obs, oldValue, newValue) -> {
-
-            //Updates to new sea level
+        //Creating SeaSlider and ScaleBar with our bottomControls
+        bottomControls = new BottomControls(((observable, oldValue, newValue) -> {
             SEA_LEVEL = newValue.floatValue();
-            //Updates label for sea level slider, with new sea level
-            sliderLabel.setText(String.format("Sea level: %.1f m", SEA_LEVEL));
-            //Calls draw, to redraw the map
             draw();
-        });
+        }));
 
-        //HBox that puts slider and sliderLabel side by side with 12px padding
-        HBox controls = new HBox(12.0, slider, sliderLabel);
-        //Styles controls with 10px padding and alignment
-        controls.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
-
-        HBox scaleBar = new HBox(scale);
-        scaleBar.setStyle("-fx-padding: 20; -fx-alignment: center-right;");
-
-        BorderPane bottom = new BorderPane();
-        bottom.setRight(scaleBar);
-        bottom.setLeft(controls);
+        UpperControls upperControls = new UpperControls();
 
         BorderPane root = new BorderPane();
-        root.setBottom(bottom);
+        root.setBottom(bottomControls);
+        root.setTop(upperControls);
 
         //Stage title is set to fileName
         if (chosen != null) {
@@ -215,11 +174,13 @@ public class App extends DrawingApp {
         }
 
         stage.setResizable(false);
+        //Panning and zooming functions called from class MapHandler
+        MapHandler interactionHandler = new MapHandler(superAffine, this::draw);
 
         //BorderPane mouseEventComponent = new BorderPane();
-        root.setOnMousePressed(this::handleMousePressed);
-        root.setOnMouseDragged(this::handleMouseDragged);
-        root.setOnScroll(this::handleScroll);
+        root.setOnMousePressed(interactionHandler::handleMousePressed);
+        root.setOnMouseDragged(interactionHandler::handleMouseDragged);
+        root.setOnScroll(interactionHandler::handleScroll);
 
         stage.setScene(
                 new Scene(
@@ -234,66 +195,6 @@ public class App extends DrawingApp {
         stage.show();
 
         draw();
-    }
-
-    //PAN ZOOM HELPER METHODS
-
-    /**
-     * Keeps track of the first mouse press in when panning.
-     *
-     * @param event The screen mouse press event that was triggered.
-     */
-    private void handleMousePressed(MouseEvent event) {
-        this.screenX = (float) event.getX();
-        this.screenY = (float) event.getY();
-    }
-
-    /**
-     * Pans by following the mouse.
-     *
-     * @param event The screen mouse drag event that was triggered.
-     */
-    private void handleMouseDragged(MouseEvent event) {
-        float dx = (float) (event.getX() - this.screenX), dy = (float) (event.getY() - this.screenY);
-        superAffine.prependTranslation(dx, dy);
-        handleMousePressed(event);
-
-        draw();
-    }
-
-    /**
-     * Zooms in-and-out around the mouse.
-     *
-     * @param event The screen scroll event that was triggered.
-     */
-    private void handleScroll(ScrollEvent event) {
-        float zoom = (float) (event.getDeltaY() > 0 ? 1.05 : 1 / 1.05);
-        superAffine
-                .prependTranslation((float) -event.getX(), (float) -event.getY())
-                .prependScale(zoom, zoom)
-                .prependTranslation((float) event.getX(), (float) event.getY());
-
-        draw();
-    }
-
-    /**
-     * Re-centers the screen against some world lat/lon bounds.
-     * The function will add the projection transformation of 0.56 to the bounds.
-     *
-     * @param bounds An array in the format {minLon, minLat, maxLon, maxLat}.
-     */
-    public void reCenter(float[] bounds) {
-        float scale = getHEIGHT() / (bounds[3] - bounds[1]);
-        superAffine
-                .reset()
-                .prependTranslation(
-                        (float) (-0.56 * bounds[0]),
-                        bounds[3]
-                )
-                .prependScale(
-                        scale,
-                        scale
-                );
     }
 
     //FOR DATA PARSER
@@ -323,7 +224,7 @@ public class App extends DrawingApp {
     }
 
     //FOR DRAWING AND RENDERING
-    private void draw() {
+    public void draw() {
 
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
@@ -336,7 +237,7 @@ public class App extends DrawingApp {
 
         //Zoom
         float zoom = getZoom(OSMdata);
-        scale.update(zoom);
+        bottomControls.update(zoom);
 
         //Midlertidig løsning måske?
         zoom = zoom/1000; //Making the zoom level manageable for rendering with zoom
@@ -460,6 +361,7 @@ public class App extends DrawingApp {
 
         return k * superAffineZoom;
     }
+    public float getSEALEVEL() {return SEA_LEVEL;}
 
     //Debug midlertidig
     private boolean hasOutOfBoundsNode(OsmWay way) {
