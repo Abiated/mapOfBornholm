@@ -1,13 +1,15 @@
 package spatialDatastructures;
 
 public class PQWrapper {
+    private RtreeNode Node;
+    private float priorityDistance;
 
-    PQWrapper(float lon, float lat, int id){
-
+    PQWrapper(RtreeNode e, float Distance){
+        Node = e;
+        priorityDistance = Distance;
     }
 
-    private void calulateDistance(){
+    public float getPriorityDistance() {return priorityDistance;}
 
-
-    }
+    public RtreeNode getRtreeNode() {return Node;}
 }
