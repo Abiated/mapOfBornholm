@@ -46,21 +46,36 @@ public class HeightCurve implements Serializable {
     }
 
     // Task 3
-    public Color getFillColor(float seaLevel) {
+    public Color getFillColor(float seaLevel, boolean visible) {
         float elevation = height - seaLevel;
-
-        if (elevation < 0) {
-            if (submerged) return Color.decode("#2b8cbe");
-            else return Color.decode("#ffffcc");
-        } else if (elevation < 2.5) {
-            //return Color.decode("#c2e699");
-            return new Color(194, 230, 153, 0);
-        } else if (elevation < 5) {
-            return new Color(120, 198, 121, 0);
-        } else if (elevation < 7.5) {
-            return new Color(49, 163, 84, 0);
+        if (visible) {
+            if (elevation < 0) {
+                if (submerged) return Color.decode("#2b8cbe");
+                else return Color.decode("#ffffcc");
+            } else if (elevation < 2.5) {
+                //return Color.decode("#c2e699");
+                return new Color(194, 230, 153, 255);
+            } else if (elevation < 5) {
+                return new Color(120, 198, 121, 255);
+            } else if (elevation < 7.5) {
+                return new Color(49, 163, 84, 255);
+            } else {
+                return new Color(0, 104, 55, 255);
+            }
         } else {
-            return new Color(0, 104, 55, 0);
+            if (elevation < 0) {
+                if (submerged) return Color.decode("#2b8cbe");
+                else return Color.decode("#ffffcc");
+            } else if (elevation < 2.5) {
+                //return Color.decode("#c2e699");
+                return new Color(194, 230, 153, 0);
+            } else if (elevation < 5) {
+                return new Color(120, 198, 121, 0);
+            } else if (elevation < 7.5) {
+                return new Color(49, 163, 84, 0);
+            } else {
+                return new Color(0, 104, 55, 0);
+            }
         }
     }
 

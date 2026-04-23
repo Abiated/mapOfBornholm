@@ -8,8 +8,8 @@ import java.util.List;
 public class BinaryCreater {
 
     public static void main(String[] args) {
-        String inputFile = "tunoe.osm";
-        String outputFile = "tunoe.bin";
+        String inputFile = "/hc-osm-files/tuna/tuna.zip";
+        String outputFile = "/hc-osm-files/Default/default(tuna).zip";
 
         try {
             convertOsmToBinary(inputFile, outputFile);
@@ -25,9 +25,9 @@ public class BinaryCreater {
 
         long nodeCount = countNodes(osmFile, factory);
 
-        InputStream resourceStream = BinaryCreater.class.getResourceAsStream("/data/" + osmFile);
+        InputStream resourceStream = BinaryCreater.class.getResourceAsStream(osmFile);
         if (resourceStream == null) {
-            throw new FileNotFoundException("Resource not found: /data/" + osmFile);
+            throw new FileNotFoundException("Resource not found: " + osmFile);
         }
 
         try (
@@ -107,9 +107,9 @@ public class BinaryCreater {
     private static long countNodes(String osmFile, XMLInputFactory factory) throws Exception {
         long count = 0;
 
-        InputStream resourceStream = BinaryCreater.class.getResourceAsStream("/data/" + osmFile);
+        InputStream resourceStream = BinaryCreater.class.getResourceAsStream(osmFile);
         if (resourceStream == null) {
-            throw new FileNotFoundException("Resource not found: /data/" + osmFile);
+            throw new FileNotFoundException("Resource not found: " + osmFile);
         }
 
         try (InputStream inputStream = new BufferedInputStream(resourceStream)) {
@@ -134,7 +134,7 @@ public class BinaryCreater {
         long count = 0;
         InputStream resourceStream = BinaryCreater.class.getResourceAsStream("/data/" + osmFile);
         if (resourceStream == null) {
-            throw new FileNotFoundException("Resource not found: /data/" + osmFile);
+            throw new FileNotFoundException("Resource not found: " + osmFile);
         }
 
         try (InputStream inputStream = new BufferedInputStream(resourceStream)) {

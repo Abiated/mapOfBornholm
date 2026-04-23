@@ -52,7 +52,7 @@ public class App extends DrawingApp {
 
         //---------DATA PARSING---------//
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open map file (.zip) or HeightCurve files (.hc)"); //Message when selecting files
+        chooser.setTitle("Open map file (.zip), HeightCurve files (.hc) or OpenStreetMap files (.osm)"); //Message when selecting files
         //Filters which files can be chosen for the FileChooser
         chooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All map files", "*.hc", "*.osm", "*.zip", "*.bin")
@@ -64,75 +64,57 @@ public class App extends DrawingApp {
         if (chosen == null) {
             // No file chosen – loads default
             loadDefaultData();
-
         } else if (chosen.getName().endsWith(".zip")) {
-            File cache = new File(chosen.getAbsolutePath().replace(".zip", ".bin"));
-
-            if (cache.exists()) {
-                try (ObjectInput ois = new ObjectInputStream(
-                        new BufferedInputStream(new FileInputStream(cache)))) {
-                    OSMdata = (Parser) ois.readObject();
-                    HCdata = (HeightCurveData) ois.readObject();
-                    System.out.println("Running cache");
-                } catch (Exception e) {
-                    System.err.println("Cache failed, reparsing: " + e.getMessage());
-                    try {
-                        parseZip(chosen);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    saveCache(cache);
-                }
-            } else {
-                try {
-                    parseZip(chosen);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                saveCache(cache);
-            }
+            //Zip file chosen
+            loadCache(chosen, "zip");
         } else if (chosen.getName().endsWith(".hc")) {
             //Hc file chosen
-            HCdata = new HcParser(openFile(chosen)).parse();
+            loadCache(chosen, "hc");
         } else if (chosen.getName().endsWith(".osm")) {
             //Osm file chosen
-            OSMdata = new Parser(openFile(chosen));
-            OSMdata.parse();
+            loadCache(chosen, "osm");
+        } else if (chosen.getName().endsWith(".bin")) {
+            if (chosen.getName().endsWith("zip.bin")) loadCache(chosen, "zip.bin");
+            if (chosen.getName().endsWith("osm.bin")) loadCache(chosen, "osm.bin");
+            if (chosen.getName().endsWith("hc.bin")) loadCache(chosen, "hc.bin");
+
         }
 
         //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
-        if (HCdata == null || OSMdata == null) {
-            throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
-        }
+//        if (HCdata == null || OSMdata == null) {
+//            throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
+//        }
 
         //Get sea from HCdata and ways
-        if(HCdata != null) sea = HCdata.sea;
-        if(OSMdata != null) ways = OSMdata.getOsmWayMap();
+        if (HCdata != null) sea = HCdata.sea;
+        if (OSMdata != null) ways = OSMdata.getOsmWayMap();
 
         //Classify wayTypes
-        for (wayType type : wayType.values()) {
-            if (type == wayType.COASTLINE) continue;
-            waysByType.put(type, new ArrayList<>());
-        }
+        if (OSMdata != null){
+            for (wayType type : wayType.values()) {
+                if (type == wayType.COASTLINE) continue;
+                waysByType.put(type, new ArrayList<>());
+            }
 
-        waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
+            waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
-        for (OsmWay way : ways.values()) {
-            if (way.hasTag("location", "underground")) continue;
-            else if (way.isWater()) waysByType.get(wayType.WATER).add(way);
-            else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
-            else if (way.hasTag("natural", "coastline")) continue;
-            else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
-            else if (way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
-            else if (way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if (way.isRoad())
-                waysByType.get(wayType.ROAD).add(way);
-            else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
-//            else {
-//                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
-//                    waysByType.get(wayType.OTHER).add(way);
-//            }
-        }
+            for (OsmWay way : ways.values()) {
+                if (way.hasTag("location", "underground")) continue;
+                else if (way.isWater()) waysByType.get(wayType.WATER).add(way);
+                else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
+                else if (way.hasTag("natural", "coastline")) continue;
+                else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
+                else if (way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
+                else if (way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
+                else if (way.isRoad())
+                    waysByType.get(wayType.ROAD).add(way);
+                else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
+    //            else {
+    //                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
+    //                    waysByType.get(wayType.OTHER).add(way);
+    //            }
+            }
+    }
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -191,41 +173,6 @@ public class App extends DrawingApp {
     }
 
     //FOR DATA PARSER
-    public void parseZip(File zipFile) throws IOException {
-        try {
-            ZipInputStream zip = new ZipInputStream(new FileInputStream(zipFile));
-            ZipEntry entry;
-            boolean loadedHc = false;
-            boolean loadedOsm = false;
-
-            while ((entry = zip.getNextEntry()) != null) {
-                if (entry.isDirectory() || entry.getName().contains("__MACOSX") || entry.getName().contains(".DS_Store")) {
-                    zip.closeEntry();
-                    continue;
-                }
-
-                byte[] bytes = zip.readAllBytes();
-
-                if (entry.getName().endsWith(".hc")) {
-                    HCdata = new HcParser(new ByteArrayInputStream(bytes)).parse();
-                    loadedHc = true;
-                }
-                if (entry.getName().endsWith(".osm")) {
-                    OSMdata = new Parser(new ByteArrayInputStream(bytes));
-                    OSMdata.parse();
-                    loadedOsm = true;
-                }
-                zip.closeEntry();
-            }
-
-            if (!loadedHc || !loadedOsm) {
-                throw new IllegalArgumentException("Zip file must contain both .hc and .osm files");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private void saveCache(File cache) {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new BufferedOutputStream(new FileOutputStream(cache)))) {
@@ -234,6 +181,82 @@ public class App extends DrawingApp {
             System.out.println("Saved cache: " + cache.getName());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void loadCache(File chosen, String type) {
+        //Checks file type, of not .bin it searches for binary counterpart
+        File cache = null;
+        switch (type) {
+            case "zip":
+                cache = new File(chosen.getAbsolutePath().replace(".zip", "zip.bin"));
+                break;
+            case "osm":
+                cache = new File(chosen.getAbsolutePath().replace(".osm", "osm.bin"));
+                break;
+            case "hc":
+                cache = new File(chosen.getAbsolutePath().replace(".hc", "hc.bin"));
+                break;
+            default:
+                cache = new File(chosen.getAbsolutePath());
+        }
+
+        if(cache == null) return;
+
+        if (cache.exists()) {
+            try (ObjectInput ois = new ObjectInputStream(
+                    new BufferedInputStream(new FileInputStream(cache)))) {
+                    OSMdata = (Parser) ois.readObject();
+                    HCdata = (HeightCurveData) ois.readObject();
+                //System.out.println("Running cache");
+            } catch (Exception e) {
+                System.err.println("Cache failed, reparsing: " + e.getMessage());
+            }
+        } else {
+
+            //Checks which file to load of no binary file exist
+            if (type.contains("bin")) throw new IllegalArgumentException("No such file exist");
+            if(type.equals("zip")) {
+               try {
+                   ZipInputStream zip = new ZipInputStream(new FileInputStream(chosen));
+                   ZipEntry entry;
+                   boolean loadedHc = false;
+                   boolean loadedOsm = false;
+
+                   while ((entry = zip.getNextEntry()) != null) {
+                       if (entry.isDirectory() || entry.getName().contains("__MACOSX") || entry.getName().contains(".DS_Store")) {
+                           zip.closeEntry();
+                           continue;
+                       }
+
+                       byte[] bytes = zip.readAllBytes();
+
+                       if (entry.getName().endsWith(".hc")) {
+                           HCdata = new HcParser(new ByteArrayInputStream(bytes)).parse();
+                           loadedHc = true;
+                       }
+                       if (entry.getName().endsWith(".osm")) {
+                           OSMdata = new Parser(new ByteArrayInputStream(bytes));
+                           OSMdata.parse();
+                           loadedOsm = true;
+                       }
+                       zip.closeEntry();
+                   }
+
+                   if (!loadedHc || !loadedOsm) {
+                       throw new IllegalArgumentException("Zip file must contain both .hc and .osm files");
+                   }
+               } catch (IOException e) {
+                   throw new RuntimeException(e);
+               }
+           } else if(type.equals("osm")) {
+               OSMdata = new Parser(openFile(chosen));
+               OSMdata.parse();
+           } else if (type.equals("hc")) {
+               HCdata = new HcParser(openFile(chosen)).parse();
+           }
+
+            saveCache(cache);
         }
     }
 
@@ -275,7 +298,6 @@ public class App extends DrawingApp {
         gc.fillRect(0, 0, WIDTH, HEIGHT);
 
         //Zoom
-        // TODO:
         projectionSource = (OSMdata != null) ? OSMdata : HCdata;
         float zoom = getZoom(projectionSource);
         bottomControls.update(zoom);
@@ -289,8 +311,10 @@ public class App extends DrawingApp {
         )));
         strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
-        sea.resetSubmerged();
-        sea.submerge(SEA_LEVEL);
+        if(HCdata != null) {
+            sea.resetSubmerged();
+            sea.submerge(SEA_LEVEL);
+        }
 
         //Is only drawn when osm data is parsed
         if (OSMdata != null) {
@@ -329,7 +353,8 @@ public class App extends DrawingApp {
 
     private void drawHeightCurvesRecursive(List<HeightCurve> curves, Graphics2D gc, Data projectionSource) {
         for (HeightCurve curve : curves) {
-            gc.setColor(curve.getFillColor(SEA_LEVEL));
+            if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
+            else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
             gc.fill(project(curve.getRegionPath(), projectionSource));
             drawHeightCurvesRecursive(curve.getChildren(), gc, projectionSource);
         }
