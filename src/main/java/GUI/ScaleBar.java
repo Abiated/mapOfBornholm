@@ -14,6 +14,7 @@ public class ScaleBar extends Canvas {
 
     public void update(float zoom) {
         GraphicsContext scale = this.getGraphicsContext2D();
+        //Removes previous drawn scaleBar
         scale.clearRect(0, 0, getWidth(), height);
 
         float degreePrPixel = 1.0f/zoom;     //Amount of degrees of longitude per screen pixel
