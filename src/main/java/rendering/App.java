@@ -260,6 +260,7 @@ public class App extends DrawingApp {
         }
     }
 
+    //TODO: CHANGE DEFAULT DATA TO RUN BINARY
     private void loadDefaultData() {
         HCdata = loadDefaultHeightCurveData();
         OSMdata = loadDefaultOsmData();
