@@ -355,62 +355,45 @@ public class App extends DrawingApp {
             sea.submerge(SEA_LEVEL);
         }
 
-        //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
-        //Draws waterways, lakes, ponds and so on
-        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
-        //Draws ferry routes and other sea route
-        drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
-        //Draws polygon for coastline
-        drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
-        //Draws natural ways
-        //if (zoom >= getZoomLevelByType(wayType.NATURAL))
+        if(OSMdata != null) {
+            //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
+            //Draws polygon for coastline
+            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
+            //Draws waterways, lakes, ponds and so on
+            drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+            //Draws ferry routes and other sea route
+            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
+            //Draws natural ways
             drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
-        //Draws otherwise non categorized ways
-        //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
-        //Draws landuse ways
-        //if (zoom >= getZoomLevelByType(wayType.LANDUSE))
+            //Draws landuse ways
             drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
-        //Draws leisure ways, needs some fixing
-        //if (zoom >= getZoomLevelByType(wayType.LEISURE))
-            //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
-
-        //TODO: LEFTEROVERS
-
-
-        //Draw Layer 4 - heightCurves raw paths
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        List<InsertableInRtree> curves;
-        if (zoom>CutOffToRtree) {
-            curves = HeightCurveRTree.search(getViewPortBoundingBox(OSMdata));
-        }
-        else curves = new ArrayList<>(HCdata.curves);
-        for (InsertableInRtree element : curves) {
-            HeightCurve curve = (HeightCurve) element;
-            if (curve == sea) {
-                continue;
-            }
-            if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
-            else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-            gc.fill(project(curve.getRegionPath(), t));
-        }
-
-//        //Draws waterways, lakes, ponds and so on
-//        drawLayer(wayType.WATER, gc, strokeWidth, zoom);
-        //Draws roads
-        //if (zoom >= getZoomLevelByType(wayType.ROAD))
+            //Draws highways
             drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
-        //Draws buildings
-        //if (zoom >= getZoomLevelByType(wayType.BUILDING))
+            //Draws buildings
             drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
-        //Draw Layer 7
-//        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        gc.setColor(new Color(0, 0, 0, 60)); //Semi transparent
-//        gc.setStroke(new BasicStroke(strokeWidth));
-//        for (HeightCurve curve : HCdata.curves) {
-//            if (curve == sea) continue;
-//            gc.draw(project(curve.getBoundaryPath(), OSMdata));
-//        }
+            //TODO: LEFTEROVERS
+            //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
+            //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
+        }
+
+
+        //HeightCurves raw paths
+        if(HCdata != null) {
+            List<InsertableInRtree> curves;
+            if (zoom > CutOffToRtree) {
+                curves = HeightCurveRTree.search(getViewPortBoundingBox(OSMdata));
+            } else curves = new ArrayList<>(HCdata.curves);
+            for (InsertableInRtree element : curves) {
+                HeightCurve curve = (HeightCurve) element;
+                if (curve == sea) {
+                    continue;
+                }
+                if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
+                else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
+                gc.fill(project(curve.getRegionPath(), t));
+            }
+        }
 
         gc.dispose();
         render();
