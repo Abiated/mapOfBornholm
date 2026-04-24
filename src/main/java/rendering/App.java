@@ -1,54 +1,33 @@
 package rendering;
 
+import GUI.BottomControls;
+import GUI.ScaleBar;
+import GUI.UpperControls;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import interfaces.Data;
+import interfaces.InsertableInRtree;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import models.*;
+import parser.HcParser;
+import parser.Parser;
+import spatialDatastructures.Rtree;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.*;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.io.*;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import GUI.ScaleBar;
-import
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import GUI.BottomControls;
-import GUI.UpperControls;
-import interfaces.Data;
-import interfaces.InsertableInRtree;
-import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import models.*;
-import parser.HcParser;
-import parser.Parser;
-import spatialDatastructures.Rtree;
 
 public class App extends DrawingApp {
 
@@ -516,26 +495,27 @@ public class App extends DrawingApp {
         float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
         float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
         float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-    private static Point2D reverseProject(float sx, float sy, AffineTransform t) {
-        AffineTransform combined = new AffineTransform(superAffine);
-        combined.concatenate(t);
-
         float superAffineZoom = (float) Math.sqrt(superAffine.getDeterminant());
-        // taget fra chatGPT
-        try {
-            AffineTransform inverse = combined.createInverse();
-
         return k * superAffineZoom;
     }
-    public float getSEALEVEL() {return SEA_LEVEL;}
 
-            inverse.transform(screenPt, worldPt);
+    private static Point2D reverseProject(float sx, float sy, AffineTransform t){
+            AffineTransform combined = new AffineTransform(superAffine);
+            combined.concatenate(t);
 
-            return worldPt; // (lon, lat)
-        } catch (NoninvertibleTransformException e) {
-            throw new RuntimeException("Transform not invertible", e);
+            // taget fra chatGPT
+            try {
+                AffineTransform inverse = combined.createInverse();
+                Point2D screenPt = new Point2D.Double(sx,sy);
+                Point2D worldPt = new Point2D.Double();
+                inverse.transform(screenPt, worldPt);
+
+                return worldPt; // (lon, lat)
+            } catch (NoninvertibleTransformException e) {
+                throw new RuntimeException("Transform not invertible", e);
+            }
         }
-    }
+    public float getSEALEVEL() {return SEA_LEVEL;}
 
     private float[] getViewPortBoundingBox(Data d) {
         Point2D topleft = reverseProject(0,0,t);
@@ -549,16 +529,6 @@ public class App extends DrawingApp {
         float maxY = (float) Math.max(bottomleft.getY(),Math.max(bottomright.getY(),Math.max(topleft.getY(),topright.getY())));
 
         return new float[] {minX,maxX,minY,maxY};
-    }
-
-    private static float getZoom(Data d) {
-        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
-        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
-        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-
-        float superAffineZoom = (float) Math.sqrt(superAffine.getDeterminant());
-
-        return k * superAffineZoom;
     }
 
     //Debug midlertidig
