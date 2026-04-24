@@ -355,27 +355,30 @@ public class App extends DrawingApp {
             sea.submerge(SEA_LEVEL);
         }
 
-        if(OSMdata != null) {
+        if (OSMdata != null) {
             //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
-            //Draws polygon for coastline
-            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
             //Draws waterways, lakes, ponds and so on
             drawLayer(wayType.WATER, gc, strokeWidth, zoom);
             //Draws ferry routes and other sea route
             drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
+            //Draws polygon for coastline
+            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
             //Draws natural ways
             drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
             //Draws landuse ways
             drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
-            //Draws highways
+            //Draws roads
             drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
             //Draws buildings
             drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
             //TODO: LEFTEROVERS
-            //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
+            //Draws leisure ways, needs some fixing
             //drawLayer(wayType.LEISURE, gc, strokeWidth, zoom);
+            //Draws otherwise non categorized ways
+            //drawLayer(wayType.OTHER, gc, strokeWidth, zoom);
         }
+
 
 
         //HeightCurves raw paths
