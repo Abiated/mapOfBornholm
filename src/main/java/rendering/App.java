@@ -544,11 +544,11 @@ public class App extends DrawingApp {
         else i = 2;
         if (zoom>CutOffToRtree) {
             if (RtreesByType.get(type) == null) return;
-            ways = RtreesByType.get(type)[2].search(getViewPortBoundingBox(OSMdata));
+            ways = RtreesByType.get(type)[i].search(getViewPortBoundingBox(OSMdata));
         }
         else {
             if (waysByType.get(type)[2].isEmpty()) return;
-            ways = new ArrayList<>(waysByType.get(type)[2]);
+            ways = new ArrayList<>(waysByType.get(type)[i]);
         }
         int x = 0;
         for (InsertableInRtree element : ways) {
