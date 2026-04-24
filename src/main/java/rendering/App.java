@@ -26,6 +26,7 @@ import models.*;
 import parser.HcParser;
 import parser.Parser;
 
+
 public class App extends DrawingApp {
 
     private static final int WIDTH = getWIDTH();
@@ -42,7 +43,10 @@ public class App extends DrawingApp {
     private JsonNode jRoot;
     private Renderer renderer;
     private BottomControls bottomControls;
-
+    private PathFinder.EdgeWeightedDigraph graph;
+    private PathFinder.TagHelper tagHelper;
+    private java.util.Set<Integer> submergedVertices = new java.util.HashSet<>();
+    private List<PathFinder.DirectedEdge> currentRoute = new ArrayList<>();
 
     @Override
     public void start(Stage stage) {
@@ -148,6 +152,11 @@ public class App extends DrawingApp {
             if (is == null) System.out.println("File not found");
 
             jRoot = (new ObjectMapper()).readTree(is);
+            tagHelper = new PathFinder.TagHelper(jRoot);
+            graph = PathFinder.EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
+            submergedVertices = PathFinder.SubmergedVertexFinder.findSubmergedVertices2(
+                    graph, OSMdata, HCdata, SEA_LEVEL);
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -156,6 +165,7 @@ public class App extends DrawingApp {
         //Creating SeaSlider and ScaleBar with our bottomControls
         bottomControls = new BottomControls(((observable, oldValue, newValue) -> {
             SEA_LEVEL = newValue.floatValue();
+            submergedVertices = PathFinder.SubmergedVertexFinder.findSubmergedVertices2(graph, OSMdata, HCdata, SEA_LEVEL);
             draw();
         }));
 
@@ -175,12 +185,21 @@ public class App extends DrawingApp {
 
         stage.setResizable(false);
         //Panning and zooming functions called from class MapHandler
-        MapHandler interactionHandler = new MapHandler(superAffine, this::draw);
+        MapHandler interactionHandler = new MapHandler(
+                superAffine,
+                this::draw,
+                graph,
+                () -> submergedVertices,
+        PathFinder.VehicleType.CAR,
+        OSMdata,
+        route -> {currentRoute = route; draw();}
+        );
 
         //BorderPane mouseEventComponent = new BorderPane();
         root.setOnMousePressed(interactionHandler::handleMousePressed);
-        root.setOnMouseDragged(interactionHandler::handleMouseDragged);
+        /*root.setOnMouseDragged(interactionHandler::handleMouseDragged); */
         root.setOnScroll(interactionHandler::handleScroll);
+        root.setOnMouseClicked(interactionHandler::handleMouseClicked);
 
         stage.setScene(
                 new Scene(

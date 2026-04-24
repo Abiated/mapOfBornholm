@@ -6,6 +6,7 @@ package PathFinder;
 //import dk.itu.renderer.osm.OsmNode;
 //import dk.itu.renderer.osm.OsmWay;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.OsmNode;
 import models.OsmWay;
 import parser.Parser;
@@ -31,6 +32,9 @@ public class EdgeWeightedDigraph {
     //They are here bacuse we need them AFTER the graph is built
     protected Map<Long, Integer> idToIndex;
     protected Map<Integer, Long> indexToId;
+    private TagHelper tagHelper;
+//Lats and Lons are needed for the click function to work
+
 
     public EdgeWeightedDigraph(int V) {
         this.V = V;
@@ -43,6 +47,7 @@ public class EdgeWeightedDigraph {
 
         idToIndex = new HashMap<>();
         indexToId = new HashMap<>();
+
     }
 
     /** Adds a DirectedEdge to the weighted digraph used in dijkstra.
@@ -83,13 +88,14 @@ public class EdgeWeightedDigraph {
     }
 
     /**Constructs and returns a digraph with all possible ways to travel between nodes in the map*/
-    public static EdgeWeightedDigraph constructGraph(Parser input, TagHelper tagHelper) {
+    public static EdgeWeightedDigraph constructGraph(Parser input, JsonNode jRoot) {
         //mapping long id names to array indexes
         int index = 0; //counter
         //These are different from the fields, because they are local values
         //We use them to calculate the num of V before vi instantiate EdgeWeightedDigraph
         Map<Long, Integer> idToIndex = new HashMap<>();
         Map<Integer, Long> indexToId = new HashMap<>();
+        TagHelper tagHelper= new TagHelper(jRoot);
 
         for (OsmWay way : input.getOsmWayMap().values()) { //in way map
             if(!tagHelper.isHighway(way)) {continue;} //skip if OsmWay is not marked highway
@@ -108,6 +114,7 @@ public class EdgeWeightedDigraph {
         //fill fields with the local values
         graph.idToIndex.putAll(idToIndex);
         graph.indexToId.putAll(indexToId);
+        graph.tagHelper=tagHelper;
 
         for (OsmWay way : input.getOsmWayMap().values()) {
             //filter relevant ways (OsmWay can ex be a building - not relevant for this graph)
@@ -182,5 +189,6 @@ public class EdgeWeightedDigraph {
     public int edgeCount() {
         return E;
     }
+    //getters for lats and lon
 }
 
