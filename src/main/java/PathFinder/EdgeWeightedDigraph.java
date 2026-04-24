@@ -7,9 +7,11 @@ package PathFinder;
 //import dk.itu.renderer.osm.OsmWay;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import interfaces.InsertableInRtree;
 import models.OsmNode;
 import models.OsmWay;
 import parser.Parser;
+import spatialDatastructures.Rtree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class EdgeWeightedDigraph {
     protected int V;
     private int E;
     private List<DirectedEdge>[] adj; //array in adjancency list to answer "What edges go out from vertex v"
-
+    private Rtree rtree;
     //HashMaps to go from id to index *AND* back again
     //They are here bacuse we need them AFTER the graph is built
     protected Map<Long, Integer> idToIndex;
@@ -164,6 +166,13 @@ public class EdgeWeightedDigraph {
             }
 
         }
+        List<InsertableInRtree> highwayWays = new ArrayList<>();
+        for (OsmWay way : input.getOsmWayMap().values()) {
+            if (tagHelper.isHighway(way)) {
+                highwayWays.add(way);
+            }
+        }
+        graph.rtree = new Rtree(highwayWays, 16);
         return graph;
     }
 
@@ -175,6 +184,16 @@ public class EdgeWeightedDigraph {
         if (index == null) {
             throw new IllegalArgumentException("Unknown node id: " + nodeId);
         }
+        return index;
+    }
+
+    //to use the R-tree we are using nearest vertex
+    public int nearestVertex(double lon, double lat) {
+        OsmNode nearest = rtree.getNearestNeighbor((float) lat, (float) lon);
+        if (nearest == null) return 0;
+
+        Integer index = idToIndex.get(nearest.getId());
+        if (index == null) return 0;
         return index;
     }
 

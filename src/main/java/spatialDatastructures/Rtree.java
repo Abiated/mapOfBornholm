@@ -1,5 +1,6 @@
 package spatialDatastructures;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import interfaces.InsertableInRtree;
@@ -41,10 +42,11 @@ public class Rtree {
         }
     }
 
-    private OsmNode getNearestNeighbor(float lat, float lon, RtreeNode root) {
+    public OsmNode getNearestNeighbor(float lat, float lon) {
 
-        PriorityQueue<PQWrapper> Search = new PriorityQueue<>();
-
+        PriorityQueue<PQWrapper> Search = new PriorityQueue<>(
+        Comparator.comparingDouble(PQWrapper::getPriorityDistance)
+    );
         Search.add(new PQWrapper(root,rTreeCalculateDistence(root,lat,lon)));
 
         OsmNode shortestNode = null;
