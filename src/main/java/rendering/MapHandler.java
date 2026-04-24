@@ -64,7 +64,7 @@ public class MapHandler {
             waitingForTarget = false;
 
             //If were using nearest vertex? Need to add lats and lons in edgeweightedDigraph
-            int from   = graph.nearestVertex(startLon, startLat);
+            /*int from   = graph.nearestVertex(startLon, startLat);
             int target = graph.nearestVertex(lonLat[0], lonLat[1]);
 
             PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(
@@ -74,7 +74,7 @@ public class MapHandler {
                 onRouteFound.accept(dijkstra.pathTo(target));
             } else {
                 System.out.println("No path found.");
-            }
+            }*/
         }
     }
 
