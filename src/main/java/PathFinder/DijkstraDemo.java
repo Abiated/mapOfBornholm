@@ -59,7 +59,7 @@ try{
 
     TagHelper tagHelper = new TagHelper(jRoot);
         OsmWay demoWay = findDemoWay(parser, vehicleType, tagHelper);
-    EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser, tagHelper);
+    EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser, jRoot);
 
     HeightCurveData hcData = hcParser.parse();
 
