@@ -148,6 +148,10 @@ public class App extends DrawingApp {
         // CREATE R TREES
         List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
         curves.remove(sea);
+        curves.removeIf(c -> c.getCoords() == null
+                                    || c.getCoords().isEmpty()
+                                    || c.getBoundingBox() == null);
+
         HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves),32);
 
         RtreesByType.put(wayType.COASTLINE,
@@ -416,7 +420,7 @@ public class App extends DrawingApp {
         for (HeightCurve curve : curves) {
             if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
             else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-            gc.fill(project(curve.getRegionPath(), projectionSource));
+            //gc.fill(project(curve.getRegionPath(), projectionSource));
             drawHeightCurvesRecursive(curve.getChildren(), gc, projectionSource);
         }
     }
