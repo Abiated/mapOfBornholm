@@ -1,12 +1,14 @@
 package models;
 
+import interfaces.InsertableInRtree;
+
 import java.awt.Color;
 import java.awt.geom.Path2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeightCurve implements Serializable {
+public class HeightCurve implements Serializable, InsertableInRtree {
     private static final long serialVersionUID = 1L;
 
     long id;
@@ -14,6 +16,7 @@ public class HeightCurve implements Serializable {
     List<Coordinate> coords;
     List<HeightCurve> children;
     boolean submerged;
+    float[] boundingBox;
 
     // Task 1
     public Path2D getBoundaryPath() {
@@ -99,6 +102,15 @@ public class HeightCurve implements Serializable {
         }
     }
 
+    public float[] getBoundingBox() { return boundingBox; }
+
+    public boolean intersects(float[] otherBbox) {
+        return !(boundingBox[1] < otherBbox[0] ||
+                boundingBox[0] > otherBbox[1] ||
+                boundingBox[3] < otherBbox[2] ||
+                boundingBox[2] > otherBbox[3]);
+    }
+
     // ------------------------------------
     // Don't edit anything below here
     // ------------------------------------
@@ -114,6 +126,28 @@ public class HeightCurve implements Serializable {
         this.id = id;
         this.height = height;
         this.coords = coords != null ? coords : new ArrayList<>();
+        if (!this.coords.isEmpty()) {
+            float minLon = Float.MAX_VALUE;
+            float maxLon = 0;
+            float minLat = Float.MAX_VALUE;
+            float maxLat = 0;
+
+            for (Coordinate coord : this.coords) {
+                if (coord.getLat() > maxLat){
+                    maxLat = coord.getLat();
+                }
+                if (coord.getLat() < minLat){
+                    minLat = coord.getLat();
+                }
+                if (coord.getLon() > maxLon){
+                    maxLon = coord.getLon();
+                }
+                if (coord.getLon() < minLon){
+                    minLon = coord.getLon();
+                }
+            }
+            boundingBox = new float[] {minLon,maxLon,minLat,maxLat};
+        }
         this.children = children != null ? children : new ArrayList<>();
         this.submerged = false;
     }

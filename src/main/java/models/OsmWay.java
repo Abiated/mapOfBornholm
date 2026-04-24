@@ -1,5 +1,6 @@
 package models;
 
+import interfaces.InsertableInRtree;
 import spatialDatastructures.RtreeNode;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OsmWay extends OsmElement implements Serializable {
+public class OsmWay extends OsmElement implements Serializable, InsertableInRtree {
     private static final long serialVersionUID = 1L;
 
     private final List<OsmNode> nodes;
