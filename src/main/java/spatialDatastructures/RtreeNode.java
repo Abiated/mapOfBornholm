@@ -1,4 +1,5 @@
 package spatialDatastructures;
+import interfaces.InsertableInRtree;
 import models.OsmWay;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class RtreeNode {
 
     private float[] getBBox(Object obj) {
         if (obj instanceof RtreeNode) return ((RtreeNode) obj).bbox;
-        return ((OsmWay) obj).getBoundingBox();
+        return ((InsertableInRtree) obj).getBoundingBox();
     }
 
     boolean intersects(float[] otherBbox) {

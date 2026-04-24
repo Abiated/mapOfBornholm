@@ -1,12 +1,13 @@
 package models;
 
+import interfaces.InsertableInRtree;
 import spatialDatastructures.RtreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OsmWay extends OsmElement{
+public class OsmWay extends OsmElement implements InsertableInRtree {
 
     private final List<OsmNode> nodes;
     private final Map<String, String> tags;
