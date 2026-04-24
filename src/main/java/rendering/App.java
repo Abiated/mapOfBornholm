@@ -50,11 +50,14 @@ public class App extends DrawingApp {
     private Parser OSMdata;
     private HeightCurve sea;
     private HashMap<Long, OsmWay> ways;
-    private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
+    // waysByType er nu et map der mapper hver waytype til en array af lister af ways,
+    // hvor index 0 i arrayet indeholder listen af ways der skal vises ved lavt zoom osv
+    // index 2 indeholder alle ways af typen da alt skal vises ved højt zoom
+    private final EnumMap<wayType, List<OsmWay>[]> waysByType = new EnumMap<>(wayType.class);
     private JsonNode jRoot;
     private Renderer renderer;
     private ScaleBar scale = new ScaleBar();
-    private EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
+    private EnumMap<wayType,Rtree[]> RtreesByType = new EnumMap<>(wayType.class);
     private Rtree HeightCurveRTree;
     private AffineTransform t;
     private int CutOffToRtree = 7;
@@ -136,28 +139,88 @@ public class App extends DrawingApp {
         ways = OSMdata.getOsmWayMap();
         t = getProjectionTransform(OSMdata);
 
-        for (wayType type : wayType.values()) {
-            if(type == wayType.COASTLINE) continue;;
-            waysByType.put(type, new ArrayList<>());
+        //---------CONFIG PARSING---------//
+        //For now default json file maybe later there can be a choice.
+        try {
+            InputStream is = getClass().getResourceAsStream("/config.json");
+            if (is == null) System.out.println("File not found");
+
+            jRoot = (new ObjectMapper()).readTree(is);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
 
-        waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
+        // coastline, water, searoute, other har ikke zoom værdier.
+
+        for (wayType type : wayType.values()) {
+            if(type == wayType.COASTLINE) continue;
+            List[] listarray = new List[] {new ArrayList<OsmWay>(), new ArrayList<OsmWay>(), new ArrayList<OsmWay>()};
+            waysByType.put(type, listarray);
+        }
+
+        List[] listarray = new List[] {new ArrayList<OsmWay>(CoastlineStitcher.stitch(ways)), new ArrayList<OsmWay>(), new ArrayList<OsmWay>()};
+        waysByType.put(wayType.COASTLINE, listarray);
+
+        // index 0: 0 < zoom < 10
+        // index 1: 0 < zoom < 40
+        // index 2: 0 < zoom
 
         for(OsmWay way : ways.values()) {
             if (way.hasTag("location", "underground")) continue;
-            else if(way.isWater()) waysByType.get(wayType.WATER).add(way);
-            else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
+            else if(way.isWater()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.WATER)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.WATER)[1].add(way);
+                waysByType.get(wayType.WATER)[2].add(way);
+            }
+            else if (way.isSeaRoute()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.SEAROUTE)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.SEAROUTE)[1].add(way);
+                waysByType.get(wayType.SEAROUTE)[2].add(way);
+            }
             else if(way.hasTag("natural", "coastline")) continue;
-            else if(way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
-            else if(way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
-            else if(way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-            else if(way.isRoad())
+            else if(way.isNatural()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.NATURAL)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.NATURAL)[1].add(way);
+                waysByType.get(wayType.NATURAL)[2].add(way);
+            }
+            else if(way.isLandues()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.LANDUSE)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.LANDUSE)[1].add(way);
+                waysByType.get(wayType.LANDUSE)[2].add(way);
+            }
+            else if(way.isBuilding()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.BUILDING)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.BUILDING)[1].add(way);
+                waysByType.get(wayType.BUILDING)[2].add(way);
+            }
+            else if(way.isRoad()) {
 //                if(hasOutOfBoundsNode(way)) {
 //                    System.out.println("Out of bounds road: " + way.getTags());
 //                    continue; // skip it
 //                }  waysByType.get(wayType.ROAD).add(way); }
-                waysByType.get(wayType.ROAD).add(way);
-            else if(way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.ROAD)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.ROAD)[1].add(way);
+                waysByType.get(wayType.ROAD)[2].add(way);
+            }
+            else if(way.isLeisure()) {
+                if (getZoomLevel(way) < 10)
+                    waysByType.get(wayType.LEISURE)[0].add(way);
+                if (getZoomLevel(way) < 40)
+                    waysByType.get(wayType.LEISURE)[1].add(way);
+                waysByType.get(wayType.LEISURE)[2].add(way);
+            }
 //            else {
 //                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
 //                    waysByType.get(wayType.OTHER).add(way);
@@ -168,24 +231,35 @@ public class App extends DrawingApp {
         List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
         curves.remove(sea);
         HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves),32);
-        RtreesByType.put(wayType.COASTLINE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)),32));
-        RtreesByType.put(wayType.WATER,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.WATER)),32));
-        RtreesByType.put(wayType.SEAROUTE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.SEAROUTE)),32));
-        RtreesByType.put(wayType.NATURAL,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.NATURAL)),32));
-        RtreesByType.put(wayType.LANDUSE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LANDUSE)),32));
-        RtreesByType.put(wayType.BUILDING,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.BUILDING)),32));
-        RtreesByType.put(wayType.ROAD,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.ROAD)),32));
-        RtreesByType.put(wayType.LEISURE,new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LEISURE)),32));
-
-        //---------CONFIG PARSING---------//
-        //For now default json file maybe later there can be a choice.
-        try {
-            InputStream is = getClass().getResourceAsStream("/config.json");
-            if (is == null) System.out.println("File not found");
-
-            jRoot = (new ObjectMapper()).readTree(is);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        Rtree[] one = new Rtree[] {new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)[0]),32),new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)[0]),32),new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)[0]),32)};
+        RtreesByType.put(wayType.COASTLINE,one);
+        if (!waysByType.get(wayType.WATER)[0].isEmpty()) {
+            Rtree[] two = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.WATER)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.WATER)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.WATER)[0]), 32)};
+            RtreesByType.put(wayType.WATER, two);
+        }
+        if (!waysByType.get(wayType.SEAROUTE)[0].isEmpty()) {
+            Rtree[] three = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.SEAROUTE)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.SEAROUTE)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.SEAROUTE)[0]), 32)};
+            RtreesByType.put(wayType.SEAROUTE, three);
+        }
+        if (!waysByType.get(wayType.NATURAL)[0].isEmpty()) {
+            Rtree[] four = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.NATURAL)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.NATURAL)[1]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.NATURAL)[2]), 32)};
+            RtreesByType.put(wayType.NATURAL, four);
+        }
+        if (!waysByType.get(wayType.LANDUSE)[0].isEmpty()) {
+            Rtree[] five = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LANDUSE)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LANDUSE)[1]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LANDUSE)[2]), 32)};
+            RtreesByType.put(wayType.LANDUSE, five);
+        }
+        if (!waysByType.get(wayType.BUILDING)[0].isEmpty()) {
+            Rtree[] six = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.BUILDING)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.BUILDING)[1]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.BUILDING)[2]), 32)};
+            RtreesByType.put(wayType.BUILDING, six);
+        }
+        if (!waysByType.get(wayType.ROAD)[0].isEmpty()) {
+            Rtree[] seven = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.ROAD)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.ROAD)[1]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.ROAD)[2]), 32)};
+            RtreesByType.put(wayType.ROAD, seven);
+        }
+        if (!waysByType.get(wayType.LEISURE)[0].isEmpty()) {
+            Rtree[] eight = new Rtree[]{new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LEISURE)[0]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LEISURE)[1]), 32), new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.LEISURE)[2]), 32)};
+            RtreesByType.put(wayType.LEISURE, eight);
         }
 
         //---------GUI CODE---------//
@@ -464,9 +538,21 @@ public class App extends DrawingApp {
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
         List<InsertableInRtree> ways;
-        if (zoom>CutOffToRtree) ways = RtreesByType.get(type).search(getViewPortBoundingBox(OSMdata));
-        else ways = new ArrayList<>(waysByType.get(type));
+        int i;
+        if (zoom < 10) i = 0;
+        else if (zoom < 40) i = 1;
+        else i = 2;
+        if (zoom>CutOffToRtree) {
+            if (RtreesByType.get(type) == null) return;
+            ways = RtreesByType.get(type)[2].search(getViewPortBoundingBox(OSMdata));
+        }
+        else {
+            if (waysByType.get(type)[2].isEmpty()) return;
+            ways = new ArrayList<>(waysByType.get(type)[2]);
+        }
+        int x = 0;
         for (InsertableInRtree element : ways) {
+            x++;
             OsmWay way = (OsmWay) element;
             if (type != wayType.WATER && zoom < getZoomLevel(way)) continue;
             Shape projected = project(renderer.getWayPath(way), t);
@@ -475,6 +561,7 @@ public class App extends DrawingApp {
                 gc.fill(projected);
             else gc.draw(projected);
         }
+        System.out.println(x + " elements iterated in layer");
     }
 
     private static AffineTransform getProjectionTransform(Data d) {
