@@ -6,11 +6,13 @@ import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
 
+import dk.itu.Model.Dijkstra;
+import dk.itu.Model.DirectedEdge;
+import dk.itu.Model.EdgeWeightedDigraph;
+import dk.itu.Model.VehicleType;
 import dk.itu.parser.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelBuffer;
@@ -24,6 +26,10 @@ import dk.itu.renderer.osm.*;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import static dk.itu.Model.SubVerFindAttempt.findSubmergedVertices2;
+import static dk.itu.Model.SubmergedVertexFinder.findSubmergedVertices;
+import static dk.itu.Model.VehicleType.CAR;
 
 public class App extends DrawingApp {
 
@@ -98,10 +104,65 @@ public class App extends DrawingApp {
                 heightcurves.add(curve);
         }
 
+        //ATTEMPT TO combine my submersion to APP
+        EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser);
+
+        //get information on submerged vertices
+        Set<Integer> submergedVertices = findSubmergedVertices2(graph, parser, HcData, SEA_LEVEL);
+
+
+        //run Dijkstra
+        //Data is hardcoded for now
+
+        Dijkstra dijkstra = new Dijkstra(graph, 10, 40, CAR, submergedVertices);
+
+        System.out.println("Vertices in graph: " + graph.vertexCount());
+        System.out.println("Edges in graph: " + graph.edgeCount());
+        System.out.println("Submerged vertices: " + submergedVertices.size());
+
+        if (!dijkstra.hasPathTo(20)) {
+            System.out.println("No path found.");
+            return;
+        }
+
+        List<DirectedEdge> path = dijkstra.pathTo(20);
+        float totalLength = 0.0f; //format
+
+        System.out.println("Path found.");
+        System.out.println("Number of directed edges in path: " + path.size());
+        System.out.println("Total route cost: " + dijkstra.distTo(20));
+
+        for (DirectedEdge edge : path) {
+            totalLength += edge.getLength();
+        }
+        System.out.println("Total geometric length in km: " + totalLength);
+
+        int limit = Math.min(path.size(), 10);
+        System.out.println("First " + limit + " edges in the route:");
+        for (int i = 0; i < limit; i++) {
+            DirectedEdge edge = path.get(i);
+            System.out.println(
+                    "  " + (i + 1) +
+                            ": " + graph.nodeIdOf(edge.from()) +
+                            " -> " + graph.nodeIdOf(edge.to()) +
+                            " | length=" + edge.getLength()
+            );
+        }
+
+        //ENDS HERE
+
+        // attempt to combine Nicklas & Naomi submersion
+        /*EdgeWeightedDigraph graph = new EdgeWeightedDigraph(parser.getNodeCount());
+
+        graph.constructGraph(parser, HcData.getSea());*/
+
+        //ENDS HERE
+
         this.draw();
 
         this.render(); // This will actually show what has been drawn
     }
+
 
     public void draw() {
         // This provides our main drawing API

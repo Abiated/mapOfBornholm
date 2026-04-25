@@ -3,6 +3,9 @@ package rendering;
 import GUI.BottomControls;
 import GUI.ScaleBar;
 import GUI.UpperControls;
+import PathFinder.DirectedEdge;
+import PathFinder.EdgeWeightedDigraph;
+import PathFinder.SubmergedVertexFinder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import interfaces.Data;
@@ -19,13 +22,16 @@ import spatialDatastructures.Rtree;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -36,6 +42,7 @@ public class App extends DrawingApp {
     private float screenX = 0;
     private float screenY = 0;
     private static final Color WATER_COLOR = Color.decode("#2b8cbe");
+    private static final Color ROUTE_COLOR = Color.decode("#d7301f");
     private static final SuperAffine superAffine = new SuperAffine();
 
     private Float SEA_LEVEL = 0.0F;
@@ -50,6 +57,11 @@ public class App extends DrawingApp {
     private JsonNode jRoot;
     private Renderer renderer;
     private BottomControls bottomControls;
+    private UpperControls upperControls;
+    private EdgeWeightedDigraph graph;
+    private MapHandler interactionHandler;
+    private List<DirectedEdge> currentRoute = new ArrayList<>();
+    private Set<Integer> submergedVertices = new HashSet<>();
 
     private ScaleBar scale = new ScaleBar();
     private EnumMap<wayType,Rtree[]> RtreesByType = new EnumMap<>(wayType.class);
@@ -141,6 +153,8 @@ public class App extends DrawingApp {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
+        graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
 
         // coastline, water, searoute, other har ikke zoom værdier.
 
@@ -258,10 +272,14 @@ public class App extends DrawingApp {
         //Creating SeaSlider and ScaleBar with our bottomControls
         bottomControls = new BottomControls(((observable, oldValue, newValue) -> {
             SEA_LEVEL = newValue.floatValue();
+            updateSubmergedVertices();
+            if (interactionHandler != null) {
+                interactionHandler.recalculateRoute();
+            }
             draw();
         }));
 
-        UpperControls upperControls = new UpperControls();
+        upperControls = new UpperControls();
 
         BorderPane root = new BorderPane();
         root.setBottom(bottomControls);
@@ -277,10 +295,33 @@ public class App extends DrawingApp {
 
         stage.setResizable(false);
         //Panning and zooming functions called from class MapHandler
-        MapHandler interactionHandler = new MapHandler(superAffine, this::draw);
+        updateSubmergedVertices();
+
+        interactionHandler = new MapHandler(
+                superAffine,
+                this::draw,
+                graph,
+                () -> submergedVertices,
+                () -> upperControls.getVehicleMenu().getVehicleType(),
+                OSMdata,
+                route -> {
+                    currentRoute = route != null ? route : new ArrayList<>();
+                    if (route == null) {
+                        upperControls.setRouteStatus("No route found for the selected points");
+                    } else {
+                        upperControls.setRouteStatus(
+                                "Estimated time to get from start to target is " +
+                                        formatEstimatedTime(route, upperControls.getVehicleMenu().getVehicleType())
+                        );
+                    }
+                    draw();
+                }
+        );
+        upperControls.getVehicleMenu().setOnVehicleTypeChanged(interactionHandler::recalculateRoute);
 
         //BorderPane mouseEventComponent = new BorderPane();
         root.setOnMousePressed(interactionHandler::handleMousePressed);
+        root.setOnMouseClicked(interactionHandler::handleMouseClicked);
         root.setOnMouseDragged(interactionHandler::handleMouseDragged);
         root.setOnScroll(interactionHandler::handleScroll);
 
@@ -303,6 +344,15 @@ public class App extends DrawingApp {
     private void loadDefaultData() {
         HCdata = loadDefaultHeightCurveData();
         OSMdata = loadDefaultOsmData();
+    }
+
+    private void updateSubmergedVertices() {
+        if (graph == null || OSMdata == null || HCdata == null || SEA_LEVEL <= 0.0F) {
+            submergedVertices = new HashSet<>();
+            return;
+        }
+
+        submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(graph, OSMdata, HCdata, SEA_LEVEL);
     }
 
     private HeightCurveData loadDefaultHeightCurveData() {
@@ -396,6 +446,8 @@ public class App extends DrawingApp {
         //if (zoom >= getZoomLevelByType(wayType.BUILDING))
             drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
 
+        drawCurrentRoute(gc, strokeWidth);
+
         //Draw Layer 7
 //        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 //        gc.setColor(new Color(0, 0, 0, 60)); //Semi transparent
@@ -470,6 +522,45 @@ public class App extends DrawingApp {
             else gc.draw(projected);
         }
         System.out.println(x + " elements iterated in layer");
+    }
+
+    private void drawCurrentRoute(Graphics2D gc, float strokeWidth) {
+        if (currentRoute == null || currentRoute.isEmpty() || graph == null) {
+            return;
+        }
+
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setColor(ROUTE_COLOR);
+        gc.setStroke(new BasicStroke(Math.max(3.0f, strokeWidth * 3.0f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+        for (DirectedEdge edge : currentRoute) {
+            Long fromId = graph.nodeIdOf(edge.from());
+            Long toId = graph.nodeIdOf(edge.to());
+            if (fromId == null || toId == null) {
+                continue;
+            }
+
+            OsmNode from = OSMdata.getOsmNodeMap().get(fromId);
+            OsmNode to = OSMdata.getOsmNodeMap().get(toId);
+            if (from == null || to == null) {
+                continue;
+            }
+
+            Shape projected = project(new Line2D.Float(from.getLon(), from.getLat(), to.getLon(), to.getLat()), t);
+            gc.draw(projected);
+        }
+    }
+
+    private String formatEstimatedTime(List<DirectedEdge> route, PathFinder.VehicleType vehicleType) {
+        float totalHours = 0.0f;
+        for (DirectedEdge edge : route) {
+            totalHours += edge.weight(vehicleType);
+        }
+
+        int totalMinutes = Math.round(totalHours * 60);
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+        return String.format("%02d:%02d", hours, minutes);
     }
 
     private static AffineTransform getProjectionTransform(Data d) {

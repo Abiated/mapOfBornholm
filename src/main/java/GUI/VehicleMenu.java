@@ -8,6 +8,7 @@ import javafx.scene.control.MenuItem;
 public class VehicleMenu extends MenuButton {
     private Label label;
     private VehicleType vehicleType;
+    private Runnable onVehicleTypeChanged;
 
     public VehicleMenu() {
         super("Choose mode of transportation");
@@ -19,12 +20,22 @@ public class VehicleMenu extends MenuButton {
         this.getItems().addAll(Car, Bike, None);
 
         label = new Label("Mode of transportation:");
+        vehicleType = VehicleType.CAR;
+        setText("CAR");
+        label.setText("Mode of transportation: Car");
 
-        Car.setOnAction(event -> { label.setText("Mode of transportation: Car"); vehicleType = VehicleType.CAR;});
-        Bike.setOnAction(event -> { label.setText("Mode of transportation: Bike"); vehicleType = VehicleType.BIKE;});
-        None.setOnAction(event -> { label.setText("Mode of transportation: Walking"); vehicleType = VehicleType.WALK;});
+        Car.setOnAction(event -> { label.setText("Mode of transportation: Car"); vehicleType = VehicleType.CAR; setText("CAR"); notifyVehicleTypeChanged();});
+        Bike.setOnAction(event -> { label.setText("Mode of transportation: Bike"); vehicleType = VehicleType.BIKE; setText("BIKE"); notifyVehicleTypeChanged();});
+        None.setOnAction(event -> { label.setText("Mode of transportation: Walking"); vehicleType = VehicleType.WALK; setText("ON FOOT"); notifyVehicleTypeChanged();});
     }
 
     public Label getLabel() {return label;}
     public VehicleType getVehicleType() {return vehicleType;}
+    public void setOnVehicleTypeChanged(Runnable onVehicleTypeChanged) {this.onVehicleTypeChanged = onVehicleTypeChanged;}
+
+    private void notifyVehicleTypeChanged() {
+        if (onVehicleTypeChanged != null) {
+            onVehicleTypeChanged.run();
+        }
+    }
 }

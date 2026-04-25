@@ -76,6 +76,32 @@ public class Renderer {
         return new Path2D.Double();
     }
 
+    Path2D getWayPath(OsmWay way, Integer strokeWidth) {
+        return getWayPath(way);
+    }
+
+    void drawWay(OsmWay way, Integer strokeWidth) {
+        Path2D path = getWayPath(way);
+
+        if (way.getNodes() == null || way.getNodes().size() < 2) {
+            return;
+        }
+
+        boolean isPolygon = way.getNodes().size() > 2
+                && way.getNodes().getFirst().getId() == way.getNodes().getLast().getId();
+
+        if (isPolygon) {
+            setWayColor(way);
+            gc.fill(path);
+            return;
+        }
+
+        if (strokeWidth != null) {
+            gc.setStroke(new BasicStroke(strokeWidth));
+        }
+        gc.draw(path);
+    }
+
     void setWayColor(OsmWay way) {
         Map<String, String> tags = way.getTags();
 

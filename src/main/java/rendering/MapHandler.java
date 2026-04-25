@@ -7,10 +7,33 @@ public class MapHandler {
     private final SuperAffine superAffine;
     private final Runnable interaction;
     private float screenX, screenY;
+    private final PathFinder.EdgeWeightedDigraph graph;
+    private final java.util.function.Supplier<java.util.Set<Integer>> submergedVertices;
+    private final java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier;
+    private final interfaces.Data mapData;
+    private final java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound;
+
+    private Double startLon, startLat;
+    private Double targetLon, targetLat;
+    private boolean waitingForTarget = false;
 
     public MapHandler(SuperAffine superAffine, Runnable interaction) {
+        this(superAffine, interaction, null, null, null, null, null);
+    }
+
+    public MapHandler(SuperAffine superAffine, Runnable interaction,
+                      PathFinder.EdgeWeightedDigraph graph,
+                      java.util.function.Supplier<java.util.Set<Integer>> submergedVertices,
+                      java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier,
+                      interfaces.Data mapData,
+                      java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound) {
         this.superAffine = superAffine;
         this.interaction = interaction;
+        this.graph = graph;
+        this.submergedVertices = submergedVertices;
+        this.vehicleTypeSupplier = vehicleTypeSupplier;
+        this.mapData = mapData;
+        this.onRouteFound = onRouteFound;
     }
 
     //PAN ZOOM HELPER METHODS
@@ -30,12 +53,92 @@ public class MapHandler {
      *
      * @param event The screen mouse drag event that was triggered.
      */
-    public void handleMouseDragged(MouseEvent event) {
-        float dx = (float) (event.getX() - this.screenX), dy = (float) (event.getY() - this.screenY);
-        superAffine.prependTranslation(dx, dy);
-        handleMousePressed(event);
+    public void handleMouseClicked(MouseEvent event) {
+        if (graph == null || mapData == null || onRouteFound == null) {
+            return;
+        }
 
+        // ignore if it was a drag
+        if (Math.abs(event.getX() - screenX) > 5 || Math.abs(event.getY() - screenY) > 5) return;
+
+        double[] lonLat = screenToLonLat(event.getX(), event.getY(), mapData);
+
+        if (!waitingForTarget) {
+            startLon = lonLat[0];
+            startLat = lonLat[1];
+            targetLon = null;
+            targetLat = null;
+            waitingForTarget = true;
+            System.out.println("Start set: " + startLon + ", " + startLat);
+        } else {
+            waitingForTarget = false;
+            targetLon = lonLat[0];
+            targetLat = lonLat[1];
+            calculateRoute();
+        }
+    }
+
+    public void recalculateRoute() {
+        if (startLon == null || startLat == null || targetLon == null || targetLat == null) {
+            return;
+        }
+        calculateRoute();
+    }
+
+    private void calculateRoute() {
+        PathFinder.VehicleType vehicleType = vehicleTypeSupplier != null
+                ? vehicleTypeSupplier.get()
+                : PathFinder.VehicleType.CAR;
+        int from = graph.nearestVertex(startLon, startLat, vehicleType);
+        int target = graph.nearestVertex(targetLon, targetLat, vehicleType);
+
+        PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(
+                graph, from, target, vehicleType,
+                submergedVertices != null ? submergedVertices.get() : java.util.Collections.emptySet());
+
+        if (dijkstra.hasPathTo(target)) {
+            onRouteFound.accept(dijkstra.pathTo(target));
+        } else {
+            System.out.println("No path found.");
+            onRouteFound.accept(null);
+        }
+    }
+
+    public void handleMouseDragged(MouseEvent event) {
+        float dx = (float)(event.getX() - screenX);
+        float dy = (float)(event.getY() - screenY);
+        screenX = (float) event.getX();
+        screenY = (float) event.getY();
+        superAffine.prependTranslation(dx, dy);
         interaction.run();
+    }
+
+    private double[] screenToLonLat(double x, double y, interfaces.Data d) {
+        int WIDTH = DrawingApp.getWIDTH();
+        int HEIGHT = DrawingApp.getHEIGHT();
+        float p = 20;
+        float c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
+        float w = (d.getMaxLon() - d.getMinLon()) * c;
+        float h = d.getMaxLat() - d.getMinLat();
+        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
+
+        java.awt.geom.AffineTransform t = new java.awt.geom.AffineTransform();
+        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
+        t.scale(k, -k);
+        t.scale(c, 1);
+        t.translate(-d.getMinLon(), -d.getMinLat());
+
+        java.awt.geom.AffineTransform combined = new java.awt.geom.AffineTransform(superAffine);
+        combined.concatenate(t);
+
+        try {
+            double[] screen = {x, y};
+            double[] world  = new double[2];
+            combined.inverseTransform(screen, 0, world, 0, 1);
+            return world; // [lon, lat]
+        } catch (Exception e) {
+            return new double[]{0, 0};
+        }
     }
 
     /**
