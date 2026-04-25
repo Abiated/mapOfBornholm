@@ -9,25 +9,29 @@ public class MapHandler {
     private float screenX, screenY;
     private final PathFinder.EdgeWeightedDigraph graph;
     private final java.util.function.Supplier<java.util.Set<Integer>> submergedVertices;
-    private final PathFinder.VehicleType vehicleType;
+    private final java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier;
     private final interfaces.Data mapData;
     private final java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound;
 
     private Double startLon, startLat;
+    private Double targetLon, targetLat;
     private boolean waitingForTarget = false;
 
+    public MapHandler(SuperAffine superAffine, Runnable interaction) {
+        this(superAffine, interaction, null, null, null, null, null);
+    }
 
     public MapHandler(SuperAffine superAffine, Runnable interaction,
                       PathFinder.EdgeWeightedDigraph graph,
                       java.util.function.Supplier<java.util.Set<Integer>> submergedVertices,
-                      PathFinder.VehicleType vehicleType,
+                      java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier,
                       interfaces.Data mapData,
                       java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound) {
         this.superAffine = superAffine;
         this.interaction = interaction;
         this.graph = graph;
         this.submergedVertices = submergedVertices;
-        this.vehicleType = vehicleType;
+        this.vehicleTypeSupplier = vehicleTypeSupplier;
         this.mapData = mapData;
         this.onRouteFound = onRouteFound;
     }
@@ -50,6 +54,10 @@ public class MapHandler {
      * @param event The screen mouse drag event that was triggered.
      */
     public void handleMouseClicked(MouseEvent event) {
+        if (graph == null || mapData == null || onRouteFound == null) {
+            return;
+        }
+
         // ignore if it was a drag
         if (Math.abs(event.getX() - screenX) > 5 || Math.abs(event.getY() - screenY) > 5) return;
 
@@ -58,27 +66,44 @@ public class MapHandler {
         if (!waitingForTarget) {
             startLon = lonLat[0];
             startLat = lonLat[1];
+            targetLon = null;
+            targetLat = null;
             waitingForTarget = true;
             System.out.println("Start set: " + startLon + ", " + startLat);
         } else {
             waitingForTarget = false;
-
-            //If were using nearest vertex? Need to add lats and lons in edgeweightedDigraph
-            /*int from   = graph.nearestVertex(startLon, startLat);
-            int target = graph.nearestVertex(lonLat[0], lonLat[1]);
-
-            PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(
-                    graph, from, target, vehicleType, submergedVertices.get());
-
-            if (dijkstra.hasPathTo(target)) {
-                onRouteFound.accept(dijkstra.pathTo(target));
-            } else {
-                System.out.println("No path found.");
-            }*/
+            targetLon = lonLat[0];
+            targetLat = lonLat[1];
+            calculateRoute();
         }
     }
 
-    /*
+    public void recalculateRoute() {
+        if (startLon == null || startLat == null || targetLon == null || targetLat == null) {
+            return;
+        }
+        calculateRoute();
+    }
+
+    private void calculateRoute() {
+        PathFinder.VehicleType vehicleType = vehicleTypeSupplier != null
+                ? vehicleTypeSupplier.get()
+                : PathFinder.VehicleType.CAR;
+        int from = graph.nearestVertex(startLon, startLat, vehicleType);
+        int target = graph.nearestVertex(targetLon, targetLat, vehicleType);
+
+        PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(
+                graph, from, target, vehicleType,
+                submergedVertices != null ? submergedVertices.get() : java.util.Collections.emptySet());
+
+        if (dijkstra.hasPathTo(target)) {
+            onRouteFound.accept(dijkstra.pathTo(target));
+        } else {
+            System.out.println("No path found.");
+            onRouteFound.accept(null);
+        }
+    }
+
     public void handleMouseDragged(MouseEvent event) {
         float dx = (float)(event.getX() - screenX);
         float dy = (float)(event.getY() - screenY);
@@ -87,7 +112,6 @@ public class MapHandler {
         superAffine.prependTranslation(dx, dy);
         interaction.run();
     }
-    */
 
     private double[] screenToLonLat(double x, double y, interfaces.Data d) {
         int WIDTH = DrawingApp.getWIDTH();

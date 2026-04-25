@@ -57,7 +57,7 @@ public class Rtree {
 
             PQWrapper currentBest = Search.peek();
 
-            if(bestDistance > currentBest.getPriorityDistance()){
+            if(bestDistance < currentBest.getPriorityDistance()){
                 break;
             }
 
@@ -112,10 +112,10 @@ public class Rtree {
     private float rTreeCalculateDistence(RtreeNode n, float lat, float lon){
         double R = 6371000;
 
-        float minLat = n.bbox[0];
-        float maxLat = n.bbox[1];
-        float minLon = n.bbox[2];
-        float maxLon = n.bbox[3];
+        float minLon = n.bbox[0];
+        float maxLon = n.bbox[1];
+        float minLat = n.bbox[2];
+        float maxLat = n.bbox[3];
 
         float clampedLat = Math.max(minLat, Math.min(lat, maxLat));
         float clampedLon = Math.max(minLon, Math.min(lon, maxLon));

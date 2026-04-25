@@ -197,6 +197,64 @@ public class EdgeWeightedDigraph {
         return index;
     }
 
+    public int nearestVertex(double lon, double lat, VehicleType vehicleType) {
+        if (vehicleType == null || tagHelper == null || rtree == null) {
+            return nearestVertex(lon, lat);
+        }
+
+        float[] radii = new float[]{0.0005f, 0.001f, 0.0025f, 0.005f, 0.01f, 0.025f, 0.05f};
+        OsmNode bestNode = null;
+        float bestDistance = Float.MAX_VALUE;
+
+        for (float radius : radii) {
+            float[] query = new float[]{
+                    (float) lon - radius,
+                    (float) lon + radius,
+                    (float) lat - radius,
+                    (float) lat + radius
+            };
+
+            List<InsertableInRtree> candidates = rtree.search(query);
+            for (InsertableInRtree candidate : candidates) {
+                OsmWay way = (OsmWay) candidate;
+                if (!tagHelper.isAllowedForVehicle(way, vehicleType)) {
+                    continue;
+                }
+
+                for (OsmNode node : way.getNodes()) {
+                    float distance = distanceToPoint(node, lon, lat);
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        bestNode = node;
+                    }
+                }
+            }
+
+            if (bestNode != null) {
+                Integer index = idToIndex.get(bestNode.getId());
+                if (index != null) {
+                    return index;
+                }
+            }
+        }
+
+        return nearestVertex(lon, lat);
+    }
+
+    private static float distanceToPoint(OsmNode node, double lon, double lat) {
+        double lat1 = Math.toRadians(lat);
+        double lat2 = Math.toRadians(node.getLat());
+        double distanceLon = Math.toRadians(node.getLon() - lon);
+        double distanceLat = Math.toRadians(node.getLat() - lat);
+
+        double a = Math.pow(Math.sin(distanceLat / 2), 2)
+                + Math.pow(Math.sin(distanceLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double earthRadius = 6371;
+
+        return (float) (earthRadius * c);
+    }
+
     public Long nodeIdOf(int index) {
         return indexToId.get(index);
     }
@@ -210,4 +268,3 @@ public class EdgeWeightedDigraph {
     }
     //getters for lats and lon
 }
-

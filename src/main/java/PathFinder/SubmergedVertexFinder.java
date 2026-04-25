@@ -9,8 +9,12 @@ import models.HeightCurve;
 import models.HeightCurveData;
 import parser.Parser;
 import models.OsmNode;
+import interfaces.InsertableInRtree;
+import spatialDatastructures.Rtree;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SubmergedVertexFinder {
@@ -36,6 +40,11 @@ public class SubmergedVertexFinder {
         // Apply new sea level
         hcData.sea.submerge(seaLevel);
 
+        Rtree submergedCurvesRtree = buildSubmergedCurvesRtree(hcData);
+        if (submergedCurvesRtree == null) {
+            return submergedVertices;
+        }
+
         // ONLY iterate through graph vertices
         for (int vertex = 0; vertex < graph.vertexCount(); vertex++) {
 
@@ -46,7 +55,7 @@ public class SubmergedVertexFinder {
             if (node == null) {continue;
             }
 
-            if (isSubmerged(node, hcData)) {
+            if (isSubmerged(node, submergedCurvesRtree)) {
                 submergedVertices.add(vertex);
             }
         }
@@ -57,18 +66,37 @@ public class SubmergedVertexFinder {
     /**
      * Checks whether a node lies inside any submerged height curve.
      */
-    private static boolean isSubmerged(OsmNode node, HeightCurveData hcData) {
+    private static Rtree buildSubmergedCurvesRtree(HeightCurveData hcData) {
+        List<InsertableInRtree> submergedCurves = new ArrayList<>();
 
         for (HeightCurve curve : hcData.getCurves()) {
-
-            if (!curve.isSubmerged()) {
-                continue;
+            if (curve.isSubmerged() && !curve.getCoords().isEmpty()) {
+                submergedCurves.add(curve);
             }
+        }
 
-            if (curve.getCoords().isEmpty()) {
-                continue;
-            }
+        if (submergedCurves.isEmpty()) {
+            return null;
+        }
 
+        return new Rtree(submergedCurves, 32);
+    }
+
+    /**
+     * Checks whether a node lies inside any submerged height curve candidate
+     * returned by the R-tree.
+     */
+    private static boolean isSubmerged(OsmNode node, Rtree submergedCurvesRtree) {
+        float[] query = new float[]{
+                node.getLon(),
+                node.getLon(),
+                node.getLat(),
+                node.getLat()
+        };
+
+        List<InsertableInRtree> candidateCurves = submergedCurvesRtree.search(query);
+        for (InsertableInRtree candidate : candidateCurves) {
+            HeightCurve curve = (HeightCurve) candidate;
             if (curve.getRegionPath().contains(node.getLon(), node.getLat())) {
                 return true;
             }
@@ -77,4 +105,3 @@ public class SubmergedVertexFinder {
         return false;
     }
 }
-
