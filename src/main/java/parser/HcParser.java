@@ -71,7 +71,6 @@ public class HcParser {
                     }
                     i++;
                 } else if (line.contains("</hc>")) {// ← closing angle bracket added here
-                    if (!(i%10==0)) {
                         float lat = Float.parseFloat(getAttribute(temp, "lat"));
                         float lon = Float.parseFloat(getAttribute(temp, "lon"));
                         coords.add(new Coordinate(lat, lon));
@@ -82,7 +81,6 @@ public class HcParser {
                             maxLat = Math.max(maxLat, lat);
                             maxLon = Math.max(maxLon, lon);
                         }
-                    }
                     if (id != -1) {
                         curves.add(new HeightCurve(id, height, coords, new ArrayList<>()));
                     }
