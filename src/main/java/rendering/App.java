@@ -222,7 +222,7 @@ public class App extends DrawingApp {
                     } else {
                         upperControls.setRouteStatus(
                                 "Estimated time to get from start to target is " +
-                                        formatEstimatedTime(route, upperControls.getVehicleMenu().getVehicleType())
+                                        formatEstimatedTime(route, upperControls.getVehicleMenu().getVehicleType()) + " hr/min"
                         );
                     }
                     draw();

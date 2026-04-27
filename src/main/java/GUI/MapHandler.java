@@ -2,6 +2,7 @@ package GUI;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import rendering.DrawingApp;
 
 public class MapHandler {
     private final SuperAffine superAffine;
