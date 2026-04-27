@@ -41,6 +41,9 @@ public class HcParser {
             float maxLat = Float.MIN_VALUE;
             float maxLon = Float.MIN_VALUE;
 
+            int i = 0;
+            String temp = "";
+
             while ((line = br.readLine()) != null) {
 
 //                if (line.contains("<bounds")) {
@@ -54,6 +57,8 @@ public class HcParser {
                     height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
                 } else if (line.contains("<coords ")) {
+                    temp = line;
+                    if (!(i%10==0)) continue;
                     float lat = Float.parseFloat(getAttribute(line, "lat"));
                     float lon = Float.parseFloat(getAttribute(line, "lon"));
                     coords.add(new Coordinate(lat, lon));
@@ -64,7 +69,20 @@ public class HcParser {
                         maxLat = Math.max(maxLat, lat);
                         maxLon = Math.max(maxLon, lon);
                     }
-                } else if (line.contains("</hc>")) {  // ← closing angle bracket added here
+                    i++;
+                } else if (line.contains("</hc>")) {// ← closing angle bracket added here
+                    if (!(i%10==0)) {
+                        float lat = Float.parseFloat(getAttribute(temp, "lat"));
+                        float lon = Float.parseFloat(getAttribute(temp, "lon"));
+                        coords.add(new Coordinate(lat, lon));
+
+                        if(id != -1) {
+                            minLat = Math.min(minLat, lat);
+                            minLon = Math.min(minLon, lon);
+                            maxLat = Math.max(maxLat, lat);
+                            maxLon = Math.max(maxLon, lon);
+                        }
+                    }
                     if (id != -1) {
                         curves.add(new HeightCurve(id, height, coords, new ArrayList<>()));
                     }

@@ -435,7 +435,7 @@ public class App extends DrawingApp {
         if(HCdata != null) {
             List<InsertableInRtree> curves;
             if (zoom > CutOffToRtree) {
-                curves = HeightCurveRTree.search(getViewPortBoundingBox(OSMdata));
+                curves = HeightCurveRTree.search(getViewPortBoundingBox());
             } else curves = new ArrayList<>(HCdata.curves);
             for (InsertableInRtree element : curves) {
                 HeightCurve curve = (HeightCurve) element;
@@ -504,17 +504,19 @@ public class App extends DrawingApp {
         if (zoom>CutOffToRtree) {
             Rtree rtree = RtreesByType.get(type);
             if (rtree == null) return;
-            ways = rtree.search(getViewPortBoundingBox(OSMdata));
+            ways = rtree.search(getViewPortBoundingBox());
         }
         else {
             List<OsmWay> list = waysByType.get(type);
-            if (list.isEmpty() || list == null) return;
+            if (list == null || list.isEmpty()) return;
             ways = new ArrayList<InsertableInRtree>(list);
         }
         //int x = 0;
         for (InsertableInRtree element : ways) {
             //x++;
             OsmWay way = (OsmWay) element;
+
+            if (!way.intersects(getViewPortBoundingBox())) continue;    
 
             if (type != wayType.WATER
                     && type != wayType.COASTLINE
@@ -616,7 +618,7 @@ public class App extends DrawingApp {
         }
     public float getSEALEVEL() {return SEA_LEVEL;}
 
-    private float[] getViewPortBoundingBox(Data d) {
+    private float[] getViewPortBoundingBox() {
         Point2D topleft = reverseProject(0,0,t);
         Point2D topright = reverseProject(WIDTH,0,t);
         Point2D bottomright = reverseProject(WIDTH,HEIGHT,t);
