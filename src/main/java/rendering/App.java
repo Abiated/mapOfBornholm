@@ -379,6 +379,8 @@ public class App extends DrawingApp {
 
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
+        AffineTransform combined = new AffineTransform(superAffine);
+        combined.concatenate(t);
 
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -408,19 +410,19 @@ public class App extends DrawingApp {
         if (OSMdata != null) {
             //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
             //Draws waterways, lakes, ponds and so on
-            drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+            drawLayer(wayType.WATER, gc, strokeWidth, zoom, combined);
             //Draws ferry routes and other sea route
-            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
+            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom, combined);
             //Draws polygon for coastline
-            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
+            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, combined);
             //Draws natural ways
-            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
+            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
             //Draws landuse ways
-            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
+            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, combined);
             //Draws roads
-            drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+            drawLayer(wayType.ROAD, gc, strokeWidth, zoom, combined);
             //Draws buildings
-            drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
+            drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, combined);
 
             //TODO: LEFTEROVERS
             //Draws leisure ways, needs some fixing
@@ -444,11 +446,14 @@ public class App extends DrawingApp {
                 }
                 if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-                gc.fill(project(curve.getRegionPath(), t));
+                if (curve.getCachedShape() == null)
+                    gc.fill(project(curve.getRegionPath(), combined));
+                else
+                    gc.fill(project(curve.getCachedShape(), combined));
             }
         }
 
-        drawCurrentRoute(gc, strokeWidth);
+        drawCurrentRoute(gc, strokeWidth, combined);
 
         gc.dispose();
         render();
@@ -498,7 +503,7 @@ public class App extends DrawingApp {
         return (float) jPath.asDouble();
     }
 
-    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
+    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
         List<InsertableInRtree> ways;
 
         if (zoom>CutOffToRtree) {
@@ -523,7 +528,11 @@ public class App extends DrawingApp {
                     && type != wayType.SEAROUTE
                     && zoom < getZoomLevel(way)) continue;
 
-            Shape projected = project(renderer.getWayPath(way), t);
+            Shape projected;
+            if (way.getCachedShape() == null)
+                projected = project(renderer.getWayPath(way), combined);
+            else
+                projected = project(way.getCachedShape(), combined);
             renderer.setWayColor(way, sw);
 
             if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
@@ -534,7 +543,7 @@ public class App extends DrawingApp {
         //System.out.println(x + " elements iterated in layer");
     }
 
-    private void drawCurrentRoute(Graphics2D gc, float strokeWidth) {
+    private void drawCurrentRoute(Graphics2D gc, float strokeWidth, AffineTransform combined) {
         if (currentRoute == null || currentRoute.isEmpty() || graph == null) {
             return;
         }
@@ -556,7 +565,7 @@ public class App extends DrawingApp {
                 continue;
             }
 
-            Shape projected = project(new Line2D.Float(from.getLon(), from.getLat(), to.getLon(), to.getLat()), t);
+            Shape projected = project(new Line2D.Float(from.getLon(), from.getLat(), to.getLon(), to.getLat()), combined);
             gc.draw(projected);
         }
     }
@@ -585,10 +594,7 @@ public class App extends DrawingApp {
         return t;
     }
 
-    private static Shape project(Shape s, AffineTransform t) {
-        AffineTransform combined = new AffineTransform(superAffine);
-        combined.concatenate(t);
-
+    private static Shape project(Shape s, AffineTransform combined) {
         return combined.createTransformedShape(s);
     }
 

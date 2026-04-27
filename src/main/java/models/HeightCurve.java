@@ -2,7 +2,7 @@ package models;
 
 import interfaces.InsertableInRtree;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.Path2D;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     List<HeightCurve> children;
     boolean submerged;
     float[] boundingBox;
+    Shape cachedShape;
 
     // Task 1
     public Path2D getBoundaryPath() {
@@ -45,6 +46,7 @@ public class HeightCurve implements Serializable, InsertableInRtree {
             path.append(child.getBoundaryPath(), false);
         }
 
+        setCachedShape(path);
         return path;
     }
 
@@ -112,6 +114,14 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 boundingBox[0] > otherBbox[1] ||
                 boundingBox[3] < otherBbox[2] ||
                 boundingBox[2] > otherBbox[3]);
+    }
+
+    public void setCachedShape(Shape cachedShape) {
+        this.cachedShape = cachedShape;
+    }
+
+    public Shape getCachedShape() {
+        return this.cachedShape;
     }
 
     // ------------------------------------
