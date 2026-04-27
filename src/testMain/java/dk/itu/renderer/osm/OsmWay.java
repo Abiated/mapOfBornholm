@@ -1,19 +1,18 @@
 package dk.itu.renderer.osm;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class OsmWay extends OsmElement{
 
     private final List<OsmNode> nodes;
-    private final Map<String, String> tags;
+    private final HashMap<String, String> tags;
 
     public OsmWay(long id, List<OsmNode> nodes, Map<String, String> tags) {
         super(id);
         this.nodes = nodes;
-        this.tags = tags;
+        this.tags = new HashMap<>(tags);
         float xHighest = 0;
         float yHighest = 0;
         for(OsmNode Node : nodes){
@@ -32,7 +31,7 @@ public class OsmWay extends OsmElement{
         return nodes;
     }
 
-    public Map<String, String> getTags() {
+    public HashMap<String, String> getTags() {
         return tags;
     }
-    }
+}

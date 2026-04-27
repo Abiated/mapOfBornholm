@@ -30,4 +30,6 @@ public class OsmNode extends OsmElement implements Serializable {
         return lon;
     }
 
+
+
 }

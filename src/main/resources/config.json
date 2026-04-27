@@ -24,8 +24,8 @@
     },
     "primary": {
       "driveable": true,
-      "walkable": false,
-      "cyclable": false,
+      "walkable": true,
+      "cyclable": true,
       "color": "#fcd6a4",
       "width": 9,
       "speed": 80,
@@ -35,8 +35,8 @@
       "color": "#f7fabf",
       "width": 8,
       "driveable": true,
-      "walkable": false,
-      "cyclable": false,
+      "walkable": true,
+      "cyclable": true,
       "speed": 60,
       "zoom": 6
     },
@@ -44,8 +44,8 @@
       "color": "#ffffff",
       "width": 6,
       "driveable": true,
-      "walkable": false,
-      "cyclable": false,
+      "walkable": true,
+      "cyclable": true,
       "speed": 50,
       "zoom": 10
     },
@@ -60,7 +60,7 @@
     "unclassified": {
       "driveable": true,
       "walkable": true,
-      "cyclable": false,
+      "cyclable": true,
       "color": "#ffffff",
       "width": 4,
       "zoom": 10
@@ -80,15 +80,15 @@
       "color": "#ffffff",
       "width": 4,
       "driveable": true,
-      "walkable": false,
-      "cyclable": false,
+      "walkable": true,
+      "cyclable": true,
       "speed": 20,
       "zoom": 40
     },
     "residential": {
       "driveable": true,
       "walkable": true,
-      "cyclable": false,
+      "cyclable": true,
       "color": "#ffffff",
       "width": 5,
       "speed": 30,
@@ -116,7 +116,7 @@
     "steps": {
       "color": "#d0d0d0",
       "width": 5,
-      "drivable": false,
+      "driveable": false,
       "walkable": true,
       "cyclable": false,
       "dashed": true,
@@ -146,7 +146,7 @@
     "track": {
       "driveable": false,
       "walkable": true,
-      "cyclable": false,
+      "cyclable": true,
       "dashed": true,
       "color": "#c2b280",
       "width": 3,

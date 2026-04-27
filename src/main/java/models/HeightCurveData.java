@@ -62,4 +62,8 @@ public class HeightCurveData implements Data, Serializable {
     @Override
     public float getMaxLon() {return  maxLon;}
 
+    public List<HeightCurve> getCurves() {
+        return curves;
+    }
+
 }
