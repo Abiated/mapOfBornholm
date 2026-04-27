@@ -142,16 +142,17 @@ public class App extends DrawingApp {
             waysByType.put(wayType.COASTLINE, CoastlineStitcher.stitch(ways));
 
             for (OsmWay way : ways.values()) {
-                if (way.hasTag("location", "underground")) continue;
-                else if (way.isWater()) waysByType.get(wayType.WATER).add(way);
-                else if (way.isSeaRoute()) waysByType.get(wayType.SEAROUTE).add(way);
-                else if (way.hasTag("natural", "coastline")) continue;
-                else if (way.isNatural()) waysByType.get(wayType.NATURAL).add(way);
-                else if (way.isLandues()) waysByType.get(wayType.LANDUSE).add(way);
-                else if (way.isBuilding()) waysByType.get(wayType.BUILDING).add(way);
-                else if (way.isRoad())
-                    waysByType.get(wayType.ROAD).add(way);
-                else if (way.isLeisure()) waysByType.get(wayType.LEISURE).add(way);
+                if (way.isWayType(wayType.NON_DRAWING)) continue;
+                else if (way.isWayType(wayType.COASTLINE)) continue;
+                else if (way.isWayType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
+                else if (way.isWayType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
+                else if (way.isWayType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
+                else if (way.isWayType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
+                else if (way.isWayType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
+                else if (way.isWayType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
+                else if (way.isWayType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
+                else if (way.isWayType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
+                else if (way.isWayType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
                 //            else {
                 //                if(!(way.hasTag("highway", "proposed") && way.getTags().get("seamark:type") != null))
                 //                    waysByType.get(wayType.OTHER).add(way);
@@ -479,14 +480,19 @@ public class App extends DrawingApp {
 
     public float getZoomLevel(OsmWay way) {
         String key = null;
-        if (way.isNatural()) key = "natural";
-        else if (way.isRoad()) key = "highway";
-        else if (way.isLandues()) key = "landuse";
-        else if (way.isLeisure()) {
-            key = "leisure";
-            return (float) jRoot.path(key).path("zoom").asDouble();
-        }
-        else if (way.isBuilding()) {
+        if (way.isWayType(wayType.NATURAL)) key = "natural";
+        else if (way.isWayType(wayType.ROAD)) key = "highway";
+        else if (way.isWayType(wayType.LANDUSE)) key = "landuse";
+        else if (way.isWayType(wayType.SEAROUTE)) key = "searoute";
+        else if (way.isWayType(wayType.WATER)) key = "water";
+        else if (way.isWayType(wayType.AMENITIES)) key = "amenity";
+        else if (way.isWayType(wayType.AEROWAYS)) key = "aeroway";
+        else if (way.isWayType(wayType.MAN_MADE)) key = "man_made";
+//        else if (way.isLeisure()) {
+//            key = "leisure";
+//            return (float) jRoot.path(key).path("zoom").asDouble();
+//        }
+        else if (way.isWayType(wayType.BUILDING)) {
             key = "building";
             return (float) jRoot.path(key).path("zoom").asDouble();
         }
@@ -525,7 +531,7 @@ public class App extends DrawingApp {
             renderer.setWayColor(way, sw);
 
             if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
-                    && !(way.isRoad() && !way.hasTag("highway", "rest_area")) && !way.isSeaRoute())
+                    && !(way.isWayType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.isWayType(wayType.SEAROUTE))
                 gc.fill(projected);
             else gc.draw(projected);
         }

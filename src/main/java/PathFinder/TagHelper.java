@@ -2,6 +2,7 @@ package PathFinder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import models.OsmWay;
+import rendering.wayType;
 
 public class TagHelper {
 
@@ -12,14 +13,14 @@ public class TagHelper {
     }
 
     private JsonNode getHighwayNode(OsmWay way) {
-        String value = way.getHighWayType();
+        String value = way.getValue();
         if (value == null) return null;
         JsonNode node = jRoot.path("highway").path(value);
         return node.isMissingNode() ? null : node;
     }
 
     public boolean isHighway(OsmWay way) {
-        return way.isRoad() && getHighwayNode(way) != null;
+        return way.isWayType(wayType.ROAD) && getHighwayNode(way) != null;
     }
 
     public boolean isDriveable(OsmWay way) {

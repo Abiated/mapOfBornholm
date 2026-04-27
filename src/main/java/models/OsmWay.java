@@ -1,6 +1,7 @@
 package models;
 
 import interfaces.InsertableInRtree;
+import rendering.wayType;
 import spatialDatastructures.RtreeNode;
 
 import java.io.Serializable;
@@ -77,51 +78,60 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
         return value.equals(tags.get(key));
     }
 
-    //Checker for road
-    public boolean isRoad() {
-        return !hasTag("highway", "proposed") && tags.get("highway") != null;
-    }
-    public String getHighWayType() {
-        if (!isRoad()) return null;
-        return tags.get("highway");
+    //Tag checker
+    public boolean isWayType(wayType type) {
+        switch (type) {
+            case wayType.NON_DRAWING:
+                return (hasTag("location", "underground")
+                        || tags.get("leisure") != null
+                        || tags.get("tunnel") != null
+                        || hasTag("landuse", "harbour")
+                        || hasTag("highway", "proposed"));
+            case wayType.ROAD:
+                return !hasTag("highway", "proposed") && tags.get("highway") != null;
+            case wayType.LANDUSE:
+                return tags.get("landuse") != null;
+            case wayType.COASTLINE:
+                return hasTag("natural", "coastline");
+            case wayType.SEAROUTE:
+                return hasTag("route", "ferry") || hasTag("seamark:type", "ferry_route");
+            case wayType.BUILDING:
+                return tags.get("building") != null;
+            case wayType.NATURAL:
+                return tags.get("natural") != null && !hasTag("natural", "water") && !hasTag("natural", "coastline");
+            case wayType.WATER:
+                return !hasTag("seamark:type", "ferry_route") &&
+                        (tags.get("seamark:type") != null ||
+                                hasTag("natural", "shoal") ||
+                                hasTag("natural", "bay"));
+            case wayType.AMENITIES:
+                return tags.get("amenity") != null;
+            case wayType.AEROWAYS:
+                return tags.get("aeroway") != null;
+            case wayType.MAN_MADE:
+                return tags.get("man_made") != null;
+            default:
+                return false;
+        }
     }
 
-    //Checker for landuse
-    public boolean isLandues() {
-        return tags.get("landuse") != null;
-    }
-    public String getLanduseType() {
-        if(!isLandues()) return null;
-        return tags.get("landuse");
-    }
-
-    //checker for natural
-    public boolean isNatural() {
-        return tags.get("natural") != null && !hasTag("natural", "water") && !hasTag("natural", "coastline");
-    }
+    //Get method for the tag value
     public String getValue() {
-        if(isNatural()) return tags.get("natural");
-        if(isRoad()) return tags.get("highway");
-        if (isLandues()) return tags.get("landuse");
-        else return null;
+        if(isWayType(wayType.NATURAL)) return tags.get("natural");
+        else if(isWayType(wayType.ROAD)) {
+            if(!isWayType(wayType.ROAD)) return null;
+            return tags.get("highway");
+        }
+        else if(isWayType(wayType.LANDUSE)) return tags.get("landuse");
+        else if(isWayType(wayType.SEAROUTE)) {
+            if(tags.get("seamark:type") != null) return tags.get("seamark:type");
+            else if (tags.get("route") != null) return tags.get("seamark:type");
+        }
+        else if(isWayType(wayType.BUILDING)) return tags.get("building");
+        else if(isWayType(wayType.AMENITIES)) return tags.get("amenity");
+        else if(isWayType(wayType.AEROWAYS)) return tags.get("aeroway");
+        else if(isWayType(wayType.MAN_MADE)) return tags.get("man_made");
+        return null;
     }
-
-    //Checker for water body
-    public boolean isWater() {
-        return !hasTag("seamark:type", "ferry_route") &&
-                (tags.get("seamark:type") != null ||
-                        hasTag("natural", "shoal") ||
-                        hasTag("natural", "bay"));
-    }
-    //Checker for building tag
-    public boolean isBuilding() {
-        return tags.get("building") != null;
-    }
-
-    public boolean isLeisure() {
-        return tags.get("leisure") != null;
-    }
-
-    public boolean isSeaRoute(){ return hasTag("route", "ferry") || hasTag("seamark:type", "ferry_route");}
 
 }
