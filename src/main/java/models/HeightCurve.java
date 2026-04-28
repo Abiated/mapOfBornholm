@@ -17,7 +17,8 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     List<HeightCurve> children;
     boolean submerged;
     float[] boundingBox;
-    Shape cachedShape;
+    Shape cachedRegionPath;
+    Shape cachedBoundaryPath;
 
     // Task 1
     public Path2D getBoundaryPath() {
@@ -32,6 +33,7 @@ public class HeightCurve implements Serializable, InsertableInRtree {
             path.lineTo(x, y);
         }
 
+        setCachedBoundaryPath(path);
         return path;
     }
 
@@ -40,13 +42,19 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
         Path2D path = new Path2D.Float(Path2D.WIND_EVEN_ODD);
 
-        path.append(getBoundaryPath(), false);
+        Shape boundaryPath;
+        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
+        else boundaryPath = getCachedBoundaryPath();
+        path.append(boundaryPath, false);
 
         for (HeightCurve child : children) {
-            path.append(child.getBoundaryPath(), false);
+            if (child.getCachedBoundaryPath()==null)
+                path.append(child.getBoundaryPath(), false);
+            else
+                path.append(child.getCachedBoundaryPath(), false);
         }
 
-        setCachedShape(path);
+        setCachedRegionPath(path);
         return path;
     }
 
@@ -116,13 +124,17 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 boundingBox[2] > otherBbox[3]);
     }
 
-    public void setCachedShape(Shape cachedShape) {
-        this.cachedShape = cachedShape;
+    public void setCachedRegionPath(Shape shape) {
+        cachedRegionPath = shape;
     }
 
-    public Shape getCachedShape() {
-        return this.cachedShape;
+    public Shape getCachedRegionPath() { return cachedRegionPath; }
+
+    public void setCachedBoundaryPath(Shape shape) {
+        cachedBoundaryPath = shape;
     }
+
+    public Shape getCachedBoundaryPath() { return cachedBoundaryPath; }
 
     // ------------------------------------
     // Don't edit anything below here
