@@ -85,22 +85,27 @@ public class Renderer {
         if(way.hasTag("natural", "coastline")) {
             gc.setColor(Color.yellow);
         }
-        if (way.isWater()) {
+        if (way.isWayType(wayType.WATER)) {
             gc.setColor(Color.decode("#2b8cbe"));
             //gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
-        if(way.isBuilding()) {
+        if(way.isWayType(wayType.BUILDING)) {
             gc.setColor(Color.decode(jn.path("building").path("color").asText()));
             gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
 
         String key = null;
-        if (way.isNatural()) key = "natural";
-        else if (way.isRoad()) key = "highway";
-        else if (way.isLandues()) key = "landuse";
-        else if (way.isLeisure()) key = "leisure";
+        if (way.isWayType(wayType.BUILDING)) key = "natural";
+        else if (way.isWayType(wayType.NATURAL)) key = "natural";
+        else if (way.isWayType(wayType.ROAD)) key = "highway";
+        else if (way.isWayType(wayType.LANDUSE)) key = "landuse";
+        else if (way.isWayType(wayType.SEAROUTE)) key = "searoute";
+        else if (way.isWayType(wayType.WATER)) key = "water";
+        else if (way.isWayType(wayType.AMENITIES)) key = "amenity";
+        else if (way.isWayType(wayType.AEROWAYS)) key = "aeroway";
+        else if (way.isWayType(wayType.MAN_MADE)) key = "man_made";
         else key = "other";
 
         JsonNode jPath = jn.path(key).path(way.getValue());
@@ -115,7 +120,7 @@ public class Renderer {
             System.out.println(e.getMessage());
         }
 
-        if(way.isRoad()) {
+        if(way.isWayType(wayType.ROAD)) {
             int width = jPath.isMissingNode() ? 1 : jPath.path("width").asInt();
             if(jPath.path("dashed").asBoolean()) {
                 gc.setStroke(new BasicStroke(strokeWidth * width,
