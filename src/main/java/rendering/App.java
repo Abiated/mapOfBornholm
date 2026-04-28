@@ -448,11 +448,11 @@ public class App extends DrawingApp {
                 }
                 if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-                if (curve.getCachedShape() == null)
+                if (curve.getCachedRegionPath() == null)
                     gc.fill(project(curve.getRegionPath(), combined));
                     //gc.fill(curve.getRegionPath());
                 else
-                    gc.fill(project(curve.getCachedShape(), combined));
+                    gc.fill(project(curve.getCachedRegionPath(), combined));
                     //gc.fill(curve.getCachedShape());
             }
         }
