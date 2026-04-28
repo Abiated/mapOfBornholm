@@ -381,6 +381,7 @@ public class App extends DrawingApp {
         renderer = new Renderer(gc, jRoot);
         AffineTransform combined = new AffineTransform(superAffine);
         combined.concatenate(t);
+        //gc.setTransform(combined);
 
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -448,8 +449,10 @@ public class App extends DrawingApp {
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
                 if (curve.getCachedShape() == null)
                     gc.fill(project(curve.getRegionPath(), combined));
+                    //gc.fill(curve.getRegionPath());
                 else
                     gc.fill(project(curve.getCachedShape(), combined));
+                    //gc.fill(curve.getCachedShape());
             }
         }
 
@@ -505,11 +508,12 @@ public class App extends DrawingApp {
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
         List<InsertableInRtree> ways;
+        float[] bbox = getViewPortBoundingBox();
 
         if (zoom>CutOffToRtree) {
             Rtree rtree = RtreesByType.get(type);
             if (rtree == null) return;
-            ways = rtree.search(getViewPortBoundingBox());
+            ways = rtree.search(bbox);
         }
         else {
             List<OsmWay> list = waysByType.get(type);
@@ -521,7 +525,7 @@ public class App extends DrawingApp {
             //x++;
             OsmWay way = (OsmWay) element;
 
-            if (!way.intersects(getViewPortBoundingBox())) continue;    
+            if (!way.intersects(bbox)) continue;
 
             if (type != wayType.WATER
                     && type != wayType.COASTLINE
@@ -529,10 +533,13 @@ public class App extends DrawingApp {
                     && zoom < getZoomLevel(way)) continue;
 
             Shape projected;
+            //Shape s;
             if (way.getCachedShape() == null)
                 projected = project(renderer.getWayPath(way), combined);
+                //s = renderer.getWayPath(way);
             else
                 projected = project(way.getCachedShape(), combined);
+                //s = way.getCachedShape();
             renderer.setWayColor(way, sw);
 
             if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
