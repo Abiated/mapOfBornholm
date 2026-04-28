@@ -39,6 +39,7 @@ public class Renderer {
             p.moveTo(x1,y1);
             p.lineTo(x2,y2);
             gc.fill(p);
+            way.setCachedShape(p);
             return p;
 
         }
@@ -62,10 +63,12 @@ public class Renderer {
                 //gc.setStroke(new BasicStroke(0));
                 polygon.closePath();
                 //gc.fill(polygon);
+                way.setCachedShape(polygon);
                 return polygon;
 
             } else {
                 //gc.setStroke(new BasicStroke(strokeWidth));
+                way.setCachedShape(polygon);
                 return polygon;
             }
 

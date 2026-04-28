@@ -54,17 +54,17 @@ public class HcParser {
                     height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
                 } else if (line.contains("<coords ")) {
-                    float lat = Float.parseFloat(getAttribute(line, "lat"));
-                    float lon = Float.parseFloat(getAttribute(line, "lon"));
-                    coords.add(new Coordinate(lat, lon));
+                        float lat = Float.parseFloat(getAttribute(line, "lat"));
+                        float lon = Float.parseFloat(getAttribute(line, "lon"));
+                        coords.add(new Coordinate(lat, lon));
 
-                    if(id != -1) {
-                        minLat = Math.min(minLat, lat);
-                        minLon = Math.min(minLon, lon);
-                        maxLat = Math.max(maxLat, lat);
-                        maxLon = Math.max(maxLon, lon);
-                    }
-                } else if (line.contains("</hc>")) {  // ← closing angle bracket added here
+                        if (id != -1) {
+                            minLat = Math.min(minLat, lat);
+                            minLon = Math.min(minLon, lon);
+                            maxLat = Math.max(maxLat, lat);
+                            maxLon = Math.max(maxLon, lon);
+                        }
+                } else if (line.contains("</hc>")) {// ← closing angle bracket added here
                     if (id != -1) {
                         curves.add(new HeightCurve(id, height, coords, new ArrayList<>()));
                     }

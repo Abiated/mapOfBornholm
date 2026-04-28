@@ -380,6 +380,9 @@ public class App extends DrawingApp {
 
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
+        AffineTransform combined = new AffineTransform(superAffine);
+        combined.concatenate(t);
+        //gc.setTransform(combined);
 
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -409,19 +412,19 @@ public class App extends DrawingApp {
         if (OSMdata != null) {
             //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
             //Draws waterways, lakes, ponds and so on
-            drawLayer(wayType.WATER, gc, strokeWidth, zoom);
+            drawLayer(wayType.WATER, gc, strokeWidth, zoom, combined);
             //Draws ferry routes and other sea route
-            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom);
+            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom, combined);
             //Draws polygon for coastline
-            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom);
+            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, combined);
             //Draws natural ways
-            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom);
+            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
             //Draws landuse ways
-            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom);
+            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, combined);
             //Draws roads
-            drawLayer(wayType.ROAD, gc, strokeWidth, zoom);
+            drawLayer(wayType.ROAD, gc, strokeWidth, zoom, combined);
             //Draws buildings
-            drawLayer(wayType.BUILDING, gc, strokeWidth, zoom);
+            drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, combined);
 
             //TODO: LEFTEROVERS
             //Draws leisure ways, needs some fixing
@@ -436,7 +439,7 @@ public class App extends DrawingApp {
         if(HCdata != null) {
             List<InsertableInRtree> curves;
             if (zoom > CutOffToRtree) {
-                curves = HeightCurveRTree.search(getViewPortBoundingBox(OSMdata));
+                curves = HeightCurveRTree.search(getViewPortBoundingBox());
             } else curves = new ArrayList<>(HCdata.curves);
             for (InsertableInRtree element : curves) {
                 HeightCurve curve = (HeightCurve) element;
@@ -445,11 +448,16 @@ public class App extends DrawingApp {
                 }
                 if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-                gc.fill(project(curve.getRegionPath(), t));
+                if (curve.getCachedShape() == null)
+                    gc.fill(project(curve.getRegionPath(), combined));
+                    //gc.fill(curve.getRegionPath());
+                else
+                    gc.fill(project(curve.getCachedShape(), combined));
+                    //gc.fill(curve.getCachedShape());
             }
         }
 
-        drawCurrentRoute(gc, strokeWidth);
+        drawCurrentRoute(gc, strokeWidth, combined);
 
         gc.dispose();
         render();
@@ -504,17 +512,18 @@ public class App extends DrawingApp {
         return (float) jPath.asDouble();
     }
 
-    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom) {
+    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
         List<InsertableInRtree> ways;
+        float[] bbox = getViewPortBoundingBox();
 
         if (zoom>CutOffToRtree) {
             Rtree rtree = RtreesByType.get(type);
             if (rtree == null) return;
-            ways = rtree.search(getViewPortBoundingBox(OSMdata));
+            ways = rtree.search(bbox);
         }
         else {
             List<OsmWay> list = waysByType.get(type);
-            if (list.isEmpty() || list == null) return;
+            if (list == null || list.isEmpty()) return;
             ways = new ArrayList<InsertableInRtree>(list);
         }
         //int x = 0;
@@ -522,12 +531,21 @@ public class App extends DrawingApp {
             //x++;
             OsmWay way = (OsmWay) element;
 
+            if (!way.intersects(bbox)) continue;
+
             if (type != wayType.WATER
                     && type != wayType.COASTLINE
                     && type != wayType.SEAROUTE
                     && zoom < getZoomLevel(way)) continue;
 
-            Shape projected = project(renderer.getWayPath(way), t);
+            Shape projected;
+            //Shape s;
+            if (way.getCachedShape() == null)
+                projected = project(renderer.getWayPath(way), combined);
+                //s = renderer.getWayPath(way);
+            else
+                projected = project(way.getCachedShape(), combined);
+                //s = way.getCachedShape();
             renderer.setWayColor(way, sw);
 
             if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
@@ -538,7 +556,7 @@ public class App extends DrawingApp {
         //System.out.println(x + " elements iterated in layer");
     }
 
-    private void drawCurrentRoute(Graphics2D gc, float strokeWidth) {
+    private void drawCurrentRoute(Graphics2D gc, float strokeWidth, AffineTransform combined) {
         if (currentRoute == null || currentRoute.isEmpty() || graph == null) {
             return;
         }
@@ -560,7 +578,7 @@ public class App extends DrawingApp {
                 continue;
             }
 
-            Shape projected = project(new Line2D.Float(from.getLon(), from.getLat(), to.getLon(), to.getLat()), t);
+            Shape projected = project(new Line2D.Float(from.getLon(), from.getLat(), to.getLon(), to.getLat()), combined);
             gc.draw(projected);
         }
     }
@@ -589,10 +607,7 @@ public class App extends DrawingApp {
         return t;
     }
 
-    private static Shape project(Shape s, AffineTransform t) {
-        AffineTransform combined = new AffineTransform(superAffine);
-        combined.concatenate(t);
-
+    private static Shape project(Shape s, AffineTransform combined) {
         return combined.createTransformedShape(s);
     }
 
@@ -622,7 +637,7 @@ public class App extends DrawingApp {
         }
     public float getSEALEVEL() {return SEA_LEVEL;}
 
-    private float[] getViewPortBoundingBox(Data d) {
+    private float[] getViewPortBoundingBox() {
         Point2D topleft = reverseProject(0,0,t);
         Point2D topright = reverseProject(WIDTH,0,t);
         Point2D bottomright = reverseProject(WIDTH,HEIGHT,t);

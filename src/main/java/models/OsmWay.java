@@ -4,6 +4,7 @@ import interfaces.InsertableInRtree;
 import rendering.wayType;
 import spatialDatastructures.RtreeNode;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
     private final List<OsmNode> nodes;
     private final Map<String, String> tags;
     private float[] boundingBox;
+    private Shape cachedShape;
 
     //Exist for deserializable as it needs a no argument constructor, value does not matter
     private OsmWay() {
@@ -52,6 +54,14 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
         boundingBox[1] = xHighest;
         boundingBox[2] = yLowest;
         boundingBox[3] = yHighest;
+    }
+
+    public void setCachedShape(Shape cachedShape) {
+        this.cachedShape = cachedShape;
+    }
+
+    public Shape getCachedShape() {
+        return this.cachedShape;
     }
 
     public List<OsmNode> getNodes() {
