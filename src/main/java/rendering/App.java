@@ -116,7 +116,8 @@ public class App extends DrawingApp {
         //Get sea from HCdata and ways
         if (HCdata != null) sea = HCdata.sea;
         if (OSMdata != null) ways = OSMdata.getOsmWayMap();
-        t = getProjectionTransform(OSMdata);
+        if (OSMdata != null) t = getProjectionTransform(OSMdata);
+        else t = getProjectionTransform(HCdata);
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -129,11 +130,11 @@ public class App extends DrawingApp {
             System.out.println(e.getMessage());
         }
 
-        graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
+        if (OSMdata != null) graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
 
         // coastline, water, searoute, other har ikke zoom værdier.
 
-        if (OSMdata != null){
+        if (OSMdata != null) {
             for (wayType type : wayType.values()) {
                 if (type == wayType.COASTLINE) continue;
                 waysByType.put(type, new ArrayList<>());
@@ -160,25 +161,31 @@ public class App extends DrawingApp {
             }
         }
 
+
         // CREATE R TREES
-        List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
-        curves.remove(sea);
-        curves.removeIf(c -> c.getCoords() == null
-                                    || c.getCoords().isEmpty()
-                                    || c.getBoundingBox() == null);
+        if (HCdata != null) {
+            List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
+            curves.remove(sea);
+            curves.removeIf(c -> c.getCoords() == null
+                    || c.getCoords().isEmpty()
+                    || c.getBoundingBox() == null);
 
-        HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves),32);
+            HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves), 32);
+        }
 
-        RtreesByType.put(wayType.COASTLINE,
-                new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)),32));
+        if (OSMdata != null) {
+            RtreesByType.put(wayType.COASTLINE,
+                    new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)), 32));
 
         for (wayType type : wayType.values()) {
-            if(type == wayType.COASTLINE) continue;
+            if (type == wayType.COASTLINE) continue;
             List<OsmWay> list = waysByType.get(type);
-            if(list != null && !list.isEmpty())
+            if (list != null && !list.isEmpty())
                 RtreesByType.put(type,
-                        new Rtree(new ArrayList<InsertableInRtree>(list),32));
+                        new Rtree(new ArrayList<InsertableInRtree>(list), 32));
         }
+    }
+
 
         //---------GUI CODE---------//
         //Creating SeaSlider and ScaleBar with our bottomControls
@@ -440,7 +447,7 @@ public class App extends DrawingApp {
             List<InsertableInRtree> curves;
             //if (zoom > CutOffToRtree) {
             curves = HeightCurveRTree.search(getViewPortBoundingBox());
-             curves = new ArrayList<>(HCdata.curves);
+            curves = new ArrayList<>(HCdata.curves);
             for (InsertableInRtree element : curves) {
 
                 HeightCurve curve = (HeightCurve) element;

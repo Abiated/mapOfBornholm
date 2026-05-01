@@ -123,6 +123,27 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         return boundingBox;
     }
 
+    private float[] computeBoundingBox() {
+        if (coords.isEmpty()) return new float[]{0, 0, 0, 0};
+
+        float minLat = Float.MAX_VALUE, maxLat = Float.MIN_VALUE;
+        float minLon = Float.MAX_VALUE, maxLon = Float.MIN_VALUE;
+
+        for(Coordinate coords : coords) {
+            if(coords.getLon() > maxLon) maxLon = coords.getLon();
+            if(coords.getLon() < minLon) minLon = coords.getLon();
+            if(coords.getLat() > maxLat) maxLat = coords.getLat();
+            if(coords.getLat() < minLat) minLat = coords.getLat();
+        }
+
+        return new float[]{minLon, maxLon, minLat, maxLat};
+
+    }
+
+    private boolean isEmptyBoundingBox(float[] boundingBox) {
+        return boundingBox[0] == 0 && boundingBox[1] == 0 && boundingBox[2] == 0 && boundingBox[3] == 0;
+    }
+
     public boolean intersects(float[] otherBbox) {
         return !(boundingBox[1] < otherBbox[0] ||
                 boundingBox[0] > otherBbox[1] ||
