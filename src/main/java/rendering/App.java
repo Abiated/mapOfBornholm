@@ -397,7 +397,7 @@ public class App extends DrawingApp {
 
         //Midlertidig løsning måske?
         zoom = zoom / 1000; //Making the zoom level manageable for rendering with zoom
-        System.out.println("Manageable zoom level: " + zoom);
+        //System.out.println("Manageable zoom level: " + zoom);
 
         float strokeWidth = (float) (1.0 / Math.sqrt(Math.abs(
                 superAffine.getScaleX() * superAffine.getScaleY()
@@ -438,10 +438,11 @@ public class App extends DrawingApp {
         //HeightCurves raw paths
         if(HCdata != null) {
             List<InsertableInRtree> curves;
-            if (zoom > CutOffToRtree) {
-                curves = HeightCurveRTree.search(getViewPortBoundingBox());
-            } else curves = new ArrayList<>(HCdata.curves);
+            //if (zoom > CutOffToRtree) {
+            curves = HeightCurveRTree.search(getViewPortBoundingBox());
+             curves = new ArrayList<>(HCdata.curves);
             for (InsertableInRtree element : curves) {
+
                 HeightCurve curve = (HeightCurve) element;
                 if (curve == sea) {
                     continue;
