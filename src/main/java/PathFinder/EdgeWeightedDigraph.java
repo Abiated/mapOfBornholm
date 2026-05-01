@@ -247,8 +247,7 @@ public class EdgeWeightedDigraph {
         double distanceLon = Math.toRadians(node.getLon() - lon);
         double distanceLat = Math.toRadians(node.getLat() - lat);
 
-        double a = Math.pow(Math.sin(distanceLat / 2), 2)
-                + Math.pow(Math.sin(distanceLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+        double a = Math.pow(Math.sin(distanceLat / 2), 2) + Math.pow(Math.sin(distanceLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double earthRadius = 6371;
 

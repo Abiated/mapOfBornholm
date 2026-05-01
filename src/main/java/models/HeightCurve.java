@@ -113,7 +113,9 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     }
 
     public float[] getBoundingBox() {
-        if (boundingBox == null) return new float[]{0, 0, 0, 0};
+        if (boundingBox == null || isEmptyBoundingBox(boundingBox)) {
+            boundingBox = computeBoundingBox();
+        }
         return boundingBox;
     }
 
