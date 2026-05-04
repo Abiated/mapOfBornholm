@@ -27,14 +27,24 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
         path.moveTo(coords.getFirst().getLon(), coords.getFirst().getLat());
 
-        for (int i = 1; i < coords.size(); i+=20) {
-            float x = coords.get(i).getLon();
-            float y = coords.get(i).getLat();
-            if(i == coords.size()-20) {
-                int minus = 20 - (coords.size() % 20);
-                i -= minus;
+        if (coords.size()<=20) {
+            for (int i = 1; i < coords.size(); i++) {
+                float x = coords.get(i).getLon();
+                float y = coords.get(i).getLat();
+                path.lineTo(x, y);
             }
-            path.lineTo(x, y);
+        }
+
+        else {
+            for (int i = 1; i < coords.size(); i += 20) {
+                float x = coords.get(i).getLon();
+                float y = coords.get(i).getLat();
+                if (i == coords.size() - 20) {
+                    int minus = 20 - (coords.size() % 20);
+                    i -= minus;
+                }
+                path.lineTo(x, y);
+            }
         }
 
         setCachedBoundaryPath(path);
