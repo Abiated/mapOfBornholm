@@ -20,7 +20,7 @@ public class TagHelper {
     }
 
     public boolean isHighway(OsmWay way) {
-        return way.isWayType(wayType.ROAD) && getHighwayNode(way) != null;
+        return way.isType(wayType.ROAD) && getHighwayNode(way) != null;
     }
 
     public boolean isDriveable(OsmWay way) {

@@ -193,7 +193,7 @@
     "farmland": {"color": "#D6D2A5", "zoom": 0},
     "saltpond": {"color": "#8FB9C6", "zoom": 0},
     "basin": {"color": "#8FB9C6", "zoom": 0},
-    "quarry": {"color": "#BDBDBD", "zoom": 0},
+    "quarry": {"color": "#BDBDBD", "zoom": 20},
     "landfill": {"color": "#AFAF8C", "zoom": 0},
     "brownfield": {"color": "#AFAF8C", "zoom": 0},
     "industrial": {"color":  "#c4b9c1", "zoom":  0},
@@ -204,6 +204,7 @@
   "natural": {
     "width": 1,
     "defaultColor" : "#cfe8c8",
+<<<<<<< Updated upstream
     "wood": { "color": "#8FBF7A", "zoom": 0 },
     "scrub": { "color": "#A8C686", "zoom": 0 },
     "heath": { "color": "#C6C88E", "zoom": 0 },
@@ -211,6 +212,16 @@
     "sand": { "color": "#E6D6A8", "zoom": 0 },
     "beach": { "color": "#E6D6A8", "zoom": 0 },
     "shoal": { "color": "#2b8cbe", "zoom": 15 },
+=======
+    "wood": { "color": "#8FBF7A", "zoom": 5 },
+    "scrub": { "color": "#A8C686", "zoom": 5 },
+    "heath": { "color": "#C6C88E", "zoom": 5 },
+    "grassland": { "color": "#A9C98C", "zoom": 5 },
+    "sand": { "color": "#E6D6A8", "zoom": 10 },
+    "beach": { "color": "#E6D6A8", "zoom": 10 },
+    "shoal": { "color": "#2b8cbe", "zoom": 25 },
+    "water": { "color":  "2b8cbe", "zoom":  25},
+>>>>>>> Stashed changes
     "//Comment" : "Slash at the end of the tag to not create error reading as it has not yet gotten color and zoom",
     "peak": { "color": "#9E9E9E", "zoom": 10 },
     "tree": { "color": "#5E9E6A", "zoom": 30 },

@@ -1,6 +1,7 @@
 package models;
 
 import interfaces.InsertableInRtree;
+import interfaces.Renderable;
 import rendering.wayType;
 import spatialDatastructures.RtreeNode;
 
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OsmWay extends OsmElement implements Serializable, InsertableInRtree {
+public class OsmWay extends OsmElement implements Serializable, InsertableInRtree, Renderable {
     private static final long serialVersionUID = 1L;
 
     private final List<OsmNode> nodes;
@@ -84,12 +85,14 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
     //–––––––––Tag Handling–––––––––//
 
     //Checker if tag exist
+    @Override
     public boolean hasTag(String key, String value) {
         return value.equals(tags.get(key));
     }
 
+    @Override
     //Tag checker
-    public boolean isWayType(wayType type) {
+    public boolean isType(wayType type) {
         switch (type) {
             case wayType.NON_DRAWING:
                 return (hasTag("location", "underground")
@@ -127,20 +130,20 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
 
     //Get method for the tag value
     public String getValue() {
-        if(isWayType(wayType.NATURAL)) return tags.get("natural");
-        else if(isWayType(wayType.ROAD)) {
-            if(!isWayType(wayType.ROAD)) return null;
+        if(isType(wayType.NATURAL)) return tags.get("natural");
+        else if(isType(wayType.ROAD)) {
+            if(!isType(wayType.ROAD)) return null;
             return tags.get("highway");
         }
-        else if(isWayType(wayType.LANDUSE)) return tags.get("landuse");
-        else if(isWayType(wayType.SEAROUTE)) {
+        else if(isType(wayType.LANDUSE)) return tags.get("landuse");
+        else if(isType(wayType.SEAROUTE)) {
             if(tags.get("seamark:type") != null) return tags.get("seamark:type");
             else if (tags.get("route") != null) return tags.get("seamark:type");
         }
-        else if(isWayType(wayType.BUILDING)) return tags.get("building");
-        else if(isWayType(wayType.AMENITIES)) return tags.get("amenity");
-        else if(isWayType(wayType.AEROWAYS)) return tags.get("aeroway");
-        else if(isWayType(wayType.MAN_MADE)) return tags.get("man_made");
+        else if(isType(wayType.BUILDING)) return tags.get("building");
+        else if(isType(wayType.AMENITIES)) return tags.get("amenity");
+        else if(isType(wayType.AEROWAYS)) return tags.get("aeroway");
+        else if(isType(wayType.MAN_MADE)) return tags.get("man_made");
         return null;
     }
 

@@ -1,21 +1,19 @@
 package models;
 
-import com.sun.javafx.scene.shape.LineHelper;
-
 import java.io.Serializable;
 import java.util.*;
 
-public class CoastlineStitcher implements Serializable {
+public class Stitcher implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private CoastlineStitcher() {}
+    private Stitcher() {}
 
-    public static List<OsmWay> stitch(HashMap<Long, OsmWay> OsmWayMap) {
+    public static List<OsmWay> stitch(List<OsmWay> ways) {
         List<OsmWay> result = new ArrayList<>();
         Map<Long, OsmWay> startMap = new HashMap<>();
 
-        for(OsmWay way : OsmWayMap.values()) {
-            if(!way.hasTag("natural", "coastline") || way.getNodes() == null) continue;
+        for(OsmWay way : ways) {
+            if(way.getNodes() == null || way.getNodes().size() < 2 || way.getNodes().isEmpty()) continue;
 
             if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()) {
                 result.add(way); //closed added to result
@@ -51,6 +49,7 @@ public class CoastlineStitcher implements Serializable {
             }
 
             if (chain.size() >= 2) {
+                //TODO: NOT ALL COASTLINE NOW
                 Map<String, String> tags = new HashMap<>();
                 tags.put("natural", "coastline");
                 result.add(new OsmWay(-1L, chain, tags));
