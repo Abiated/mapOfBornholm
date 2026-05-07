@@ -1,8 +1,10 @@
 package GUI;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.beans.value.ChangeListener;
+import javafx.util.Duration;
 
 public class SeaSlider extends Slider {
 
@@ -15,9 +17,14 @@ public class SeaSlider extends Slider {
 
         this.sliderLabel = new Label(label);
 
+        //Can be changed depending on when we want the sea level to change
+        PauseTransition debounce = new PauseTransition(Duration.millis(50));
         this.valueProperty().addListener((obs, oldValue, newValue) -> {
             sliderLabel.setText(String.format("Sea level: %.1f m", newValue.floatValue()));
-            change.changed(obs, oldValue, newValue);
+            debounce.setOnFinished( e -> {
+                change.changed(obs, oldValue, newValue);
+            });
+            debounce.playFromStart();
         });
     }
 

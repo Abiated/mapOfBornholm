@@ -22,8 +22,10 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 1
     public Path2D getBoundaryPath() {
+        if(cachedBoundaryPath != null) return (Path2D) cachedBoundaryPath;
 
         Path2D path = new Path2D.Float();
+        if(coords.isEmpty()) return path;
 
         path.moveTo(coords.getFirst().getLon(), coords.getFirst().getLat());
 
@@ -53,23 +55,35 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 2
     public Path2D getRegionPath() {
+        if(cachedRegionPath != null) return (Path2D) cachedRegionPath;
 
         Path2D path = new Path2D.Float(Path2D.WIND_EVEN_ODD);
 
-        Shape boundaryPath;
-        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
-        else boundaryPath = getCachedBoundaryPath();
-        path.append(boundaryPath, false);
-
+        path.append(getBoundaryPath(), false);
         for (HeightCurve child : children) {
-            if (child.getCachedBoundaryPath()==null)
-                path.append(child.getBoundaryPath(), false);
-            else
-                path.append(child.getCachedBoundaryPath(), false);
+            path.append(child.getBoundaryPath(), false);
         }
+//        for(int i = 1; i < coords.size(); i++) {
+//            path.lineTo(coords.get(i).getLon(), coords.get(i).getLat());
+//        }
 
-        setCachedRegionPath(path);
+        cachedRegionPath = path;
         return path;
+
+//        Shape boundaryPath;
+//        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
+//        else boundaryPath = getCachedBoundaryPath();
+//        path.append(boundaryPath, false);
+//
+//        for (HeightCurve child : children) {
+//            if (child.getCachedBoundaryPath()==null)
+//                path.append(child.getBoundaryPath(), false);
+//            else
+//                path.append(child.getCachedBoundaryPath(), false);
+//        }
+//
+//        setCachedRegionPath(path);
+//        return path;
     }
 
     // Task 3
