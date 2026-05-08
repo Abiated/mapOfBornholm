@@ -17,9 +17,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import models.*;
 import parser.HcParser;
 import parser.Parser;
@@ -369,7 +366,7 @@ public class App extends DrawingApp {
             return;
         }
 
-        submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(graph, OSMdata, HCdata, SEA_LEVEL);
+        submergedVertices = SubmergedVertexFinder.findSubmergedVertices(graph, OSMdata, HCdata, SEA_LEVEL);
     }
 
     private HeightCurveData loadDefaultHeightCurveData() {

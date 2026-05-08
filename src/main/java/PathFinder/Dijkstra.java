@@ -22,6 +22,7 @@ public class Dijkstra {
 
     public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type, Set<Integer> submergedVertices) {
         vehicleType = type;
+        //ternary operater used for readability. Means condition ? if true do : if false do
         this.submergedVertices = submergedVertices != null ? submergedVertices : new HashSet<>();
         edgeTo = new DirectedEdge[G.V]; //array edgeTo
         distTo = new float[G.V]; //array disTo

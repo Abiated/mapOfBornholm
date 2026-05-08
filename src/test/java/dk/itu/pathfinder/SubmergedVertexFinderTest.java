@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SubmergedVertexFinderTest {
 
-    //TODO: Many more comments to understand what is going on
+    //TODO: Many more comments to easily understand what is going on for exam
+    // TODO: is is too much with the tree tests & aroundMiddelNode?
 
     @Test
     public void findsOnlyGraphVerticesInsideSubmergedHeightCurve() throws Exception {
@@ -35,7 +36,7 @@ public class SubmergedVertexFinderTest {
         EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser, config);
         HeightCurveData heightCurveData = createHeightCurveDataAroundMiddleNode();
 
-        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(
+        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices(
                 graph, parser, heightCurveData, 1.0F);
 
         int leftVertex = graph.indexOf(1L);
@@ -60,7 +61,7 @@ public class SubmergedVertexFinderTest {
         boundingBox.setAccessible(true);
         boundingBox.set(curve, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
 
-        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(
+        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices(
                 graph, parser, heightCurveData, 1.0F);
 
         int middleVertex = graph.indexOf(2L);
@@ -76,7 +77,7 @@ public class SubmergedVertexFinderTest {
         EdgeWeightedDigraph graph = EdgeWeightedDigraph.constructGraph(parser, config);
         HeightCurveData heightCurveData = createHeightCurveDataAroundMiddleNode();
 
-        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(
+        Set<Integer> submergedVertices = SubmergedVertexFinder.findSubmergedVertices(
                 graph, parser, heightCurveData, -1.0F);
 
         assertEquals(0, submergedVertices.size());
@@ -129,6 +130,7 @@ public class SubmergedVertexFinderTest {
         return new HeightCurveData(0.0F, 0.0F, 3.0F, 3.0F, sea, curves);
     }
 
+    //helper for controlled testing
     private void addRepeatedCoordinate(List<Coordinate> coords, Coordinate coordinate, int numberOfTimes) {
         int i;
         for (i = 0; i < numberOfTimes; i++) {
@@ -136,6 +138,7 @@ public class SubmergedVertexFinderTest {
         }
     }
 
+    //helper for controlled testing
     private JsonNode createConfig() throws Exception {
         String json = "{ \"highway\": { \"residential\": { \"speed\": 50, " +
                 "\"driveable\": true, \"cyclable\": true, \"walkable\": true } } }";

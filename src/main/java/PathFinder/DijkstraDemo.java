@@ -25,7 +25,7 @@ import java.util.List;
 
 import java.util.*;
 
-import static PathFinder.SubmergedVertexFinder.findSubmergedVertices2;
+import static PathFinder.SubmergedVertexFinder.findSubmergedVertices;
 
 
 
@@ -119,7 +119,7 @@ try{
         //Set<Integer> submergedVertices = new HashSet<>(); //Standard is none are submerged and thus set to an empty set for now
 
         //get information on submerged vertices
-        Set<Integer> submergedVertices = findSubmergedVertices2(graph, parser, hcData, (float) seaLevel);
+        Set<Integer> submergedVertices = findSubmergedVertices(graph, parser, hcData, (float) seaLevel);
 
         //run Dijkstra on the start and target node with the specified vehicle type
         Dijkstra dijkstra = new Dijkstra(graph, startIndex, targetIndex, vehicleType, submergedVertices);

@@ -64,6 +64,7 @@ public class DijkstraTest {
         assertFalse(dijkstraToSubmergedTarget.hasPathTo(3));
     }
 
+    // helper which creates a controlled EdgeWeightedDigraph for our tests
     private EdgeWeightedDigraph createGraphWithTwoPossibleRoutes() {
         EdgeWeightedDigraph graph = new EdgeWeightedDigraph(4);
 

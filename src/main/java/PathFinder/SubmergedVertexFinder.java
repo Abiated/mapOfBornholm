@@ -26,7 +26,7 @@ public class SubmergedVertexFinder {
      * Instead of looping through ALL parser nodes,
      * we only loop through nodes that are actually vertices in the road graph.
      */
-    public static Set<Integer> findSubmergedVertices2(EdgeWeightedDigraph graph, Parser parser, HeightCurveData hcData, float seaLevel
+    public static Set<Integer> findSubmergedVertices(EdgeWeightedDigraph graph, Parser parser, HeightCurveData hcData, float seaLevel
     ) {
         Set<Integer> submergedVertices = new HashSet<>();
 
