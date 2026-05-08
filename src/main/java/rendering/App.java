@@ -430,12 +430,6 @@ public class App extends DrawingApp {
             drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom, combined);
             //Draws polygon for coastline
             drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, combined);
-<<<<<<< Updated upstream
-            //Draws natural ways
-            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
-            //Draws landuse ways
-            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, combined);
-=======
 //            //Draws natural ways
 //            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
             //Draw aeroways
@@ -448,7 +442,6 @@ public class App extends DrawingApp {
             drawLayer(wayType.MAN_MADE, gc, strokeWidth, zoom, combined);
             //Draws amenity
             drawLayer(wayType.AMENITIES, gc, strokeWidth, zoom, combined);
->>>>>>> Stashed changes
             //Draws roads
             drawLayer(wayType.ROAD, gc, strokeWidth, zoom, combined);
             //Draws buildings
@@ -528,16 +521,6 @@ public class App extends DrawingApp {
 
     public float getZoomLevel(OsmWay way) {
         String key = null;
-<<<<<<< Updated upstream
-        if (way.isWayType(wayType.NATURAL)) key = "natural";
-        else if (way.isWayType(wayType.ROAD)) key = "highway";
-        else if (way.isWayType(wayType.LANDUSE)) key = "landuse";
-        else if (way.isWayType(wayType.SEAROUTE)) key = "searoute";
-        else if (way.isWayType(wayType.WATER)) key = "water";
-        else if (way.isWayType(wayType.AMENITIES)) key = "amenity";
-        else if (way.isWayType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.isWayType(wayType.MAN_MADE)) key = "man_made";
-=======
         if (way.isType(wayType.NATURAL)) key = "natural";
         else if (way.isType(wayType.ROAD)) key = "highway";
         else if (way.isType(wayType.LANDUSE)) key = "landuse";
@@ -545,7 +528,6 @@ public class App extends DrawingApp {
         else if (way.isType(wayType.AMENITIES)) key = "amenity";
         else if (way.isType(wayType.AEROWAYS)) key = "aeroway";
         else if (way.isType(wayType.MAN_MADE)) key = "man_made";
->>>>>>> Stashed changes
 //        else if (way.isLeisure()) {
 //            key = "leisure";
 //            return (float) jRoot.path(key).path("zoom").asDouble();
@@ -553,12 +535,9 @@ public class App extends DrawingApp {
         else if (way.isType(wayType.BUILDING)) {
             key = "building";
             return (float) jRoot.path(key).path("zoom").asDouble();
-<<<<<<< Updated upstream
-=======
         } else if(way.isType(wayType.SEAROUTE)) {
             key = "searoute";
             return (float) jRoot.path(key).path("zoom").asDouble();
->>>>>>> Stashed changes
         }
         else return 0;
         JsonNode jPath = jRoot.path(key).path(way.getValue()).path("zoom");

@@ -1,23 +1,13 @@
 package rendering;
 
 import com.fasterxml.jackson.databind.JsonNode;
-<<<<<<< Updated upstream
-import models.HeightCurve;
-import models.OsmNode;
-import models.OsmWay;
-
-import java.awt.*;
-import java.awt.geom.Path2D;
-=======
 import interfaces.Renderable;
 import models.*;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
->>>>>>> Stashed changes
 import java.util.Map;
 
 public class Renderer {
@@ -29,14 +19,8 @@ public class Renderer {
         this.gc = gc;
         this.jn =jn;
     }
-<<<<<<< Updated upstream
-
-    Path2D getWayPath(OsmWay way) {
-=======
-    
     //OSMWAY RENDERING
     public Path2D getWayPath(OsmWay way) {
->>>>>>> Stashed changes
         // If the way has less than two nodes, draw nothing
         if (way.getNodes() == null || way.getNodes().size() < 2) {
             return new Path2D.Float();
@@ -93,24 +77,15 @@ public class Renderer {
         return new Path2D.Float();
     }
 
-<<<<<<< Updated upstream
-    void setWayColor(OsmWay way, float strokeWidth) {
-=======
     public void setColor(Renderable way, float strokeWidth) {
->>>>>>> Stashed changes
         //Map<String, String> tags = way.getTags();
 
         // Default color
         gc.setColor(Color.red);
 
-<<<<<<< Updated upstream
-        if(way.hasTag("natural", "coastline")) {
-            gc.setColor(Color.yellow);
-=======
         if(way.isType(wayType.COASTLINE)) {
             gc.setColor(Color.decode("#EDE8D0"));
             return;
->>>>>>> Stashed changes
         }
         if (way.isType(wayType.WATER)) {
             gc.setColor(Color.decode("#2b8cbe"));
@@ -122,19 +97,6 @@ public class Renderer {
             gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
-<<<<<<< Updated upstream
-
-        String key = null;
-        if (way.isWayType(wayType.BUILDING)) key = "natural";
-        else if (way.isWayType(wayType.NATURAL)) key = "natural";
-        else if (way.isWayType(wayType.ROAD)) key = "highway";
-        else if (way.isWayType(wayType.LANDUSE)) key = "landuse";
-        else if (way.isWayType(wayType.SEAROUTE)) key = "searoute";
-        else if (way.isWayType(wayType.WATER)) key = "water";
-        else if (way.isWayType(wayType.AMENITIES)) key = "amenity";
-        else if (way.isWayType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.isWayType(wayType.MAN_MADE)) key = "man_made";
-=======
         if (way.isType(wayType.SEAROUTE)) {
             gc.setColor(Color.decode(jn.path("searoute").path("color").asText()));
             gc.setStroke(new BasicStroke(strokeWidth * 1,
@@ -152,7 +114,6 @@ public class Renderer {
         else if (way.isType(wayType.AMENITIES)) key = "amenity";
         else if (way.isType(wayType.AEROWAYS)) key = "aeroway";
         else if (way.isType(wayType.MAN_MADE)) key = "man_made";
->>>>>>> Stashed changes
         else key = "other";
 
         JsonNode jPath = jn.path(key).path(way.getValue());
@@ -177,18 +138,6 @@ public class Renderer {
         } else gc.setStroke(new BasicStroke(strokeWidth));
     }
 
-<<<<<<< Updated upstream
-    Path2D getHcBoundaryPath(HeightCurve curve) {
-        Path2D hc = new Path2D.Float();
-        // problemer opstår hvis heightcurve ikke er parsed
-        float x1 = curve.getCoords().getFirst().getLon();
-        float y1 = curve.getCoords().getFirst().getLat();
-        hc.moveTo(x1,y1);
-        for (int i = 1; i<curve.getCoords().size(); i++) {
-            float x = curve.getCoords().get(i).getLon();
-            float y = curve.getCoords().get(i).getLat();
-            hc.lineTo(x,y);
-=======
     //OSMRELATION RENDERING
     public void renderMultipolygon(OsmRelation relation, Shape projected) {
         if(relation.getTags() == null ||projected == null) return;
@@ -218,7 +167,6 @@ public class Renderer {
 
             if(member.getRole().equals("outer")) outerWays.add(way);
             else if(member.getRole().equals("inner")) innerWays.add(way);
->>>>>>> Stashed changes
         }
 
         if (outerWays.isEmpty()) return null;
@@ -254,4 +202,3 @@ public class Renderer {
 //        return hc;
 //    }
 }
-

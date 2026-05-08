@@ -204,15 +204,6 @@
   "natural": {
     "width": 1,
     "defaultColor" : "#cfe8c8",
-<<<<<<< Updated upstream
-    "wood": { "color": "#8FBF7A", "zoom": 0 },
-    "scrub": { "color": "#A8C686", "zoom": 0 },
-    "heath": { "color": "#C6C88E", "zoom": 0 },
-    "grassland": { "color": "#A9C98C", "zoom": 0 },
-    "sand": { "color": "#E6D6A8", "zoom": 0 },
-    "beach": { "color": "#E6D6A8", "zoom": 0 },
-    "shoal": { "color": "#2b8cbe", "zoom": 15 },
-=======
     "wood": { "color": "#8FBF7A", "zoom": 5 },
     "scrub": { "color": "#A8C686", "zoom": 5 },
     "heath": { "color": "#C6C88E", "zoom": 5 },
@@ -221,7 +212,6 @@
     "beach": { "color": "#E6D6A8", "zoom": 10 },
     "shoal": { "color": "#2b8cbe", "zoom": 25 },
     "water": { "color":  "2b8cbe", "zoom":  25},
->>>>>>> Stashed changes
     "//Comment" : "Slash at the end of the tag to not create error reading as it has not yet gotten color and zoom",
     "peak": { "color": "#9E9E9E", "zoom": 10 },
     "tree": { "color": "#5E9E6A", "zoom": 30 },
@@ -231,9 +221,30 @@
     "wetland" : { "color": "#cfe8c8", "zoom": 0 },
     "bay" : { "color": "#2b8cbe", "zoom": 8 } },
 
-  "leisure" : {
-    "defaultColor" : "#405621",
-    "zoom": 0
+  "amenity" : {
+    "cemetery": { "color":  "#D1E8D0", "zoom":  40 },
+    "grave_yard": { "color":  "#D1E8D0", "zoom":  40},
+    "parking": { "color": "#E0E4E8", "zoom":  40}
+  },
+
+  "searoute" : {
+    "color": "#98b9ed",
+    "zoom": 10
+  },
+
+  "aeroway" : {
+    "aerodrome": {"color":  "#b5bab9", "zoom":  20},
+    "apron": {"color":  "##979c9b", "zoom":  50},
+    "parking_position": {"color":  "#e6e8e8", "zoom":  40, "width": 0},
+    "taxiway": {"color":  "#8d5dd4", "zoom":  40, "width": 10},
+    "runway": {"color":  "#6205ed", "zoom":  40, "width": 20}
+  },
+
+  "man_made" : {
+    "pier": {"color": "#ede5c0", "zoom": 30},
+    "cutline": {"color": "#d1edc0", "zoom": 40},
+    "breakwater": {"color": "#6e6c70", "zoom": 30},
+    "conveyer": {"dashed":  true, "color": "#747573", "zoom": 40}
   },
 
   "building": {
