@@ -22,19 +22,31 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 1
     public Path2D getBoundaryPath() {
+        if(cachedBoundaryPath != null) return (Path2D) cachedBoundaryPath;
 
         Path2D path = new Path2D.Float();
+        if(coords.isEmpty()) return path;
 
         path.moveTo(coords.getFirst().getLon(), coords.getFirst().getLat());
 
-        for (int i = 1; i < coords.size(); i+=20) {
-            float x = coords.get(i).getLon();
-            float y = coords.get(i).getLat();
-            if(i == coords.size()-20) {
-                int minus = 20 - (coords.size() % 20);
-                i -= minus;
+        if (coords.size()<=20) {
+            for (int i = 1; i < coords.size(); i++) {
+                float x = coords.get(i).getLon();
+                float y = coords.get(i).getLat();
+                path.lineTo(x, y);
             }
-            path.lineTo(x, y);
+        }
+
+        else {
+            for (int i = 1; i < coords.size(); i += 20) {
+                float x = coords.get(i).getLon();
+                float y = coords.get(i).getLat();
+                if (i == coords.size() - 20) {
+                    int minus = 20 - (coords.size() % 20);
+                    i -= minus;
+                }
+                path.lineTo(x, y);
+            }
         }
 
         setCachedBoundaryPath(path);
@@ -43,23 +55,35 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 2
     public Path2D getRegionPath() {
+        if(cachedRegionPath != null) return (Path2D) cachedRegionPath;
 
         Path2D path = new Path2D.Float(Path2D.WIND_EVEN_ODD);
 
-        Shape boundaryPath;
-        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
-        else boundaryPath = getCachedBoundaryPath();
-        path.append(boundaryPath, false);
-
+        path.append(getBoundaryPath(), false);
         for (HeightCurve child : children) {
-            if (child.getCachedBoundaryPath()==null)
-                path.append(child.getBoundaryPath(), false);
-            else
-                path.append(child.getCachedBoundaryPath(), false);
+            path.append(child.getBoundaryPath(), false);
         }
+//        for(int i = 1; i < coords.size(); i++) {
+//            path.lineTo(coords.get(i).getLon(), coords.get(i).getLat());
+//        }
 
-        setCachedRegionPath(path);
+        cachedRegionPath = path;
         return path;
+
+//        Shape boundaryPath;
+//        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
+//        else boundaryPath = getCachedBoundaryPath();
+//        path.append(boundaryPath, false);
+//
+//        for (HeightCurve child : children) {
+//            if (child.getCachedBoundaryPath()==null)
+//                path.append(child.getBoundaryPath(), false);
+//            else
+//                path.append(child.getCachedBoundaryPath(), false);
+//        }
+//
+//        setCachedRegionPath(path);
+//        return path;
     }
 
     // Task 3
@@ -121,6 +145,27 @@ public class HeightCurve implements Serializable, InsertableInRtree {
             boundingBox = computeBoundingBox();
         }
         return boundingBox;
+    }
+
+    private float[] computeBoundingBox() {
+        if (coords.isEmpty()) return new float[]{0, 0, 0, 0};
+
+        float minLat = Float.MAX_VALUE, maxLat = Float.MIN_VALUE;
+        float minLon = Float.MAX_VALUE, maxLon = Float.MIN_VALUE;
+
+        for(Coordinate coords : coords) {
+            if(coords.getLon() > maxLon) maxLon = coords.getLon();
+            if(coords.getLon() < minLon) minLon = coords.getLon();
+            if(coords.getLat() > maxLat) maxLat = coords.getLat();
+            if(coords.getLat() < minLat) minLat = coords.getLat();
+        }
+
+        return new float[]{minLon, maxLon, minLat, maxLat};
+
+    }
+
+    private boolean isEmptyBoundingBox(float[] boundingBox) {
+        return boundingBox[0] == 0 && boundingBox[1] == 0 && boundingBox[2] == 0 && boundingBox[3] == 0;
     }
 
     public boolean intersects(float[] otherBbox) {

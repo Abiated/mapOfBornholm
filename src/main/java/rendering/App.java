@@ -31,12 +31,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -54,11 +50,10 @@ public class App extends DrawingApp {
     private HeightCurveData HCdata;
     private Parser OSMdata;
     private HeightCurve sea;
+    private HeightCurve outer;
     private Data projectionSource;
     private HashMap<Long, OsmWay> ways;
-    // waysByType er nu et map der mapper hver waytype til en array af lister af ways,
-    // hvor index 0 i arrayet indeholder listen af ways der skal vises ved lavt zoom osv
-    // index 2 indeholder alle ways af typen da alt skal vises ved højt zoom
+    private List<HeightCurve> curves;
     private final EnumMap<wayType, List<OsmWay>> waysByType = new EnumMap<>(wayType.class);
     private JsonNode jRoot;
     private Renderer renderer;
@@ -116,7 +111,8 @@ public class App extends DrawingApp {
         //Get sea from HCdata and ways
         if (HCdata != null) sea = HCdata.sea;
         if (OSMdata != null) ways = OSMdata.getOsmWayMap();
-        t = getProjectionTransform(OSMdata);
+        if (OSMdata != null) t = getProjectionTransform(OSMdata);
+        else t = getProjectionTransform(HCdata);
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -129,11 +125,11 @@ public class App extends DrawingApp {
             System.out.println(e.getMessage());
         }
 
-        graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
+        if (OSMdata != null) graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
 
         // coastline, water, searoute, other har ikke zoom værdier.
 
-        if (OSMdata != null){
+        if (OSMdata != null) {
             for (wayType type : wayType.values()) {
                 if (type == wayType.COASTLINE) continue;
                 waysByType.put(type, new ArrayList<>());
@@ -160,25 +156,46 @@ public class App extends DrawingApp {
             }
         }
 
+
         // CREATE R TREES
-        List<HeightCurve> curves = new ArrayList<>(HCdata.curves);
-        curves.remove(sea);
-        curves.removeIf(c -> c.getCoords() == null
-                                    || c.getCoords().isEmpty()
-                                    || c.getBoundingBox() == null);
+        if (HCdata != null) {
+           curves = new ArrayList<>(HCdata.getCurves());
 
-        HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves),32);
+            // hjemmelavet heightcurve til at indeholde alle andre
+            // systemet går i stykker hvis OSMdata er null
+            if (OSMdata != null) {
+                List<Coordinate> coordlist = new ArrayList<>();
+                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMinLon()));
+                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMaxLon()));
+                coordlist.add(new Coordinate(OSMdata.getMaxLat(), OSMdata.getMaxLon()));
+                coordlist.add(new Coordinate(OSMdata.getMaxLat(), OSMdata.getMinLon()));
+                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMinLon()));
+                outer = new HeightCurve(-1, 0, coordlist, sea.getChildren());
+                curves.add(outer);
+            }
+            //
 
-        RtreesByType.put(wayType.COASTLINE,
-                new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)),32));
+            curves.remove(sea);
+            curves.removeIf(c -> c.getCoords() == null
+                    || c.getCoords().isEmpty()
+                    || c.getBoundingBox() == null);
+
+            //HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves), 32);
+        }
+
+        if (OSMdata != null) {
+            RtreesByType.put(wayType.COASTLINE,
+                    new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)), 32));
 
         for (wayType type : wayType.values()) {
-            if(type == wayType.COASTLINE) continue;
+            if (type == wayType.COASTLINE) continue;
             List<OsmWay> list = waysByType.get(type);
-            if(list != null && !list.isEmpty())
+            if (list != null && !list.isEmpty())
                 RtreesByType.put(type,
-                        new Rtree(new ArrayList<InsertableInRtree>(list),32));
+                        new Rtree(new ArrayList<InsertableInRtree>(list), 32));
         }
+    }
+
 
         //---------GUI CODE---------//
         //Creating SeaSlider and ScaleBar with our bottomControls
@@ -404,11 +421,6 @@ public class App extends DrawingApp {
         )));
         strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
-        if(HCdata != null) {
-            sea.resetSubmerged();
-            sea.submerge(SEA_LEVEL);
-        }
-
         if (OSMdata != null) {
             //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
             //Draws waterways, lakes, ponds and so on
@@ -437,24 +449,28 @@ public class App extends DrawingApp {
 
         //HeightCurves raw paths
         if(HCdata != null) {
-            List<InsertableInRtree> curves;
-            //if (zoom > CutOffToRtree) {
-            curves = HeightCurveRTree.search(getViewPortBoundingBox());
-             curves = new ArrayList<>(HCdata.curves);
-            for (InsertableInRtree element : curves) {
+            // bruger outer som sea da dens children er identiske med sea
+            outer.resetSubmerged();
+            outer.submerge(SEA_LEVEL);
 
-                HeightCurve curve = (HeightCurve) element;
+            float[] bbox = getViewPortBoundingBox();
+
+            //List<InsertableInRtree> curves;
+            //if (zoom > CutOffToRtree) {
+            //curves = HeightCurveRTree.search(getViewPortBoundingBox());
+            //curves = new ArrayList<>(HCdata.curves);
+            for (HeightCurve curve : curves) {
+                //HeightCurve curve = (HeightCurve) element;
                 if (curve == sea) {
                     continue;
                 }
+                if (!curve.intersects(bbox)) continue;
                 if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
                 if (curve.getCachedRegionPath() == null)
                     gc.fill(project(curve.getRegionPath(), combined));
-                    //gc.fill(curve.getRegionPath());
                 else
                     gc.fill(project(curve.getCachedRegionPath(), combined));
-                    //gc.fill(curve.getCachedShape());
             }
         }
 
