@@ -16,6 +16,8 @@ public class RtreeNode {
     }
 
     private float[] computeBBox() {
+        if(children.isEmpty()) return new float[] {0, 0, 0, 0};
+
         float[] first = getBBox(children.get(0));
 
         float minX = first[0];

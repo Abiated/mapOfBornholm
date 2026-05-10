@@ -125,8 +125,9 @@ public class App extends DrawingApp {
         // coastline, water, searoute, other har ikke zoom værdier.
 
         //Midlertidig
-        multipolygon = OSMdata.getOsmRelationMap().values().stream().filter(r -> r.getTags() != null
-        && r.hasTag("type", "multipolygon")).toList();
+        if(OSMdata != null)
+            multipolygon = OSMdata.getOsmRelationMap().values().stream().filter(r -> r.getTags() != null
+            && r.hasTag("type", "multipolygon")).toList();
 
         if (OSMdata != null) {
             for (wayType type : wayType.values()) {
@@ -466,8 +467,13 @@ public class App extends DrawingApp {
         //HeightCurves raw paths
         if(HCdata != null) {
             // bruger outer som sea da dens children er identiske med sea
-            outer.resetSubmerged();
-            outer.submerge(SEA_LEVEL);
+            if(outer != null) {
+                outer.resetSubmerged();
+                outer.submerge(SEA_LEVEL);
+            } else {
+                sea.resetSubmerged();
+                sea.submerge(SEA_LEVEL);
+            }
 
             float[] bbox = getViewPortBoundingBox();
 

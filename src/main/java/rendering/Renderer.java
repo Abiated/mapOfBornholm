@@ -1,7 +1,7 @@
 package rendering;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import interfaces.Renderable;
+//import interfaces.Renderable;
 import models.*;
 
 import java.awt.*;
@@ -77,27 +77,27 @@ public class Renderer {
         return new Path2D.Float();
     }
 
-    public void setColor(Renderable way, float strokeWidth) {
+    public void setColor(OsmElement element, float strokeWidth) {
         //Map<String, String> tags = way.getTags();
 
         // Default color
         gc.setColor(Color.red);
 
-        if(way.isType(wayType.COASTLINE)) {
+        if(element.isType(wayType.COASTLINE)) {
             gc.setColor(Color.decode("#EDE8D0"));
             return;
         }
-        if (way.isType(wayType.WATER)) {
+        if (element.isType(wayType.WATER)) {
             gc.setColor(Color.decode("#2b8cbe"));
             //gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
-        if(way.isType(wayType.BUILDING)) {
+        if(element.isType(wayType.BUILDING)) {
             gc.setColor(Color.decode(jn.path("building").path("color").asText()));
             gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
-        if (way.isType(wayType.SEAROUTE)) {
+        if (element.isType(wayType.SEAROUTE)) {
             gc.setColor(Color.decode(jn.path("searoute").path("color").asText()));
             gc.setStroke(new BasicStroke(strokeWidth * 1,
                     BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
@@ -106,17 +106,17 @@ public class Renderer {
         }
 
         String key = null;
-        if (way.isType(wayType.BUILDING)) key = "natural";
-        else if (way.isType(wayType.NATURAL)) key = "natural";
-        else if (way.isType(wayType.ROAD)) key = "highway";
-        else if (way.isType(wayType.LANDUSE)) key = "landuse";
-        else if (way.isType(wayType.WATER)) key = "water";
-        else if (way.isType(wayType.AMENITIES)) key = "amenity";
-        else if (way.isType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.isType(wayType.MAN_MADE)) key = "man_made";
+        if (element.isType(wayType.BUILDING)) key = "natural";
+        else if (element.isType(wayType.NATURAL)) key = "natural";
+        else if (element.isType(wayType.ROAD)) key = "highway";
+        else if (element.isType(wayType.LANDUSE)) key = "landuse";
+        else if (element.isType(wayType.WATER)) key = "water";
+        else if (element.isType(wayType.AMENITIES)) key = "amenity";
+        else if (element.isType(wayType.AEROWAYS)) key = "aeroway";
+        else if (element.isType(wayType.MAN_MADE)) key = "man_made";
         else key = "other";
 
-        JsonNode jPath = jn.path(key).path(way.getValue());
+        JsonNode jPath = jn.path(key).path(element.getValue());
 
         String color = jPath.isMissingNode() ? jn.path(key).path("defaultColor").asText()
                 : jPath.path("color").asText();
@@ -128,7 +128,7 @@ public class Renderer {
             System.out.println(e.getMessage());
         }
 
-        if(way.isType(wayType.ROAD)) {
+        if(element.isType(wayType.ROAD)) {
             int width = jPath.isMissingNode() ? 1 : jPath.path("width").asInt();
             if(jPath.path("dashed").asBoolean()) {
                 gc.setStroke(new BasicStroke(strokeWidth * width,

@@ -217,8 +217,8 @@ public class ParserTests {
             //Assert
             for (OsmWay way : expectedWays.values()) {
                 //Assert that each way actually has the correct tags
-                HashMap<String, String> expectedTags = way.getTags();
-                HashMap<String, String> actualTags = actualWays.get(way.getId()).getTags();
+                HashMap<String, String> expectedTags = (HashMap<String, String>) way.getTags();
+                HashMap<String, String> actualTags = (HashMap<String, String>) actualWays.get(way.getId()).getTags();
 
                 assertEquals(expectedTags.size(), actualTags.size(), () -> String.format("[ERROR - %s] : Way #%d has %d tag pairs, should be %d", pr.getName(), way.getId(), actualTags.size(), expectedTags.size()));
 
@@ -300,8 +300,8 @@ public class ParserTests {
                 OsmRelation actualRelation = actualRelations.get(expectedRelation.getId());
 
                 //Assert relation has correct amount of tags
-                HashMap<String, String> expectedTags = expectedRelation.getTags();
-                HashMap<String, String> actualTags = actualRelation.getTags();
+                HashMap<String, String> expectedTags = (HashMap<String, String>) expectedRelation.getTags();
+                HashMap<String, String> actualTags = (HashMap<String, String>) actualRelation.getTags();
                 assertEquals(expectedTags.size(), actualTags.size(), () -> String.format("[ERROR - %s] : Relation #%d has %d tag pairs, should be %d", pr.getName(), actualRelation.getId(), actualTags.size(), expectedTags.size()));
 
                 //Assert relation has correct tag-keys
