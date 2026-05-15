@@ -14,6 +14,7 @@ import models.OsmWay;
 import models.Member;
 
 public class Parser implements IParser, Data, Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     //private final String fileName;
@@ -21,7 +22,7 @@ public class Parser implements IParser, Data, Serializable {
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
     private final HashMap<Long, OsmRelation> osmRelationMap = new HashMap<>();
-    private transient InputStream inputStream;
+    private final transient InputStream inputStream;
 
     public Parser(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -233,7 +234,7 @@ public class Parser implements IParser, Data, Serializable {
 
     @Override
     public float getMinLat() {
-        return boundingBox.get(0);
+        return boundingBox.getFirst();
     }
 
     @Override

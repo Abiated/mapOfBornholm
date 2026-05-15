@@ -1,11 +1,5 @@
 package PathFinder;
 
-//import TagHelper.Direction;
-//import TagHelper.TagtoLife;
-//import dk.itu.parser.Parser;
-//import dk.itu.renderer.osm.OsmNode;
-//import dk.itu.renderer.osm.OsmWay;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import interfaces.InsertableInRtree;
 import models.OsmNode;

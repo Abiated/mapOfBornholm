@@ -1,10 +1,5 @@
 package PathFinder;
 
-//import dk.itu.parser.HeightCurve;
-//import dk.itu.parser.HeightCurveData;
-//import dk.itu.parser.Parser;
-//import dk.itu.renderer.osm.OsmNode;
-
 import models.HeightCurve;
 import models.HeightCurveData;
 import parser.Parser;

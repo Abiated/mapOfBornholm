@@ -1,12 +1,5 @@
 package PathFinder;
 
-//import TagHelper.TagtoLife;
-//import dk.itu.parser.HeightCurveData;
-//import dk.itu.parser.HeightCurveParser;
-//import dk.itu.parser.Parser;
-//import dk.itu.renderer.osm.OsmNode;
-//import dk.itu.renderer.osm.OsmWay;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.HeightCurveData;

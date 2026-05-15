@@ -1,11 +1,9 @@
 package models;
 
 import interfaces.InsertableInRtree;
-//import interfaces.Renderable;
-import rendering.wayType;
-import spatialDatastructures.RtreeNode;
 
 import java.awt.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class OsmWay extends OsmElement implements Serializable, InsertableInRtree/*, Renderable*/ {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final List<OsmNode> nodes;
@@ -75,6 +74,10 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
 
     @Override
     public float[] getBoundingBox() { return boundingBox; }
+
+    public boolean isClosed() {
+        return nodes.getFirst().getId() == nodes.getLast().getId();
+    }
 
 //    public boolean intersects(float[] otherBbox) {
 //        float[] bb = getBoundingBox();

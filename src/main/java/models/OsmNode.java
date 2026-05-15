@@ -1,10 +1,10 @@
 package models;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.io.Serial;
 import java.io.Serializable;
 
 public class OsmNode extends OsmElement implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final float lat, lon;

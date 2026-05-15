@@ -1,14 +1,13 @@
 package models;
 
-//import interfaces.Renderable;
-import rendering.wayType;
-
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class OsmRelation extends OsmElement implements /*Renderable*/ Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private List<Member> members;

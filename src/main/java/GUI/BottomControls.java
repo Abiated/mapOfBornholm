@@ -9,7 +9,7 @@ public class BottomControls extends BorderPane {
     private final SeaSlider slider;
 
     public BottomControls(ChangeListener<Number> change) {
-        slider = new SeaSlider(30, "Sea level: 0.0 m", change);
+        slider = new SeaSlider(50, "Sea level: 0.0 m", change);
 
         //HBox that puts slider and sliderLabel side by side with 12px padding
         HBox seaSlider = new HBox(12.0, slider, slider.getSliderLabel());

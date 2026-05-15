@@ -1,5 +1,3 @@
-package rendering;
-
 import GUI.BottomControls;
 import GUI.MapHandler;
 import GUI.SuperAffine;
@@ -16,10 +14,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import models.*;
 import parser.HcParser;
 import parser.Parser;
+import rendering.DataLoader;
+import rendering.DrawingApp;
+import rendering.Renderer;
+import rendering.wayType;
 import spatialDatastructures.Rtree;
 
 import java.awt.*;
@@ -34,20 +35,18 @@ public class App extends DrawingApp {
 
     private static final int WIDTH = getWIDTH();
     private static final int HEIGHT = getHEIGHT();
-    private float screenX = 0;
-    private float screenY = 0;
+//    private float screenX = 0;
+//    private float screenY = 0;
     private static final Color WATER_COLOR = Color.decode("#2b8cbe");
     private static final Color ROUTE_COLOR = Color.decode("#d7301f");
     private static final SuperAffine superAffine = new SuperAffine();
 
     private Float SEA_LEVEL = 0.0F;
     private HeightCurveData HCdata;
-    private Parser OSMdata;
+    private Parser OsmData;
     private HeightCurve sea;
     private HeightCurve outer;
-    private Data projectionSource;
     private HashMap<Long, OsmWay> ways;
-    private HashMap<Long, OsmRelation> relations;
     private List<HeightCurve> curves;
     private final EnumMap<wayType, List<OsmElement>> waysByType = new EnumMap<>(wayType.class);
     private JsonNode jRoot;
@@ -60,10 +59,10 @@ public class App extends DrawingApp {
     private Set<Integer> submergedVertices = new HashSet<>();
     private List<OsmRelation> multipolygon;
 
-    private EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
-    private Rtree HeightCurveRTree;
+    private final EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
+    //private Rtree HeightCurveRTree;
     private AffineTransform t;
-    private int CutOffToRtree = 7;
+    private final int CutOffToRtree = 7;
 
 
     @Override
@@ -80,35 +79,23 @@ public class App extends DrawingApp {
         //Chosen file, returns null if none are chosen
         File chosen = chooser.showOpenDialog(stage);
 
-        if (chosen == null) {
-            // No file chosen – loads default
-            loadDefaultData();
-        } else if (chosen.getName().endsWith(".zip")) {
-            //Zip file chosen
-            loadCache(chosen, "zip");
-        } else if (chosen.getName().endsWith(".hc")) {
-            //Hc file chosen
-            loadCache(chosen, "hc");
-        } else if (chosen.getName().endsWith(".osm")) {
-            //Osm file chosen
-            loadCache(chosen, "osm");
-        } else if (chosen.getName().endsWith(".bin")) {
-            if (chosen.getName().endsWith("zip.bin")) loadCache(chosen, "zip.bin");
-            if (chosen.getName().endsWith("osm.bin")) loadCache(chosen, "osm.bin");
-            if (chosen.getName().endsWith("hc.bin")) loadCache(chosen, "hc.bin");
+        DataLoader loader = new DataLoader();
+        DataLoader.MapData mapData = (chosen == null)
+                ? loader.loadDefaultData() : loader.load(chosen);
 
-        }
+        OsmData = mapData.OsmData();
+        HCdata = mapData.HcData();
+
 
         //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
-//        if (HCdata == null || OSMdata == null) {
+//        if (HCdata == null || OsmData == null) {
 //            throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
 //        }
 
         //Get sea from HCdata and ways
         if (HCdata != null) sea = HCdata.sea;
-        if (OSMdata != null) ways = OSMdata.getOsmWayMap();
-        if (OSMdata != null) relations = OSMdata.getOsmRelationMap();
-        if (OSMdata != null) t = getProjectionTransform(OSMdata);
+        if (OsmData != null) ways = OsmData.getOsmWayMap();
+        if (OsmData != null) t = getProjectionTransform(OsmData);
         else t = getProjectionTransform(HCdata);
 
         //---------CONFIG PARSING---------//
@@ -122,16 +109,16 @@ public class App extends DrawingApp {
             System.out.println(e.getMessage());
         }
 
-        if (OSMdata != null) graph = EdgeWeightedDigraph.constructGraph(OSMdata, jRoot);
+        if (OsmData != null) graph = EdgeWeightedDigraph.constructGraph(OsmData, jRoot);
 
         // coastline, water, searoute, other har ikke zoom værdier.
 
         //Midlertidig
-        if(OSMdata != null)
-            multipolygon = OSMdata.getOsmRelationMap().values().stream().filter(r -> r.getTags() != null
+        if(OsmData != null)
+            multipolygon = OsmData.getOsmRelationMap().values().stream().filter(r -> r.getTags() != null
             && r.hasTag("type", "multipolygon")).toList();
 
-        if (OSMdata != null) {
+        if (OsmData != null) {
             for (wayType type : wayType.values()) {
                 waysByType.put(type, new ArrayList<>());
             }
@@ -141,30 +128,33 @@ public class App extends DrawingApp {
 //            waysByType.put(wayType.COASTLINE, Stitcher.stitch(coastLine));
 
             for (OsmWay way : ways.values()) {
-                if (way.isType(wayType.NON_DRAWING)) continue;
-                else if (way.isType(wayType.COASTLINE)) continue;
-                else if (way.isType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
-                else if (way.isType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
-                else if (way.isType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
-                else if (way.isType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
-                else if (way.isType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
-                else if (way.isType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
-                else if (way.isType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
-                else if (way.isType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
-                else if (way.isType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
+                //if (way.getType(wayType.NON_DRAWING)) continue;
+                if (way.getType(wayType.COASTLINE)) {
+                    //Handles smaller coastlines
+                    if (way.isClosed()) waysByType.get(wayType.COASTLINE).add(way);
+                }
+                else if (way.getType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
+                else if (way.getType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
+                else if (way.getType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
+                else if (way.getType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
+                else if (way.getType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
+                else if (way.getType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
+                else if (way.getType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
+                else if (way.getType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
+                else if (way.getType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
             }
             for (OsmRelation way : multipolygon) {
-                if (way.isType(wayType.NON_DRAWING)) continue;
-                else if (way.isType(wayType.COASTLINE)) waysByType.get(wayType.COASTLINE).add(way);
-                else if (way.isType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
-                else if (way.isType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
-                else if (way.isType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
-                else if (way.isType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
-                else if (way.isType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
-                else if (way.isType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
-                else if (way.isType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
-                else if (way.isType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
-                else if (way.isType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
+                //if (way.getType(wayType.NON_DRAWING)) continue;
+                if (way.getType(wayType.COASTLINE)) waysByType.get(wayType.COASTLINE).add(way);
+                else if (way.getType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
+                else if (way.getType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
+                else if (way.getType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
+                else if (way.getType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
+                else if (way.getType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
+                else if (way.getType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
+                else if (way.getType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
+                else if (way.getType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
+                else if (way.getType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
             }
         }
 
@@ -174,14 +164,14 @@ public class App extends DrawingApp {
            curves = new ArrayList<>(HCdata.getCurves());
 
             // hjemmelavet heightcurve til at indeholde alle andre
-            // systemet går i stykker hvis OSMdata er null
-            if (OSMdata != null) {
+            // systemet går i stykker hvis OsmData er null
+            if (OsmData != null) {
                 List<Coordinate> coordlist = new ArrayList<>();
-                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMinLon()));
-                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMaxLon()));
-                coordlist.add(new Coordinate(OSMdata.getMaxLat(), OSMdata.getMaxLon()));
-                coordlist.add(new Coordinate(OSMdata.getMaxLat(), OSMdata.getMinLon()));
-                coordlist.add(new Coordinate(OSMdata.getMinLat(), OSMdata.getMinLon()));
+                coordlist.add(new Coordinate(OsmData.getMinLat(), OsmData.getMinLon()));
+                coordlist.add(new Coordinate(OsmData.getMinLat(), OsmData.getMaxLon()));
+                coordlist.add(new Coordinate(OsmData.getMaxLat(), OsmData.getMaxLon()));
+                coordlist.add(new Coordinate(OsmData.getMaxLat(), OsmData.getMinLon()));
+                coordlist.add(new Coordinate(OsmData.getMinLat(), OsmData.getMinLon()));
                 outer = new HeightCurve(-1, 0, coordlist, sea.getChildren());
                 curves.add(outer);
             }
@@ -195,16 +185,16 @@ public class App extends DrawingApp {
             //HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves), 32);
         }
 
-        if (OSMdata != null) {
+        if (OsmData != null) {
             RtreesByType.put(wayType.COASTLINE,
-                    new Rtree(new ArrayList<InsertableInRtree>(waysByType.get(wayType.COASTLINE)), 32));
+                    new Rtree(new ArrayList<>(waysByType.get(wayType.COASTLINE)), 32));
 
         for (wayType type : wayType.values()) {
             if (type == wayType.COASTLINE) continue;
             List<OsmElement> list = waysByType.get(type);
             if (list != null && !list.isEmpty())
                 RtreesByType.put(type,
-                        new Rtree(new ArrayList<InsertableInRtree>(list), 32));
+                        new Rtree(new ArrayList<>(list), 32));
         }
     }
 
@@ -244,7 +234,7 @@ public class App extends DrawingApp {
                 graph,
                 () -> submergedVertices,
                 () -> upperControls.getVehicleMenu().getVehicleType(),
-                OSMdata,
+                OsmData,
                 route -> {
                     currentRoute = route != null ? route : new ArrayList<>();
                     if (route == null) {
@@ -281,127 +271,14 @@ public class App extends DrawingApp {
         draw();
     }
 
-    //FOR DATA PARSER
-    private void saveCache(File cache) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(
-                new BufferedOutputStream(new FileOutputStream(cache)))) {
-            oos.writeObject(OSMdata);
-            oos.writeObject(HCdata);
-            System.out.println("Saved cache: " + cache.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void loadCache(File chosen, String type) {
-        //Checks file type, of not .bin it searches for binary counterpart
-        File cache = null;
-        switch (type) {
-            case "zip":
-                cache = new File(chosen.getAbsolutePath().replace(".zip", "zip.bin"));
-                break;
-            case "osm":
-                cache = new File(chosen.getAbsolutePath().replace(".osm", "osm.bin"));
-                break;
-            case "hc":
-                cache = new File(chosen.getAbsolutePath().replace(".hc", "hc.bin"));
-                break;
-            default:
-                cache = new File(chosen.getAbsolutePath());
-        }
-
-        if(cache == null) return;
-
-        if (cache.exists()) {
-            try (ObjectInput ois = new ObjectInputStream(
-                    new BufferedInputStream(new FileInputStream(cache)))) {
-                    OSMdata = (Parser) ois.readObject();
-                    HCdata = (HeightCurveData) ois.readObject();
-                //System.out.println("Running cache");
-            } catch (Exception e) {
-                System.err.println("Cache failed, reparsing: " + e.getMessage());
-            }
-        } else {
-
-            //Checks which file to load of no binary file exist
-            if (type.contains("bin")) throw new IllegalArgumentException("No such file exist");
-            if(type.equals("zip")) {
-               try {
-                   ZipInputStream zip = new ZipInputStream(new FileInputStream(chosen));
-                   ZipEntry entry;
-                   boolean loadedHc = false;
-                   boolean loadedOsm = false;
-
-                   while ((entry = zip.getNextEntry()) != null) {
-                       if (entry.isDirectory() || entry.getName().contains("__MACOSX") || entry.getName().contains(".DS_Store")) {
-                           zip.closeEntry();
-                           continue;
-                       }
-
-                       byte[] bytes = zip.readAllBytes();
-
-                       if (entry.getName().endsWith(".hc")) {
-                           HCdata = new HcParser(new ByteArrayInputStream(bytes)).parse();
-                           loadedHc = true;
-                       }
-                       if (entry.getName().endsWith(".osm")) {
-                           OSMdata = new Parser(new ByteArrayInputStream(bytes));
-                           OSMdata.parse();
-                           loadedOsm = true;
-                       }
-                       zip.closeEntry();
-                   }
-
-                   if (!loadedHc || !loadedOsm) {
-                       throw new IllegalArgumentException("Zip file must contain both .hc and .osm files");
-                   }
-               } catch (IOException e) {
-                   throw new RuntimeException(e);
-               }
-           } else if(type.equals("osm")) {
-               OSMdata = new Parser(openFile(chosen));
-               OSMdata.parse();
-           } else if (type.equals("hc")) {
-               HCdata = new HcParser(openFile(chosen)).parse();
-           }
-
-            saveCache(cache);
-        }
-    }
-
-    //TODO: CHANGE DEFAULT DATA TO RUN BINARY
-    private void loadDefaultData() {
-        HCdata = loadDefaultHeightCurveData();
-        OSMdata = loadDefaultOsmData();
-    }
 
     private void updateSubmergedVertices() {
-        if (graph == null || OSMdata == null || HCdata == null || SEA_LEVEL <= 0.0F) {
+        if (graph == null || OsmData == null || HCdata == null || SEA_LEVEL <= 0.0F) {
             submergedVertices = new HashSet<>();
             return;
         }
 
-        submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(graph, OSMdata, HCdata, SEA_LEVEL);
-    }
-
-    private HeightCurveData loadDefaultHeightCurveData() {
-        InputStream inputStream = getClass().getResourceAsStream("/hc-osm-files/tuna/tuna.hc");
-        return new HcParser(inputStream).parse();
-    }
-
-    private Parser loadDefaultOsmData() {
-        InputStream inputStream = getClass().getResourceAsStream("/hc-osm-files/tuna/tuna.osm");
-        Parser parser = new Parser(inputStream);
-        parser.parse();
-        return parser;
-    }
-
-    private InputStream openFile(File file) {
-        try {
-            return new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(graph, OsmData, HCdata, SEA_LEVEL);
     }
 
     //FOR DRAWING AND RENDERING
@@ -420,7 +297,8 @@ public class App extends DrawingApp {
         gc.fillRect(0, 0, WIDTH, HEIGHT);
 
         //Zoom
-        projectionSource = (OSMdata != null) ? OSMdata : HCdata;
+        //DATA CONVERTED TO LOCAL VARIABLE
+        Data projectionSource = (OsmData != null) ? OsmData : HCdata;
         float zoom = getZoom(projectionSource);
         bottomControls.update(zoom);
 
@@ -433,7 +311,7 @@ public class App extends DrawingApp {
         )));
         strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
-        if (OSMdata != null) {
+        if (OsmData != null) {
             //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
             //Draws waterways, lakes, ponds and so on
             drawLayer(wayType.WATER, gc, strokeWidth, zoom, combined);
@@ -484,7 +362,7 @@ public class App extends DrawingApp {
                     continue;
                 }
                 if (!curve.intersects(bbox)) continue;
-                if (OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
+                if (OsmData != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
                 else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
                 if (curve.getCachedRegionPath() == null)
                     gc.fill(project(curve.getRegionPath(), combined));
@@ -499,46 +377,46 @@ public class App extends DrawingApp {
         render();
     }
 
-    private void drawHeightCurvesRecursive(List<HeightCurve> curves, Graphics2D gc, Data projectionSource) {
-        for (HeightCurve curve : curves) {
-            if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
-            else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-            //gc.fill(project(curve.getRegionPath(), projectionSource));
-            drawHeightCurvesRecursive(curve.getChildren(), gc, projectionSource);
-        }
-    }
+//    private void drawHeightCurvesRecursive(List<HeightCurve> curves, Graphics2D gc, Data projectionSource) {
+//        for (HeightCurve curve : curves) {
+//            if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
+//            else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
+//            //gc.fill(project(curve.getRegionPath(), projectionSource));
+//            drawHeightCurvesRecursive(curve.getChildren(), gc, projectionSource);
+//        }
+//    }
 
-    public float getZoomLevelByType(wayType type) {
-        String key = null;
-        if (type == wayType.NATURAL) return 0;
-        else if (type == wayType.ROAD) return 0;
-        else if (type == wayType.LANDUSE) return 0;
-        else if (type == wayType.LEISURE) {
-            return (float) jRoot.path("leisure").path("zoom").asDouble();
-        }
-        else if (type == wayType.BUILDING) {
-            return (float) jRoot.path("building").path("zoom").asDouble();
-        }
-        else return 0;
-    }
+//    public float getZoomLevelByType(wayType type) {
+//        String key = null;
+//        if (type == wayType.NATURAL) return 0;
+//        else if (type == wayType.ROAD) return 0;
+//        else if (type == wayType.LANDUSE) return 0;
+//        else if (type == wayType.LEISURE) {
+//            return (float) jRoot.path("leisure").path("zoom").asDouble();
+//        }
+//        else if (type == wayType.BUILDING) {
+//            return (float) jRoot.path("building").path("zoom").asDouble();
+//        }
+//        else return 0;
+//    }
 
     public float getZoomLevel(OsmWay way) {
-        String key = null;
-        if (way.isType(wayType.NATURAL)) key = "natural";
-        else if (way.isType(wayType.ROAD)) key = "highway";
-        else if (way.isType(wayType.LANDUSE)) key = "landuse";
-        else if (way.isType(wayType.WATER)) key = "water";
-        else if (way.isType(wayType.AMENITIES)) key = "amenity";
-        else if (way.isType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.isType(wayType.MAN_MADE)) key = "man_made";
+        String key;
+        if (way.getType(wayType.NATURAL)) key = "natural";
+        else if (way.getType(wayType.ROAD)) key = "highway";
+        else if (way.getType(wayType.LANDUSE)) key = "landuse";
+        else if (way.getType(wayType.WATER)) key = "water";
+        else if (way.getType(wayType.AMENITIES)) key = "amenity";
+        else if (way.getType(wayType.AEROWAYS)) key = "aeroway";
+        else if (way.getType(wayType.MAN_MADE)) key = "man_made";
 //        else if (way.isLeisure()) {
 //            key = "leisure";
 //            return (float) jRoot.path(key).path("zoom").asDouble();
 //        }
-        else if (way.isType(wayType.BUILDING)) {
+        else if (way.getType(wayType.BUILDING)) {
             key = "building";
             return (float) jRoot.path(key).path("zoom").asDouble();
-        } else if(way.isType(wayType.SEAROUTE)) {
+        } else if(way.getType(wayType.SEAROUTE)) {
             key = "searoute";
             return (float) jRoot.path(key).path("zoom").asDouble();
         }
@@ -562,13 +440,12 @@ public class App extends DrawingApp {
         else {
             List<OsmElement> list = waysByType.get(type);
             if (list == null || list.isEmpty()) return;
-            ways = new ArrayList<InsertableInRtree>(list);
+            ways = new ArrayList<>(list);
         }
         //int x = 0;
         for (InsertableInRtree element : ways) {
             //x++;
-            if(element instanceof OsmWay) {
-                OsmWay way = (OsmWay) element;
+            if(element instanceof OsmWay way) {
 
                 if (!way.intersects(bbox)) continue;
 
@@ -585,14 +462,14 @@ public class App extends DrawingApp {
                 else
                     projected = project(way.getCachedShape(), combined);
                     //s = way.getCachedShape();
-                renderer.setColor(way, sw);
+                renderer.getColor(way, sw);
 
                 if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
-                       && !(way.isType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.isType(wayType.SEAROUTE))
+                       && !(way.getType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.getType(wayType.SEAROUTE))
                   gc.fill(projected);
                 else gc.draw(projected);
-            } else if(element instanceof OsmRelation) {
-                OsmRelation relation = (OsmRelation) element;
+            } else if(element instanceof OsmRelation relation) {
+
                 Path2D path = renderer.buildMultiPolygon(relation);
                 if  (path == null) continue;
                 Shape projected = project(path, combined);
@@ -618,8 +495,8 @@ public class App extends DrawingApp {
                 continue;
             }
 
-            OsmNode from = OSMdata.getOsmNodeMap().get(fromId);
-            OsmNode to = OSMdata.getOsmNodeMap().get(toId);
+            OsmNode from = OsmData.getOsmNodeMap().get(fromId);
+            OsmNode to = OsmData.getOsmNodeMap().get(toId);
             if (from == null || to == null) {
                 continue;
             }
@@ -680,8 +557,8 @@ public class App extends DrawingApp {
             } catch (NoninvertibleTransformException e) {
                 throw new RuntimeException("Transform not invertible", e);
             }
-        }
-    public float getSEALEVEL() {return SEA_LEVEL;}
+    }
+    //public float getSEALEVEL() {return SEA_LEVEL;}
 
     private float[] getViewPortBoundingBox() {
         Point2D topleft = reverseProject(0,0,t);
@@ -696,15 +573,16 @@ public class App extends DrawingApp {
 
         return new float[] {minX,maxX,minY,maxY};
     }
+}
 
     //Debug midlertidig
-    private boolean hasOutOfBoundsNode(OsmWay way) {
-        for (OsmNode node : way.getNodes()) {
-            if (node.getLat() < OSMdata.getMinLat() || node.getLat() > OSMdata.getMaxLat() ||
-                    node.getLon() < OSMdata.getMinLon() || node.getLon() > OSMdata.getMaxLon()) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
+//    private boolean hasOutOfBoundsNode(OsmWay way) {
+//        for (OsmNode node : way.getNodes()) {
+//            if (node.getLat() < OSMdata.getMinLat() || node.getLat() > OSMdata.getMaxLat() ||
+//                    node.getLon() < OSMdata.getMinLon() || node.getLon() > OSMdata.getMaxLon()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//}

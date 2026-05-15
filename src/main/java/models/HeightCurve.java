@@ -4,11 +4,13 @@ import interfaces.InsertableInRtree;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HeightCurve implements Serializable, InsertableInRtree {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     long id;
@@ -38,15 +40,13 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         }
 
         else {
-            for (int i = 1; i < coords.size(); i += 20) {
+            for (int i = 1; i < coords.size(); i += 30) {
                 float x = coords.get(i).getLon();
                 float y = coords.get(i).getLat();
-                if (i == coords.size() - 20) {
-                    int minus = 20 - (coords.size() % 20);
-                    i -= minus;
-                }
                 path.lineTo(x, y);
             }
+            Coordinate last = coords.getLast();
+            path.lineTo(last.getLon(), last.getLat());
         }
 
         setCachedBoundaryPath(path);

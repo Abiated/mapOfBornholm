@@ -2,10 +2,13 @@ package models;
 
 import interfaces.InsertableInRtree;
 import rendering.wayType;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 public abstract class OsmElement implements Serializable, InsertableInRtree {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final long id;
@@ -55,7 +58,7 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
 
 
     //Tag checker
-    public boolean isType(wayType type) {
+    public boolean getType(wayType type) {
         if (this.tags == null) return false;
         switch (type) {
             case wayType.NON_DRAWING:
@@ -96,20 +99,20 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
 
     //Get method for the tag value
     public String getValue() {
-        if(isType(wayType.NATURAL)) return tags.get("natural");
-        else if(isType(wayType.ROAD)) {
-            if(!isType(wayType.ROAD)) return null;
+        if(getType(wayType.NATURAL)) return tags.get("natural");
+        else if(getType(wayType.ROAD)) {
+            if(!getType(wayType.ROAD)) return null;
             return tags.get("highway");
         }
-        else if(isType(wayType.LANDUSE)) return tags.get("landuse");
-        else if(isType(wayType.SEAROUTE)) {
+        else if(getType(wayType.LANDUSE)) return tags.get("landuse");
+        else if(getType(wayType.SEAROUTE)) {
             if(tags.get("seamark:type") != null) return tags.get("seamark:type");
             else if (tags.get("route") != null) return tags.get("seamark:type");
         }
-        else if(isType(wayType.BUILDING)) return tags.get("building");
-        else if(isType(wayType.AMENITIES)) return tags.get("amenity");
-        else if(isType(wayType.AEROWAYS)) return tags.get("aeroway");
-        else if(isType(wayType.MAN_MADE)) return tags.get("man_made");
+        else if(getType(wayType.BUILDING)) return tags.get("building");
+        else if(getType(wayType.AMENITIES)) return tags.get("amenity");
+        else if(getType(wayType.AEROWAYS)) return tags.get("aeroway");
+        else if(getType(wayType.MAN_MADE)) return tags.get("man_made");
         return null;
     }
 

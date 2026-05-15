@@ -2,6 +2,7 @@ package models;
 
 import interfaces.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * examples
  */
 public class HeightCurveData implements Data, Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public final float minLat;
