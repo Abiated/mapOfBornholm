@@ -31,9 +31,9 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
         super(id, tags);
         this.nodes = nodes;
         //this.tags = tags;
-        float xHighest = 0;
+        float xHighest = Float.MIN_VALUE;
         float xLowest = Float.MAX_VALUE;
-        float yHighest = 0;
+        float yHighest = Float.MIN_VALUE;
         float yLowest = Float.MAX_VALUE;
         for(OsmNode Node : nodes){
             if (Node.getLat() > yHighest){
@@ -73,14 +73,16 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
 //        return tags;
 //    }
 
+    @Override
     public float[] getBoundingBox() { return boundingBox; }
 
-    public boolean intersects(float[] otherBbox) {
-        return !(boundingBox[1] < otherBbox[0] ||
-                boundingBox[0] > otherBbox[1] ||
-                boundingBox[3] < otherBbox[2] ||
-                boundingBox[2] > otherBbox[3]);
-    }
+//    public boolean intersects(float[] otherBbox) {
+//        float[] bb = getBoundingBox();
+//        return !(bb[1] < otherBbox[0] ||
+//                bb[0] > otherBbox[1] ||
+//                bb[3] < otherBbox[2] ||
+//                bb[2] > otherBbox[3]);
+//    }
 
     //–––––––––Tag Handling–––––––––//
 

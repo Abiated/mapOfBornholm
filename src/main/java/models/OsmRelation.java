@@ -70,4 +70,27 @@ public class OsmRelation extends OsmElement implements /*Renderable*/ Serializab
         this.tags = tags;
     }
 
+    private float[] computeBoundingBox() {
+        float minLon = Float.MAX_VALUE, minLat = Float.MAX_VALUE;
+        float maxLon = Float.MIN_VALUE, maxLat = Float.MIN_VALUE;
+
+        for(Member member : members) {
+            if(!(member.getElement() instanceof OsmWay)) continue;
+            OsmWay way = (OsmWay) member.getElement();
+            if(way == null) continue;
+            float[] bb = way.getBoundingBox();
+            if(bb == null) continue;
+            minLon = Math.min(minLon, bb[0]);
+            maxLon = Math.max(maxLon, bb[1]);
+            minLat = Math.min(minLat, bb[2]);
+            maxLat = Math.max(maxLat, bb[3]);
+        }
+
+        if(minLon == Float.MAX_VALUE) return null;
+        return new float[]{minLon, maxLon, minLat, maxLat};
+    }
+
+    @Override
+    public float[] getBoundingBox() {return computeBoundingBox();}
+
 }

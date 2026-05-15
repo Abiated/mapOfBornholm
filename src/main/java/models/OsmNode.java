@@ -22,6 +22,11 @@ public class OsmNode extends OsmElement implements Serializable {
         this.lon = 0;
     }
 
+    @Override
+    public float[] getBoundingBox() {
+        return new float[]{lon, lon, lat, lat};
+    }
+
     public float getLat() {
         return lat;
     }
