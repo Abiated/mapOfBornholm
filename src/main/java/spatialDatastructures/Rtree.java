@@ -155,5 +155,6 @@ public class Rtree {
         return (float) (R * c);
     }
 
+    public RtreeNode returnRoot(){return this.root;}
 
 }

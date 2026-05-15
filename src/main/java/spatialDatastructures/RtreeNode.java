@@ -46,4 +46,7 @@ public class RtreeNode {
                 this.bbox[2] > otherBbox[3]);
     }
 
+    public float[] returnbbox(){ return this.bbox; }
+
+    public List<?> returnChildren(){return this.children;}
 }
