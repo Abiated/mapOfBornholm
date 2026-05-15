@@ -49,6 +49,8 @@ public class HeightCurve implements Serializable, InsertableInRtree {
             path.lineTo(last.getLon(), last.getLat());
         }
 
+        path.closePath();
+
         setCachedBoundaryPath(path);
         return path;
     }
@@ -66,7 +68,7 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 //        for(int i = 1; i < coords.size(); i++) {
 //            path.lineTo(coords.get(i).getLon(), coords.get(i).getLat());
 //        }
-
+        path.closePath();
         cachedRegionPath = path;
         return path;
 
@@ -106,7 +108,7 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         } else {
             if (elevation < 0) {
                 if (submerged) return Color.decode("#2b8cbe");
-                else return Color.decode("#ffffcc");
+                else return new Color(255, 255, 204, 0);
             } else if (elevation < 2.5) {
                 //return Color.decode("#c2e699");
                 return new Color(194, 230, 153, 0);

@@ -175,7 +175,7 @@ public class App extends DrawingApp {
                 outer = new HeightCurve(-1, 0, coordlist, sea.getChildren());
                 curves.add(outer);
             }
-            //
+
 
             curves.remove(sea);
             curves.removeIf(c -> c.getCoords() == null
@@ -348,7 +348,7 @@ public class App extends DrawingApp {
             } else {
                 sea.resetSubmerged();
                 sea.submerge(SEA_LEVEL);
-            }
+           }
 
             float[] bbox = getViewPortBoundingBox();
 
@@ -357,17 +357,22 @@ public class App extends DrawingApp {
             //curves = HeightCurveRTree.search(getViewPortBoundingBox());
             //curves = new ArrayList<>(HCdata.curves);
             for (HeightCurve curve : curves) {
-                //HeightCurve curve = (HeightCurve) element;
-                if (curve == sea) {
-                    continue;
-                }
+                if (curve == sea) continue;
                 if (!curve.intersects(bbox)) continue;
-                if (OsmData != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
-                else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-                if (curve.getCachedRegionPath() == null)
-                    gc.fill(project(curve.getRegionPath(), combined));
-                else
-                    gc.fill(project(curve.getCachedRegionPath(), combined));
+
+                gc.setColor(curve.getFillColor(SEA_LEVEL, OsmData == null));
+
+                Shape path = curve.getCachedRegionPath() != null
+                        ? curve.getCachedRegionPath()
+                        : curve.getRegionPath();
+                Shape projected = project(path, combined);
+
+                Coordinate first = curve.getCoords().getFirst();
+                Coordinate last = curve.getCoords().getLast();
+                boolean isClosed = first.getLon() == last.getLon() && first.getLat() == last.getLat();
+
+                if(isClosed) gc.fill(projected);
+                else gc.draw(projected);
             }
         }
 
@@ -377,28 +382,6 @@ public class App extends DrawingApp {
         render();
     }
 
-//    private void drawHeightCurvesRecursive(List<HeightCurve> curves, Graphics2D gc, Data projectionSource) {
-//        for (HeightCurve curve : curves) {
-//            if(OSMdata != null) gc.setColor(curve.getFillColor(SEA_LEVEL, false));
-//            else gc.setColor(curve.getFillColor(SEA_LEVEL, true));
-//            //gc.fill(project(curve.getRegionPath(), projectionSource));
-//            drawHeightCurvesRecursive(curve.getChildren(), gc, projectionSource);
-//        }
-//    }
-
-//    public float getZoomLevelByType(wayType type) {
-//        String key = null;
-//        if (type == wayType.NATURAL) return 0;
-//        else if (type == wayType.ROAD) return 0;
-//        else if (type == wayType.LANDUSE) return 0;
-//        else if (type == wayType.LEISURE) {
-//            return (float) jRoot.path("leisure").path("zoom").asDouble();
-//        }
-//        else if (type == wayType.BUILDING) {
-//            return (float) jRoot.path("building").path("zoom").asDouble();
-//        }
-//        else return 0;
-//    }
 
     public float getZoomLevel(OsmWay way) {
         String key;
@@ -558,7 +541,6 @@ public class App extends DrawingApp {
                 throw new RuntimeException("Transform not invertible", e);
             }
     }
-    //public float getSEALEVEL() {return SEA_LEVEL;}
 
     private float[] getViewPortBoundingBox() {
         Point2D topleft = reverseProject(0,0,t);
@@ -575,14 +557,3 @@ public class App extends DrawingApp {
     }
 }
 
-    //Debug midlertidig
-//    private boolean hasOutOfBoundsNode(OsmWay way) {
-//        for (OsmNode node : way.getNodes()) {
-//            if (node.getLat() < OSMdata.getMinLat() || node.getLat() > OSMdata.getMaxLat() ||
-//                    node.getLon() < OSMdata.getMinLon() || node.getLon() > OSMdata.getMaxLon()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//}
