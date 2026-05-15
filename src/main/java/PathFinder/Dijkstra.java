@@ -54,8 +54,6 @@ public class Dijkstra {
             relax(G, current.vertex); //relax the current head vertex in our graph
         }
 
-        //Print for visual test:
-        System.out.println("Dijkstra ran till the end");
     }
 
     //in our relax we do not update existing Nodes as Java's PriorityQueue does not support change() which is shown in the book. We instead insert a new Node. It works the same way because of the priority
@@ -100,4 +98,3 @@ public class Dijkstra {
 
 
 }
-
