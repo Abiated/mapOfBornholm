@@ -15,12 +15,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.*;
-import parser.HcParser;
 import parser.Parser;
-import rendering.DataLoader;
-import rendering.DrawingApp;
-import rendering.Renderer;
-import rendering.wayType;
+import rendering.*;
 import spatialDatastructures.Rtree;
 
 import java.awt.*;
@@ -28,41 +24,46 @@ import java.awt.geom.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class App extends DrawingApp {
 
+    //AppState and GUI data
     private static final int WIDTH = getWIDTH();
     private static final int HEIGHT = getHEIGHT();
-//    private float screenX = 0;
-//    private float screenY = 0;
     private static final Color WATER_COLOR = Color.decode("#2b8cbe");
     private static final Color ROUTE_COLOR = Color.decode("#d7301f");
-    private static final SuperAffine superAffine = new SuperAffine();
-
+    private BottomControls bottomControls;
+    private UpperControls upperControls;
     private Float SEA_LEVEL = 0.0F;
+    private JsonNode jRoot;
+
+    //MapData
     private HeightCurveData HCdata;
     private Parser OsmData;
+
+    //HeightCurve data
     private HeightCurve sea;
     private HeightCurve outer;
     private HashMap<Long, OsmWay> ways;
     private List<HeightCurve> curves;
+
+    //Datastructures
     private final EnumMap<wayType, List<OsmElement>> waysByType = new EnumMap<>(wayType.class);
-    private JsonNode jRoot;
-    private Renderer renderer;
-    private BottomControls bottomControls;
-    private UpperControls upperControls;
+    private final EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
+    private final int CutOffToRtree = 7;
+
+    //Pathfinding data
     private EdgeWeightedDigraph graph;
     private MapHandler interactionHandler;
     private List<DirectedEdge> currentRoute = new ArrayList<>();
     private Set<Integer> submergedVertices = new HashSet<>();
     private List<OsmRelation> multipolygon;
 
-    private final EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
-    //private Rtree HeightCurveRTree;
+    //Rendering data
+    private static final SuperAffine superAffine = new SuperAffine();
+    private Data projectionSource;
     private AffineTransform t;
-    private final int CutOffToRtree = 7;
+    private Renderer renderer;
 
 
     @Override
@@ -95,8 +96,9 @@ public class App extends DrawingApp {
         //Get sea from HCdata and ways
         if (HCdata != null) sea = HCdata.sea;
         if (OsmData != null) ways = OsmData.getOsmWayMap();
-        if (OsmData != null) t = getProjectionTransform(OsmData);
-        else t = getProjectionTransform(HCdata);
+        if (OsmData != null) projectionSource = OsmData;
+        else projectionSource = HCdata;
+        t = MapProjection.getProjectionTransform(projectionSource);
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -298,8 +300,7 @@ public class App extends DrawingApp {
 
         //Zoom
         //DATA CONVERTED TO LOCAL VARIABLE
-        Data projectionSource = (OsmData != null) ? OsmData : HCdata;
-        float zoom = getZoom(projectionSource);
+        float zoom = MapProjection.getZoom(projectionSource, superAffine);
         bottomControls.update(zoom);
 
         //Midlertidig løsning måske?
@@ -350,7 +351,7 @@ public class App extends DrawingApp {
                 sea.submerge(SEA_LEVEL);
            }
 
-            float[] bbox = getViewPortBoundingBox();
+            float[] bbox = MapProjection.getViewPortBoundingBox(t, superAffine);
 
             //List<InsertableInRtree> curves;
             //if (zoom > CutOffToRtree) {
@@ -383,6 +384,7 @@ public class App extends DrawingApp {
     }
 
 
+    //Move this into OsmElement
     public float getZoomLevel(OsmWay way) {
         String key;
         if (way.getType(wayType.NATURAL)) key = "natural";
@@ -413,7 +415,7 @@ public class App extends DrawingApp {
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
         List<InsertableInRtree> ways;
-        float[] bbox = getViewPortBoundingBox();
+        float[] bbox = MapProjection.getViewPortBoundingBox(t, superAffine);
 
         if (zoom>CutOffToRtree) {
             Rtree rtree = RtreesByType.get(type);
@@ -501,59 +503,8 @@ public class App extends DrawingApp {
         return String.format("%02d:%02d", hours, minutes);
     }
 
-    private static AffineTransform getProjectionTransform(Data d) {
-        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
-        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
-        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-        AffineTransform t = new AffineTransform();
-        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
-        t.scale(k, -k);
-        t.scale(c, 1);
-        t.translate(-d.getMinLon(), -d.getMinLat());
-        return t;
-    }
-
     private static Shape project(Shape s, AffineTransform combined) {
         return combined.createTransformedShape(s);
-    }
-
-    private static float getZoom(Data d) {
-        float p = 20, c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
-        float w = (d.getMaxLon() - d.getMinLon()) * c, h = d.getMaxLat() - d.getMinLat();
-        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-        float superAffineZoom = (float) Math.sqrt(superAffine.getDeterminant());
-        return k * superAffineZoom;
-    }
-
-    private static Point2D reverseProject(float sx, float sy, AffineTransform t){
-            AffineTransform combined = new AffineTransform(superAffine);
-            combined.concatenate(t);
-
-            // taget fra chatGPT
-            try {
-                AffineTransform inverse = combined.createInverse();
-                Point2D screenPt = new Point2D.Double(sx,sy);
-                Point2D worldPt = new Point2D.Double();
-                inverse.transform(screenPt, worldPt);
-
-                return worldPt; // (lon, lat)
-            } catch (NoninvertibleTransformException e) {
-                throw new RuntimeException("Transform not invertible", e);
-            }
-    }
-
-    private float[] getViewPortBoundingBox() {
-        Point2D topleft = reverseProject(0,0,t);
-        Point2D topright = reverseProject(WIDTH,0,t);
-        Point2D bottomright = reverseProject(WIDTH,HEIGHT,t);
-        Point2D bottomleft = reverseProject(0,HEIGHT,t);
-
-        float minX = (float) Math.min(bottomleft.getX(),Math.min(bottomright.getX(),Math.min(topleft.getX(),topright.getX())));
-        float maxX = (float) Math.max(bottomleft.getX(),Math.max(bottomright.getX(),Math.max(topleft.getX(),topright.getX())));
-        float minY = (float) Math.min(bottomleft.getY(),Math.min(bottomright.getY(),Math.min(topleft.getY(),topright.getY())));
-        float maxY = (float) Math.max(bottomleft.getY(),Math.max(bottomright.getY(),Math.max(topleft.getY(),topright.getY())));
-
-        return new float[] {minX,maxX,minY,maxY};
     }
 }
 
