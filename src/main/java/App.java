@@ -36,6 +36,7 @@ public class App extends DrawingApp {
     private UpperControls upperControls;
     private Float SEA_LEVEL = 0.0F;
     private JsonNode jRoot;
+    private MapProjection projection;
 
     //MapData
     private HeightCurveData HCdata;
@@ -99,6 +100,8 @@ public class App extends DrawingApp {
         if (OsmData != null) projectionSource = OsmData;
         else projectionSource = HCdata;
         t = MapProjection.getProjectionTransform(projectionSource);
+
+        projection = new MapProjection(superAffine, projectionSource);
 
         //---------CONFIG PARSING---------//
         //For now default json file maybe later there can be a choice.
@@ -236,7 +239,7 @@ public class App extends DrawingApp {
                 graph,
                 () -> submergedVertices,
                 () -> upperControls.getVehicleMenu().getVehicleType(),
-                OsmData,
+                projection,
                 route -> {
                     currentRoute = route != null ? route : new ArrayList<>();
                     if (route == null) {
@@ -288,8 +291,7 @@ public class App extends DrawingApp {
 
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
-        AffineTransform combined = new AffineTransform(superAffine);
-        combined.concatenate(t);
+        AffineTransform combined = projection.getCombined();
         //gc.setTransform(combined);
 
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -300,7 +302,7 @@ public class App extends DrawingApp {
 
         //Zoom
         //DATA CONVERTED TO LOCAL VARIABLE
-        float zoom = MapProjection.getZoom(projectionSource, superAffine);
+        float zoom = projection.getZoom();
         bottomControls.update(zoom);
 
         //Midlertidig løsning måske?
@@ -351,7 +353,7 @@ public class App extends DrawingApp {
                 sea.submerge(SEA_LEVEL);
            }
 
-            float[] bbox = MapProjection.getViewPortBoundingBox(t, superAffine);
+            float[] bbox = projection.getViewPortBoundingBox();
 
             //List<InsertableInRtree> curves;
             //if (zoom > CutOffToRtree) {
@@ -415,7 +417,7 @@ public class App extends DrawingApp {
 
     private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
         List<InsertableInRtree> ways;
-        float[] bbox = MapProjection.getViewPortBoundingBox(t, superAffine);
+        float[] bbox = projection.getViewPortBoundingBox();
 
         if (zoom>CutOffToRtree) {
             Rtree rtree = RtreesByType.get(type);
