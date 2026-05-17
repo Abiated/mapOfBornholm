@@ -36,13 +36,12 @@ public class App extends DrawingApp {
     private UpperControls upperControls;
     private Float SEA_LEVEL = 0.0F;
     private JsonNode jRoot;
-    private MapProjection projection;
 
     //MapData
     private HeightCurveData HCdata;
     private Parser OsmData;
 
-    //HeightCurve data
+    //Data
     private HeightCurve sea;
     private HeightCurve outer;
     private HashMap<Long, OsmWay> ways;
@@ -61,9 +60,10 @@ public class App extends DrawingApp {
     private List<OsmRelation> multipolygon;
 
     //Rendering data
+    private MapProjection projection;
     private static final SuperAffine superAffine = new SuperAffine();
     private Data projectionSource;
-    private AffineTransform t;
+    //private AffineTransform t;
     private Renderer renderer;
 
 
@@ -88,18 +88,12 @@ public class App extends DrawingApp {
         OsmData = mapData.OsmData();
         HCdata = mapData.HcData();
 
-
-        //Fiks man burde genre kunne nøjes med at køerer en af filerne igennem
-//        if (HCdata == null || OsmData == null) {
-//            throw new IllegalStateException("Both height curve data and OSM data must be loaded before rendering");
-//        }
-
         //Get sea from HCdata and ways
         if (HCdata != null) sea = HCdata.sea;
         if (OsmData != null) ways = OsmData.getOsmWayMap();
         if (OsmData != null) projectionSource = OsmData;
         else projectionSource = HCdata;
-        t = MapProjection.getProjectionTransform(projectionSource);
+        //t = MapProjection.getProjectionTransform(projectionSource);
 
         projection = new MapProjection(superAffine, projectionSource);
 
@@ -116,9 +110,6 @@ public class App extends DrawingApp {
 
         if (OsmData != null) graph = EdgeWeightedDigraph.constructGraph(OsmData, jRoot);
 
-        // coastline, water, searoute, other har ikke zoom værdier.
-
-        //Midlertidig
         if(OsmData != null)
             multipolygon = OsmData.getOsmRelationMap().values().stream().filter(r -> r.getTags() != null
             && r.hasTag("type", "multipolygon")).toList();
@@ -127,40 +118,10 @@ public class App extends DrawingApp {
             for (wayType type : wayType.values()) {
                 waysByType.put(type, new ArrayList<>());
             }
-//
-//            List<OsmElement> coastLine = ways.values().stream().filter(w -> w.hasTag("natural", "coastline")).toList();
-//
-//            waysByType.put(wayType.COASTLINE, Stitcher.stitch(coastLine));
 
-            for (OsmWay way : ways.values()) {
-                //if (way.getType(wayType.NON_DRAWING)) continue;
-                if (way.getType(wayType.COASTLINE)) {
-                    //Handles smaller coastlines
-                    if (way.isClosed()) waysByType.get(wayType.COASTLINE).add(way);
-                }
-                else if (way.getType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
-                else if (way.getType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
-                else if (way.getType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
-                else if (way.getType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
-                else if (way.getType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
-                else if (way.getType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
-                else if (way.getType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
-                else if (way.getType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
-                else if (way.getType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
-            }
-            for (OsmRelation way : multipolygon) {
-                //if (way.getType(wayType.NON_DRAWING)) continue;
-                if (way.getType(wayType.COASTLINE)) waysByType.get(wayType.COASTLINE).add(way);
-                else if (way.getType(wayType.WATER)) waysByType.get(wayType.WATER).add(way);
-                else if (way.getType(wayType.SEAROUTE)) waysByType.get(wayType.SEAROUTE).add(way);
-                else if (way.getType(wayType.NATURAL)) waysByType.get(wayType.NATURAL).add(way);
-                else if (way.getType(wayType.LANDUSE)) waysByType.get(wayType.LANDUSE).add(way);
-                else if (way.getType(wayType.BUILDING)) waysByType.get(wayType.BUILDING).add(way);
-                else if (way.getType(wayType.ROAD)) waysByType.get(wayType.ROAD).add(way);
-                else if (way.getType(wayType.AMENITIES)) waysByType.get(wayType.AMENITIES).add(way);
-                else if (way.getType(wayType.AEROWAYS)) waysByType.get(wayType.AEROWAYS).add(way);
-                else if (way.getType(wayType.MAN_MADE)) waysByType.get(wayType.MAN_MADE).add(way);
-            }
+            insertIntoWaysByType(ways.values());
+            insertIntoWaysByType(multipolygon);
+
         }
 
 
@@ -276,6 +237,28 @@ public class App extends DrawingApp {
         draw();
     }
 
+    private void insertIntoWaysByType(Collection<? extends OsmElement> elements) {
+        for(OsmElement element : elements ) {
+            if (element.getType(wayType.COASTLINE)) {
+                if (element instanceof OsmWay) {
+                    //Handles smaller coastlines
+                    if (((OsmWay) element).isClosed())     waysByType.get(wayType.COASTLINE).add(element);
+                } else if (element instanceof OsmRelation) {
+                    if (element.getType(wayType.COASTLINE)) waysByType.get(wayType.COASTLINE).add(element);
+                }
+            }
+            else if (element.getType(wayType.WATER))        waysByType.get(wayType.WATER).add(element);
+            else if (element.getType(wayType.SEAROUTE))     waysByType.get(wayType.SEAROUTE).add(element);
+            else if (element.getType(wayType.NATURAL))      waysByType.get(wayType.NATURAL).add(element);
+            else if (element.getType(wayType.LANDUSE))      waysByType.get(wayType.LANDUSE).add(element);
+            else if (element.getType(wayType.BUILDING))     waysByType.get(wayType.BUILDING).add(element);
+            else if (element.getType(wayType.ROAD))         waysByType.get(wayType.ROAD).add(element);
+            else if (element.getType(wayType.AMENITIES))    waysByType.get(wayType.AMENITIES).add(element);
+            else if (element.getType(wayType.AEROWAYS))     waysByType.get(wayType.AEROWAYS).add(element);
+            else if (element.getType(wayType.MAN_MADE))     waysByType.get(wayType.MAN_MADE).add(element);
+        }
+    }
+
 
     private void updateSubmergedVertices() {
         if (graph == null || OsmData == null || HCdata == null || SEA_LEVEL <= 0.0F) {
@@ -315,32 +298,27 @@ public class App extends DrawingApp {
         strokeWidth = Math.clamp(strokeWidth, 0.5f, 1.0f);
 
         if (OsmData != null) {
-            //TODO: ADD FERRYWAYS, AEROWAYS AND AMENITIES, ASWELL AS MULTIPOLYGON FORREST
             //Draws waterways, lakes, ponds and so on
-            drawLayer(wayType.WATER, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.WATER, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws ferry routes and other sea route
-            drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.SEAROUTE, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws polygon for coastline
-            drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, combined);
-//            //Draws natural ways
-//            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.COASTLINE, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draw aeroways
-            drawLayer(wayType.AEROWAYS, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.AEROWAYS, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws landuse ways
-            drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.LANDUSE, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws natural ways
-            drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.NATURAL, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws man_made
-            drawLayer(wayType.MAN_MADE, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.MAN_MADE, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws amenity
-            drawLayer(wayType.AMENITIES, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.AMENITIES, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws roads
-            drawLayer(wayType.ROAD, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.ROAD, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
             //Draws buildings
-            drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, combined);
+            renderer.drawLayer(wayType.BUILDING, gc, strokeWidth, zoom, projection, CutOffToRtree, waysByType, RtreesByType);
         }
-
-
 
         //HeightCurves raw paths
         if(HCdata != null) {
@@ -383,87 +361,6 @@ public class App extends DrawingApp {
 
         gc.dispose();
         render();
-    }
-
-
-    //Move this into OsmElement
-    public float getZoomLevel(OsmWay way) {
-        String key;
-        if (way.getType(wayType.NATURAL)) key = "natural";
-        else if (way.getType(wayType.ROAD)) key = "highway";
-        else if (way.getType(wayType.LANDUSE)) key = "landuse";
-        else if (way.getType(wayType.WATER)) key = "water";
-        else if (way.getType(wayType.AMENITIES)) key = "amenity";
-        else if (way.getType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.getType(wayType.MAN_MADE)) key = "man_made";
-//        else if (way.isLeisure()) {
-//            key = "leisure";
-//            return (float) jRoot.path(key).path("zoom").asDouble();
-//        }
-        else if (way.getType(wayType.BUILDING)) {
-            key = "building";
-            return (float) jRoot.path(key).path("zoom").asDouble();
-        } else if(way.getType(wayType.SEAROUTE)) {
-            key = "searoute";
-            return (float) jRoot.path(key).path("zoom").asDouble();
-        }
-        else return 0;
-        JsonNode jPath = jRoot.path(key).path(way.getValue()).path("zoom");
-
-        if (jPath.isMissingNode()) return 0;
-
-        return (float) jPath.asDouble();
-    }
-
-    private void drawLayer(wayType type, Graphics2D gc, float sw, float zoom, AffineTransform combined) {
-        List<InsertableInRtree> ways;
-        float[] bbox = projection.getViewPortBoundingBox();
-
-        if (zoom>CutOffToRtree) {
-            Rtree rtree = RtreesByType.get(type);
-            if (rtree == null) return;
-            ways = rtree.search(bbox);
-        }
-        else {
-            List<OsmElement> list = waysByType.get(type);
-            if (list == null || list.isEmpty()) return;
-            ways = new ArrayList<>(list);
-        }
-        //int x = 0;
-        for (InsertableInRtree element : ways) {
-            //x++;
-            if(element instanceof OsmWay way) {
-
-                if (!way.intersects(bbox)) continue;
-
-                if (type != wayType.WATER
-                        && type != wayType.COASTLINE
-                        && type != wayType.SEAROUTE
-                        && zoom < getZoomLevel(way)) continue;
-
-                Shape projected;
-                //Shape s;
-                if (way.getCachedShape() == null)
-                    projected = project(renderer.getWayPath(way), combined);
-                    //s = renderer.getWayPath(way);
-                else
-                    projected = project(way.getCachedShape(), combined);
-                    //s = way.getCachedShape();
-                renderer.getColor(way, sw);
-
-                if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
-                       && !(way.getType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.getType(wayType.SEAROUTE))
-                  gc.fill(projected);
-                else gc.draw(projected);
-            } else if(element instanceof OsmRelation relation) {
-
-                Path2D path = renderer.buildMultiPolygon(relation);
-                if  (path == null) continue;
-                Shape projected = project(path, combined);
-                renderer.renderMultipolygon(relation, projected);
-            }
-        }
-        //System.out.println(x + " elements iterated in layer");
     }
 
     private void drawCurrentRoute(Graphics2D gc, float strokeWidth, AffineTransform combined) {

@@ -2,11 +2,15 @@ package rendering;
 
 import com.fasterxml.jackson.databind.JsonNode;
 //import interfaces.Renderable;
+import interfaces.InsertableInRtree;
 import models.*;
+import spatialDatastructures.Rtree;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 public class Renderer {
@@ -134,6 +138,34 @@ public class Renderer {
         } else gc.setStroke(new BasicStroke(strokeWidth));
     }
 
+    public float getZoomLevel(OsmElement way) {
+        String key;
+        if (way.getType(wayType.NATURAL)) key = "natural";
+        else if (way.getType(wayType.ROAD)) key = "highway";
+        else if (way.getType(wayType.LANDUSE)) key = "landuse";
+        else if (way.getType(wayType.WATER)) key = "water";
+        else if (way.getType(wayType.AMENITIES)) key = "amenity";
+        else if (way.getType(wayType.AEROWAYS)) key = "aeroway";
+        else if (way.getType(wayType.MAN_MADE)) key = "man_made";
+//        else if (way.isLeisure()) {
+//            key = "leisure";
+//            return (float) jRoot.path(key).path("zoom").asDouble();
+//        }
+        else if (way.getType(wayType.BUILDING)) {
+            key = "building";
+            return (float) jn.path(key).path("zoom").asDouble();
+        } else if(way.getType(wayType.SEAROUTE)) {
+            key = "searoute";
+            return (float) jn.path(key).path("zoom").asDouble();
+        }
+        else return 0;
+        JsonNode jPath = jn.path(key).path(way.getValue()).path("zoom");
+
+        if (jPath.isMissingNode()) return 0;
+
+        return (float) jPath.asDouble();
+    }
+
     //OSMRELATION RENDERING
     public void renderMultipolygon(OsmRelation relation, Shape projected) {
         if(relation.getTags() == null ||projected == null) return;
@@ -178,6 +210,62 @@ public class Renderer {
 
 
         return results.getBounds2D().isEmpty() ? null : results;
+    }
+
+    public void drawLayer(wayType type, Graphics2D gc, float sw, float zoom,
+                          MapProjection projection, int CutOffToRtree,
+                          EnumMap<wayType, List<OsmElement>> waysByType,
+                          EnumMap<wayType, Rtree> RtreesByType) {
+        AffineTransform combined = projection.getCombined();
+
+        List<InsertableInRtree> ways;
+        float[] bbox = projection.getViewPortBoundingBox();
+
+        if (zoom>CutOffToRtree) {
+            Rtree rtree = RtreesByType.get(type);
+            if (rtree == null) return;
+            ways = rtree.search(bbox);
+        }
+        else {
+            List<OsmElement> list = waysByType.get(type);
+            if (list == null || list.isEmpty()) return;
+            ways = new ArrayList<>(list);
+        }
+        //int x = 0;
+        for (InsertableInRtree element : ways) {
+            //x++;
+            if(element instanceof OsmWay way) {
+
+                if (!way.intersects(bbox)) continue;
+
+                if (type != wayType.WATER
+                        && type != wayType.COASTLINE
+                        && type != wayType.SEAROUTE
+                        && zoom < getZoomLevel(way)) continue;
+
+                Shape projected;
+                //Shape s;
+                if (way.getCachedShape() == null)
+                    projected = combined.createTransformedShape(getWayPath(way));
+                    //s = renderer.getWayPath(way);
+                else
+                    projected = combined.createTransformedShape(way.getCachedShape());
+                //s = way.getCachedShape();
+                getColor(way, sw);
+
+                if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
+                        && !(way.getType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.getType(wayType.SEAROUTE))
+                    gc.fill(projected);
+                else gc.draw(projected);
+            } else if(element instanceof OsmRelation relation) {
+
+                Path2D path = buildMultiPolygon(relation);
+                if  (path == null) continue;
+                Shape projected = combined.createTransformedShape(path);
+                renderMultipolygon(relation, projected);
+            }
+        }
+        //System.out.println(x + " elements iterated in layer");
     }
 
 //    public Path2D getHcBoundaryPath(HeightCurve curve) {
