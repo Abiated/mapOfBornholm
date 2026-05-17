@@ -1,4 +1,4 @@
-package dk.itu.parser.util;
+package ParserTest.parser.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,10 +58,10 @@ public class TestParser implements IParser {
     private void parseBoundingBox(JsonNode root) {
         JsonNode bounds = root.path("osm").path("bounds");
 
-        float minLat = (float) bounds.path("@minlat").asDouble();
-        float minLon = (float) bounds.path("@minlon").asDouble();
-        float maxLat = (float) bounds.path("@maxlat").asDouble();
-        float maxLon = (float) bounds.path("@maxlon").asDouble();
+        Float minLat = (float) bounds.path("@minlat").asDouble();
+        Float minLon = (float) bounds.path("@minlon").asDouble();
+        Float maxLat = (float) bounds.path("@maxlat").asDouble();
+        Float maxLon = (float) bounds.path("@maxlon").asDouble();
 
         boundingBox.addAll(List.of(minLat, minLon, maxLat, maxLon));
     }
@@ -71,8 +71,8 @@ public class TestParser implements IParser {
 
         for (JsonNode n : nodes) {
             long id = n.path("@id").asLong();
-            float lat = (float)  n.path("@lat").asDouble();
-            float lon = (float)  n.path("@lon").asDouble();
+            float lat = (float) n.path("@lat").asDouble();
+            float lon = (float) n.path("@lon").asDouble();
 
             osmNodeMap.put(id, new OsmNode(id, lat, lon));
         }
@@ -102,7 +102,7 @@ public class TestParser implements IParser {
             ArrayNode tagArray = mapper.createArrayNode();
             if (tagNode.isArray()) {
                 tagArray = (ArrayNode) tagNode;
-            } else if (!tagNode.isMissingNode() && !tagNode.isNull()) {
+            } else if (!tagNode.isEmpty()){
                 tagArray.add(tagNode);
             }
 

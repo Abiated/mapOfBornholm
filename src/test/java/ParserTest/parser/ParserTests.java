@@ -1,5 +1,6 @@
-package dk.itu.parser;
+package ParserTest.parser;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +21,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import interfaces.IParser;
-import dk.itu.parser.util.models.ParserResult;
 import models.Member;
 import models.OsmElement;
 import models.OsmNode;
 import models.OsmRelation;
 import models.OsmWay;
-import dk.itu.renderer.utils.DependsOn;
-import dk.itu.renderer.utils.DependsOnExtension;
+import ParserTest.parser.util.extensions.DependsOn;
+import ParserTest.parser.util.extensions.DependsOnExtension;
+import ParserTest.parser.util.models.ParserResult;
 
 @ExtendWith(DependsOnExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -38,8 +39,9 @@ public class ParserTests {
     //Build test results before running test suite
     static {
         try {
+            InputStream is = ParserTests.class.getClassLoader().getResourceAsStream("osmData/tunoe.osm");
             //parserResults.add(new ParserResult("tunoe.osm", "tunoe.json"));
-            parserResults.add(new ParserResult("tunoe.osm", "tunoe.json"));
+            parserResults.add(new ParserResult(is, "tunoe.json"));
         } catch (Exception e) {
             throw new ExceptionInInitializerError("An exception occurred while creating parser");
         }
@@ -217,8 +219,8 @@ public class ParserTests {
             //Assert
             for (OsmWay way : expectedWays.values()) {
                 //Assert that each way actually has the correct tags
-                HashMap<String, String> expectedTags = (HashMap<String, String>) way.getTags();
-                HashMap<String, String> actualTags = (HashMap<String, String>) actualWays.get(way.getId()).getTags();
+                HashMap<String, String> expectedTags = way.getTags();
+                HashMap<String, String> actualTags = actualWays.get(way.getId()).getTags();
 
                 assertEquals(expectedTags.size(), actualTags.size(), () -> String.format("[ERROR - %s] : Way #%d has %d tag pairs, should be %d", pr.getName(), way.getId(), actualTags.size(), expectedTags.size()));
 
@@ -300,8 +302,8 @@ public class ParserTests {
                 OsmRelation actualRelation = actualRelations.get(expectedRelation.getId());
 
                 //Assert relation has correct amount of tags
-                HashMap<String, String> expectedTags = (HashMap<String, String>) expectedRelation.getTags();
-                HashMap<String, String> actualTags = (HashMap<String, String>) actualRelation.getTags();
+                HashMap<String, String> expectedTags = expectedRelation.getTags();
+                HashMap<String, String> actualTags = actualRelation.getTags();
                 assertEquals(expectedTags.size(), actualTags.size(), () -> String.format("[ERROR - %s] : Relation #%d has %d tag pairs, should be %d", pr.getName(), actualRelation.getId(), actualTags.size(), expectedTags.size()));
 
                 //Assert relation has correct tag-keys
@@ -340,12 +342,12 @@ public class ParserTests {
                 assertEquals(expectedMembers.size(), actualMembers.size(), () -> String.format("[ERROR - %s] : Relation #%d has %d members, should be %d", pr.getName(), actualRelation.getId(), actualMembers.size(), expectedMembers.size()));
 
                 for (Member member : expectedMembers) {
-                    OsmElement memberElement = member.getElement();
+                    OsmElement memberElement = member.element();
 
-                    assertTrue(actualMembers.stream().anyMatch(p -> p.getElement().getId() == memberElement.getId()), () -> String.format("[ERROR - %s] : Relation #%d did not contain element #%d with role '%s' as member", pr.getName(), actualRelation.getId(), memberElement.getId(), member.getRole()));
+                    assertTrue(actualMembers.stream().anyMatch(p -> p.element().getId() == memberElement.getId()), () -> String.format("[ERROR - %s] : Relation #%d did not contain element #%d with role '%s' as member", pr.getName(), actualRelation.getId(), memberElement.getId(), member.role()));
 
-                    String expectedRole = member.getRole();
-                    String actualRole = actualMembers.stream().filter(p -> p.getElement().getId() == memberElement.getId()).findFirst().get().getRole();
+                    String expectedRole = member.role();
+                    String actualRole = actualMembers.stream().filter(p -> p.element().getId() == memberElement.getId()).findFirst().get().role();
 
                     assertEquals(expectedRole, actualRole, () -> String.format("[ERROR - %s] : On relation #%d, member with element ID #%d has role '%s', should be '%s'", pr.getName(), actualRelation.getId(), memberElement.getId(), actualRole, expectedRole));
                 }

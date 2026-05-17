@@ -173,6 +173,7 @@ public class Parser implements IParser, Data, Serializable {
                 }
                 /*––––––––– RELATION END –––––––––*/
                 else if (inRelation && line.equals("</relation>")) {
+                    osmRelationMap.put(ID, new OsmRelation(ID, membersList, tags));
                     tags = null;
                     membersList = null;
                     inRelation = false;
@@ -192,7 +193,16 @@ public class Parser implements IParser, Data, Serializable {
         }
         int valueStart = start + pattern.length();
         int valueEnd = s.indexOf('"', valueStart);
-        return s.substring(valueStart, valueEnd);
+        String value = s.substring(valueStart, valueEnd);
+
+        //Decoding xml values
+        value = value.replace("&amp;", "&");
+        value = value.replace("&lt;", "<");
+        value = value.replace("&gt;", ">");
+        value = value.replace("&qout;", "\"");
+        value = value.replace("&apos;", "'");
+
+        return value;
     }
 
     public float getAttributeFloat(String s, String key) {

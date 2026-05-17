@@ -43,16 +43,17 @@ public class HcParser {
 
             while ((line = br.readLine()) != null) {
 
-//                if (line.contains("<bounds")) {
-//                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
-//                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
-//                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
-//                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
-//                }
+                if (line.contains("<bounds")) {
+                    minLat = Float.parseFloat(getAttribute(line, "minlat"));
+                    minLon = Float.parseFloat(getAttribute(line, "minlon"));
+                    maxLat = Float.parseFloat(getAttribute(line, "maxlat"));
+                    maxLon = Float.parseFloat(getAttribute(line, "maxlon"));
+                }
                 if (line.contains("<hc ")) {
                     id = Long.parseLong(getAttribute(line, "id"));
                     height = Float.parseFloat(getAttribute(line, "height"));
                     coords = new ArrayList<>();
+
                 } else if (line.contains("<coords ")) {
                         float lat = Float.parseFloat(getAttribute(line, "lat"));
                         float lon = Float.parseFloat(getAttribute(line, "lon"));

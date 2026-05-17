@@ -5,6 +5,7 @@ import rendering.wayType;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class OsmElement implements Serializable, InsertableInRtree {
@@ -13,10 +14,10 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
 
     private final long id;
     private float area;
-    Map<String, String> tags;
+    private HashMap<String, String> tags;
 
     //Constructor for tag elements
-    public OsmElement(long id, Map<String, String> tags) {this.id = id; this.tags = tags;}
+    public OsmElement(long id, HashMap<String, String> tags) {this.id = id; this.tags = tags;}
     //Constructor for simple elements without tags
     public OsmElement(long id) {this.id = id;}
     //Constructor for deserializable
@@ -35,8 +36,12 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
     }
 
     //TAG HANDLING
-    public Map<String, String> getTags() {
+    public HashMap<String, String> getTags() {
         return tags;
+    }
+
+    public void setTags(HashMap<String, String> tags) {
+        this.tags = tags;
     }
 
     public boolean hasTag(String key, String value) {

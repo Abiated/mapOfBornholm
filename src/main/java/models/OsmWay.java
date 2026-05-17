@@ -26,7 +26,7 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
         this.tags = new HashMap<>();
     }
 
-    public OsmWay(long id, List<OsmNode> nodes, Map<String, String> tags) {
+    public OsmWay(long id, List<OsmNode> nodes, HashMap<String, String> tags) {
         super(id, tags);
         this.nodes = nodes;
         //this.tags = tags;
@@ -68,88 +68,11 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
         return nodes;
     }
 
-//    public Map<String, String> getTags() {
-//        return tags;
-//    }
-
     @Override
     public float[] getBoundingBox() { return boundingBox; }
 
     public boolean isClosed() {
         return nodes.getFirst().getId() == nodes.getLast().getId();
     }
-
-//    public boolean intersects(float[] otherBbox) {
-//        float[] bb = getBoundingBox();
-//        return !(bb[1] < otherBbox[0] ||
-//                bb[0] > otherBbox[1] ||
-//                bb[3] < otherBbox[2] ||
-//                bb[2] > otherBbox[3]);
-//    }
-
-    //–––––––––Tag Handling–––––––––//
-
-    //Checker if tag exist
-//    @Override
-//    public boolean hasTag(String key, String value) {
-//        return value.equals(tags.get(key));
-//    }
-//
-//    @Override
-//    //Tag checker
-//    public boolean isType(wayType type) {
-//        switch (type) {
-//            case wayType.NON_DRAWING:
-//                return (hasTag("location", "underground")
-//                        || tags.get("leisure") != null
-//                        || tags.get("tunnel") != null
-//                        || hasTag("landuse", "harbour")
-//                        || hasTag("highway", "proposed"));
-//            case wayType.ROAD:
-//                return !hasTag("highway", "proposed") && tags.get("highway") != null;
-//            case wayType.LANDUSE:
-//                return tags.get("landuse") != null;
-//            case wayType.COASTLINE:
-//                return hasTag("natural", "coastline");
-//            case wayType.SEAROUTE:
-//                return hasTag("route", "ferry") || hasTag("seamark:type", "ferry_route");
-//            case wayType.BUILDING:
-//                return tags.get("building") != null;
-//            case wayType.NATURAL:
-//                return tags.get("natural") != null && !hasTag("natural", "water") && !hasTag("natural", "coastline");
-//            case wayType.WATER:
-//                return !hasTag("seamark:type", "ferry_route") &&
-//                        (tags.get("seamark:type") != null ||
-//                                hasTag("natural", "shoal") ||
-//                                hasTag("natural", "bay"));
-//            case wayType.AMENITIES:
-//                return tags.get("amenity") != null;
-//            case wayType.AEROWAYS:
-//                return tags.get("aeroway") != null;
-//            case wayType.MAN_MADE:
-//                return tags.get("man_made") != null;
-//            default:
-//                return false;
-//        }
-//    }
-//
-//    //Get method for the tag value
-//    public String getValue() {
-//        if(isType(wayType.NATURAL)) return tags.get("natural");
-//        else if(isType(wayType.ROAD)) {
-//            if(!isType(wayType.ROAD)) return null;
-//            return tags.get("highway");
-//        }
-//        else if(isType(wayType.LANDUSE)) return tags.get("landuse");
-//        else if(isType(wayType.SEAROUTE)) {
-//            if(tags.get("seamark:type") != null) return tags.get("seamark:type");
-//            else if (tags.get("route") != null) return tags.get("seamark:type");
-//        }
-//        else if(isType(wayType.BUILDING)) return tags.get("building");
-//        else if(isType(wayType.AMENITIES)) return tags.get("amenity");
-//        else if(isType(wayType.AEROWAYS)) return tags.get("aeroway");
-//        else if(isType(wayType.MAN_MADE)) return tags.get("man_made");
-//        return null;
-//    }
 
 }

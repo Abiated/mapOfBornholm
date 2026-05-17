@@ -1,8 +1,10 @@
-package dk.itu.parser.util.models;
+package ParserTest.parser.util.models;
 
 import parser.Parser;
 import interfaces.IParser;
-import dk.itu.parser.util.TestParser;
+import ParserTest.parser.util.TestParser;
+
+import java.io.InputStream;
 
 public class ParserResult {
 
@@ -10,10 +12,10 @@ public class ParserResult {
     IParser expectedParser;
     String name;
 
-    public ParserResult(String osmFile, String jsonFile) {
+    public ParserResult(InputStream osmFile, String jsonFile) {
         actualParser = new Parser(osmFile);
         expectedParser = new TestParser(jsonFile);
-        name = osmFile;
+        name = osmFile.toString();
 
         actualParser.parse();
         expectedParser.parse();
