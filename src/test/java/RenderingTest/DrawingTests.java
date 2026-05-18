@@ -1,4 +1,4 @@
-//package dk.itu.renderer;
+//package RenderingTest;
 //
 //import java.awt.BasicStroke;
 //import java.awt.Color;
@@ -16,10 +16,10 @@
 //import models.OsmElement;
 //import models.OsmNode;
 //import models.OsmWay;
-//import dk.itu.renderer.utils.DependsOn;
-//import dk.itu.renderer.utils.DependsOnExtension;
-//import dk.itu.renderer.utils.FakeParser;
-//import dk.itu.renderer.utils.Utils;
+//import RenderingTest.utils.DependsOn;
+//import RenderingTest.utils.DependsOnExtension;
+//import RenderingTest.utils.FakeParser;
+//import RenderingTest.utils.Utils;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.MethodOrderer;
 //import org.junit.jupiter.api.Order;

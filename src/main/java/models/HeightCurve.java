@@ -97,13 +97,13 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 else return Color.decode("#ffffcc");
             } else if (elevation < 2.5) {
                 //return Color.decode("#c2e699");
-                return new Color(194, 230, 153, 255);
+                return Color.decode("#c2e699");
             } else if (elevation < 5) {
-                return new Color(120, 198, 121, 255);
+                return Color.decode("#78c679");
             } else if (elevation < 7.5) {
-                return new Color(49, 163, 84, 255);
+                return Color.decode("#31a354");
             } else {
-                return new Color(0, 104, 55, 255);
+                return Color.decode("#006837");
             }
         } else {
             if (elevation < 0) {
@@ -249,4 +249,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     public boolean isSubmerged() {
         return submerged;
     }
+
+    public void setSubmerged(Boolean val) {submerged = val;}
 }

@@ -1,4 +1,4 @@
-//package dk.itu.renderer.utils;
+//package RenderingTest.utils;
 //
 //import parser.Parser;
 //

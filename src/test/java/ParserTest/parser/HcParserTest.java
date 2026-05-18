@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import models.HeightCurve;
 import models.HeightCurveData;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -49,16 +50,19 @@ public class HcParserTest {
     }
 
     @Test
+    @Order(1)
     void correctCurveCount() {
         assertEquals(3, parseHc().curves.size());
     }
 
     @Test
+    @Order(2)
     void seaRootHasOneDirectChild() {
         assertEquals(1, parseHc().sea.getChildren().size());
     }
 
     @Test
+    @Order(3)
     void innerCurveNestedInsideOuter() {
         HeightCurveData data = parseHc();
         HeightCurve outer = data.sea.getChildren().get(0);
@@ -68,12 +72,14 @@ public class HcParserTest {
     }
 
     @Test
+    @Order(4)
     void curveHasCorrectCordCount() {
         HeightCurve outer = parseHc().sea.getChildren().get(0);
         assertEquals(4, outer.getCoords().size());
     }
 
     @Test
+    @Order(5)
     void boundsAreNonZero() {
         HeightCurveData data = parseHc();
         assertNotEquals(0.0f, data.minLat);
@@ -81,6 +87,7 @@ public class HcParserTest {
     }
 
     @Test
+    @Order(6)
     void minusOneIdFiltered() {
         HeightCurveData data = parseHc();
         for (HeightCurve curve : data.curves) {

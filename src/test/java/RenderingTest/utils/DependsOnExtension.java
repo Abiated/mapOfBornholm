@@ -1,4 +1,4 @@
-//package dk.itu.renderer.utils;
+//package RenderingTest.utils;
 //
 //import java.util.HashMap;
 //import java.util.Map;
