@@ -266,7 +266,7 @@ public class App extends DrawingApp {
             return;
         }
 
-        submergedVertices = SubmergedVertexFinder.findSubmergedVertices2(graph, OsmData, HCdata, SEA_LEVEL);
+        submergedVertices = SubmergedVertexFinder.findSubmergedVertices(graph, OsmData, HCdata, SEA_LEVEL);
     }
 
     //FOR DRAWING AND RENDERING
