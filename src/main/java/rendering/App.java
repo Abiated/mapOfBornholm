@@ -230,14 +230,14 @@ public class App extends DrawingApp {
                 () -> submergedVertices,
                 () -> upperControls.getVehicleMenu().getVehicleType(),
                 OSMdata,
-                route -> {
+                (route, totalHours) -> {
                     currentRoute = route != null ? route : new ArrayList<>();
                     if (route == null) {
                         upperControls.setRouteStatus("No route found for the selected points");
                     } else {
                         upperControls.setRouteStatus(
                                 "Estimated time to get from start to target is " +
-                                        formatEstimatedTime(route, upperControls.getVehicleMenu().getVehicleType()) + " hr/min"
+                                        formatEstimatedTime(totalHours) + " hr/min"
                         );
                     }
                     draw();
@@ -597,12 +597,7 @@ public class App extends DrawingApp {
         }
     }
 
-    private String formatEstimatedTime(List<DirectedEdge> route, PathFinder.VehicleType vehicleType) {
-        float totalHours = 0.0f;
-        for (DirectedEdge edge : route) {
-            totalHours += edge.weight(vehicleType);
-        }
-
+    private String formatEstimatedTime(float totalHours) {
         int totalMinutes = Math.round(totalHours * 60);
         int hours = totalMinutes / 60;
         int minutes = totalMinutes % 60;

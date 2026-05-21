@@ -12,7 +12,7 @@ public class MapHandler {
     private final java.util.function.Supplier<java.util.Set<Integer>> submergedVertices;
     private final java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier;
     private final interfaces.Data mapData;
-    private final java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound;
+    private final java.util.function.BiConsumer<java.util.List<PathFinder.DirectedEdge>, Float> onRouteFound;
 
     private Double startLon, startLat;
     private Double targetLon, targetLat;
@@ -27,7 +27,7 @@ public class MapHandler {
                       java.util.function.Supplier<java.util.Set<Integer>> submergedVertices,
                       java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier,
                       interfaces.Data mapData,
-                      java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound) {
+                      java.util.function.BiConsumer<java.util.List<PathFinder.DirectedEdge>, Float> onRouteFound) {
         this.superAffine = superAffine;
         this.interaction = interaction;
         this.graph = graph;
@@ -98,10 +98,10 @@ public class MapHandler {
                 submergedVertices != null ? submergedVertices.get() : java.util.Collections.emptySet());
 
         if (dijkstra.hasPathTo(target)) {
-            onRouteFound.accept(dijkstra.pathTo(target));
+            onRouteFound.accept(dijkstra.pathTo(target), dijkstra.distTo(target));
         } else {
             System.out.println("No path found.");
-            onRouteFound.accept(null);
+            onRouteFound.accept(null, Float.POSITIVE_INFINITY);
         }
     }
 
