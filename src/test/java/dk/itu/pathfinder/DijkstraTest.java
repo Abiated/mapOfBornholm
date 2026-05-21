@@ -32,6 +32,7 @@ public class DijkstraTest {
         assertEquals(2, path.size());
         assertEquals(1, path.get(0).to());
         assertEquals(3, path.get(1).to());
+        assertEquals(routeWeight(path, VehicleType.CAR), dijkstra.distTo(3), 0.0F);
     }
 
     @Test
@@ -47,6 +48,7 @@ public class DijkstraTest {
         assertEquals(2, path.size());
         assertEquals(2, path.get(0).to());
         assertEquals(3, path.get(1).to());
+        assertEquals(routeWeight(path, VehicleType.CAR), dijkstra.distTo(3), 0.0F);
     }
 
     @Test
@@ -75,5 +77,13 @@ public class DijkstraTest {
         graph.addEdge(new DirectedEdge(2, 3, 5.0F, 50.0F, true, true, true));
 
         return graph;
+    }
+
+    private float routeWeight(List<DirectedEdge> path, VehicleType vehicleType) {
+        float totalWeight = 0.0F;
+        for (DirectedEdge edge : path) {
+            totalWeight = totalWeight + edge.weight(vehicleType);
+        }
+        return totalWeight;
     }
 }
