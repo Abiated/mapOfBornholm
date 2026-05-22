@@ -1,31 +1,14 @@
 package dk.itu.SpacialDatastructure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import interfaces.InsertableInRtree;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import interfaces.IParser;
-import dk.itu.parser.util.models.ParserResult;
-import models.Member;
-import models.OsmElement;
-import models.OsmNode;
-import models.OsmRelation;
-import models.OsmWay;
-import dk.itu.renderer.utils.DependsOn;
-import dk.itu.renderer.utils.DependsOnExtension;
 import spatialDatastructures.Rtree;
 import spatialDatastructures.RtreeNode;
 
