@@ -200,7 +200,7 @@ public class App extends DrawingApp {
                 () -> submergedVertices,
                 () -> upperControls.getVehicleMenu().getVehicleType(),
                 projection,
-                route -> {
+                (route, totalHours) -> {
                     currentRoute = route != null ? route : new ArrayList<>();
                     if (route == null) {
                         upperControls.setRouteStatus("No route found for the selected points");
