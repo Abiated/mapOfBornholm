@@ -81,31 +81,7 @@ public class MapHandler {
         }
     }
 
-    public void recalculateRoute() {
-        if (startLon == null || startLat == null || targetLon == null || targetLat == null) {
-            return;
-        }
-        calculateRoute();
-    }
 
-    private void calculateRoute() {
-        PathFinder.VehicleType vehicleType = vehicleTypeSupplier != null
-                ? vehicleTypeSupplier.get()
-                : PathFinder.VehicleType.CAR;
-        int from = graph.nearestVertex(startLon, startLat, vehicleType);
-        int target = graph.nearestVertex(targetLon, targetLat, vehicleType);
-
-        PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(
-                graph, from, target, vehicleType,
-                submergedVertices != null ? submergedVertices.get() : java.util.Collections.emptySet());
-
-        if (dijkstra.hasPathTo(target)) {
-            onRouteFound.accept(dijkstra.pathTo(target));
-        } else {
-            System.out.println("No path found.");
-            onRouteFound.accept(null);
-        }
-    }
 
     public void handleMouseDragged(MouseEvent event) {
         float dx = (float)(event.getX() - screenX);
@@ -177,6 +153,30 @@ public class MapHandler {
                         scale,
                         scale
                 );
+    }
+
+
+    // ROUTE FINDING METHODS
+    public void recalculateRoute() {
+        if (startLon == null || startLat == null || targetLon == null || targetLat == null) {
+            return;
+        }
+        calculateRoute();
+    }
+
+    private void calculateRoute() {
+        PathFinder.VehicleType vehicleType = vehicleTypeSupplier != null ? vehicleTypeSupplier.get() : PathFinder.VehicleType.CAR;
+        int from = graph.nearestVertex(startLon, startLat, vehicleType);
+        int target = graph.nearestVertex(targetLon, targetLat, vehicleType);
+
+        PathFinder.Dijkstra dijkstra = new PathFinder.Dijkstra(graph, from, target, vehicleType, submergedVertices != null ? submergedVertices.get() : java.util.Collections.emptySet());
+
+        if (dijkstra.hasPathTo(target)) {
+            onRouteFound.accept(dijkstra.pathTo(target), dijkstra.distTo(target));
+        } else {
+            System.out.println("No path found.");
+            onRouteFound.accept(null, Float.POSITIVE_INFINITY);
+        }
     }
 
 }
