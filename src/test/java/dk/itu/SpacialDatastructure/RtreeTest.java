@@ -22,6 +22,23 @@ public class RtreeTest {
     public void Setup() {
     }
 
+    private static float[] expectedBBox(List<InsertableInRtree> items) {
+        float minLon = Float.MAX_VALUE;
+        float maxLon = -Float.MAX_VALUE;
+        float minLat = Float.MAX_VALUE;
+        float maxLat = -Float.MAX_VALUE;
+
+        for (InsertableInRtree item : items) {
+            float[] bb = item.getBoundingBox();
+            minLon = Math.min(minLon, bb[0]);
+            maxLon = Math.max(maxLon, bb[1]);
+            minLat = Math.min(minLat, bb[2]);
+            maxLat = Math.max(maxLat, bb[3]);
+        }
+
+        return new float[]{minLon, maxLon, minLat, maxLat};
+    }
+
     static Stream<List<InsertableInRtree>> provider() {
         Util.resetIds();
 
@@ -67,11 +84,9 @@ public class RtreeTest {
             Rtree tree = new Rtree(items, M);
             RtreeNode root = tree.returnRoot();
             float[] bbox = root.returnbbox();
+            float[] expected = expectedBBox(items);
 
-            assertEquals(0f, bbox[0]);
-            assertEquals(10f, bbox[1]);
-            assertEquals(0f, bbox[2]);
-            assertEquals(10f, bbox[3]);
+            assertArrayEquals(expected, bbox, 0.0001f);
 
         } catch (Exception e) {
             fail(() -> String.format("[EXCEPTION] : %s", e.getMessage()));
@@ -88,17 +103,14 @@ public class RtreeTest {
             Rtree tree = new Rtree(items, M);
             RtreeNode root = tree.returnRoot();
             float[] bbox = root.returnbbox();
+            float[] expected = expectedBBox(items);
 
-            assertEquals(0f, bbox[0]);
-            assertEquals(10f, bbox[1]);
-            assertEquals(0f, bbox[2]);
-            assertEquals(10f, bbox[3]);
+            assertArrayEquals(expected, bbox, 0.0001f);
 
         } catch (Exception e) {
             fail(() -> String.format("[EXCEPTION] : %s", e.getMessage()));
         }
     }
-
 
 }
 

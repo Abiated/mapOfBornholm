@@ -64,4 +64,32 @@ public class RtreeBenchmarkTest {
             System.out.printf("%d elements -> %.3f ms%n", items.size(), ms);
         }
     }
+
+    @Test
+    void benchmarkSearch() {
+
+        Util.resetIds();
+
+        List<InsertableInRtree> items = Util.grid(300, 300, 1f);
+
+        Rtree tree = new Rtree(items, 4);
+
+        float[] query = {50f, 100f, 50f, 100f};
+
+        long total = 0;
+
+        for (int i = 0; i < 1000; i++) {
+
+            long start = System.nanoTime();
+
+            tree.search(query);
+
+            long end = System.nanoTime();
+
+            total += end - start;
+        }
+
+        double avgMs = (total / 1000.0) / 1_000_000.0;
+        System.out.println("Average query time: " + avgMs + " ms");
+    }
 }
