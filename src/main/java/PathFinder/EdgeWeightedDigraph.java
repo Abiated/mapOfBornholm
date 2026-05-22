@@ -12,24 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Find out where to call constructGraph()
-// Thoughts: Do it in main/app or wherever we run the program from. Have a check to see if the file already exists and if so read our binary file of the graph rather than construct a new one
-
-
-//TODO: this class should be called in the background as soon as the program opens, to have the graph before the user clicks to make the program seem smoother
-
-
 public class EdgeWeightedDigraph {
     protected int V;
     private int E;
     private List<DirectedEdge>[] adj; //main array in the adjancency list to answer "What edges go out from vertex v"
-    private Rtree rtree; //TODO: why are you here?? What do you do??
+    private Rtree rtree;
     //HashMaps to go from id to index *AND* back again
     //They are here beacuse we need them AFTER the graph is built
     protected Map<Long, Integer> idToIndex;
     protected Map<Integer, Long> indexToId;
-    private TagHelper tagHelper;//TODO: why are you here?? What do you do??
-    //Lats and Lons are needed for the click function to work //TODO: What the fuck does this mean?
+    private TagHelper tagHelper;
+    //Lats and Lons are needed for the click function to work
 
 
     public EdgeWeightedDigraph(int V) {
