@@ -6,24 +6,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class OsmRelation extends OsmElement implements /*Renderable*/ Serializable {
+public class OsmRelation extends OsmElement implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private List<Member> members;
+    private float[] boundingBox;
     //private HashMap<String, String> tags;
 
     public OsmRelation(long id, List<Member> members, HashMap<String, String> tags) {
         super(id, tags);
         this.members = members;
-        //this.tags = tags;
+        this.boundingBox = computeBoundingBox();
     }
 
     //Exist for deserializable as it needs a no argument constructor, value does not matter
     private OsmRelation() {
         super(0, new HashMap<>());
         this.members = new ArrayList<>();
-        //this.tags = new HashMap<>();
+        this.boundingBox = computeBoundingBox();
     }
 
     public List<Member> getMembers() {
@@ -37,12 +38,14 @@ public class OsmRelation extends OsmElement implements /*Renderable*/ Serializab
     private float[] computeBoundingBox() {
         float minLon = Float.MAX_VALUE, minLat = Float.MAX_VALUE;
         float maxLon = Float.MIN_VALUE, maxLat = Float.MIN_VALUE;
+        float area = 0;
 
         for(Member member : members) {
             if(!(member.getElement() instanceof OsmWay)) continue;
             OsmWay way = (OsmWay) member.getElement();
             if(way == null) continue;
             float[] bb = way.getBoundingBox();
+            area += way.getArea();
             if(bb == null) continue;
             minLon = Math.min(minLon, bb[0]);
             maxLon = Math.max(maxLon, bb[1]);
@@ -51,7 +54,7 @@ public class OsmRelation extends OsmElement implements /*Renderable*/ Serializab
         }
 
         if(minLon == Float.MAX_VALUE) return null;
-        this.setArea((maxLon - minLon) * (maxLat - minLat));
+        this.setArea(area);
         return new float[]{minLon, maxLon, minLat, maxLat};
     }
 

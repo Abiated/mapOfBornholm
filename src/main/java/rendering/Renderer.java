@@ -1,7 +1,6 @@
 package rendering;
 
 import com.fasterxml.jackson.databind.JsonNode;
-//import interfaces.Renderable;
 import interfaces.InsertableInRtree;
 import models.*;
 import spatialDatastructures.Rtree;
@@ -227,11 +226,6 @@ public class Renderer {
             if (list == null || list.isEmpty()) return;
             ways = new ArrayList<>(list);
         }
-
-        ways.sort((a,b) -> Float.compare(
-                ((OsmElement) b).getArea(),
-                ((OsmElement) a).getArea()
-        ));
 
         //int x = 0;
         for (InsertableInRtree element : ways) {
