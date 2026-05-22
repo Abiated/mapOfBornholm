@@ -51,6 +51,7 @@ public class OsmRelation extends OsmElement implements /*Renderable*/ Serializab
         }
 
         if(minLon == Float.MAX_VALUE) return null;
+        this.setArea((maxLon - minLon) * (maxLat - minLat));
         return new float[]{minLon, maxLon, minLat, maxLat};
     }
 

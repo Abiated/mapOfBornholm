@@ -125,7 +125,7 @@ public class Renderer {
             gc.setColor(Color.decode(color));
         } catch (NumberFormatException e) {
             gc.setColor(Color.LIGHT_GRAY);
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         }
 
         if(element.getType(wayType.ROAD)) {
@@ -227,6 +227,12 @@ public class Renderer {
             if (list == null || list.isEmpty()) return;
             ways = new ArrayList<>(list);
         }
+
+        ways.sort((a,b) -> Float.compare(
+                ((OsmElement) b).getArea(),
+                ((OsmElement) a).getArea()
+        ));
+
         //int x = 0;
         for (InsertableInRtree element : ways) {
             //x++;

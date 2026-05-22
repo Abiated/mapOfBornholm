@@ -48,12 +48,12 @@ public class OsmWay extends OsmElement implements Serializable, InsertableInRtre
                 xLowest = Node.getLon();
             }
         }
-        this.setArea(xHighest*yHighest);
         boundingBox = new float[4];
         boundingBox[0] = xLowest;
         boundingBox[1] = xHighest;
         boundingBox[2] = yLowest;
         boundingBox[3] = yHighest;
+        this.setArea((boundingBox[1]-boundingBox[0] * (boundingBox[3]-boundingBox[2])));
     }
 
     public void setCachedShape(Shape cachedShape) {
