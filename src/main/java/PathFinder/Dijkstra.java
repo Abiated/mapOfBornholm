@@ -13,15 +13,9 @@ public class Dijkstra {
     private VehicleType vehicleType;
     private Set<Integer> submergedVertices;
 
-    // overloaded constructor which sends information on to Dijkstra.
-    //it creates a new empty hashset to pass on to Dijkstra. In case no vertices are submerged it uses the empty hashset. Perhaps we can find a more readable way to do this
-    public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type) {
-        //calls the other constructor for Dijkstra
-        this(G, start, target, type, new HashSet<>());
-    }
-
     public Dijkstra(EdgeWeightedDigraph G, int start, int target, VehicleType type, Set<Integer> submergedVertices) {
         vehicleType = type;
+        //ternary operater used for readability. Means condition ? if true do : if false do
         this.submergedVertices = submergedVertices != null ? submergedVertices : new HashSet<>();
         edgeTo = new DirectedEdge[G.V]; //array edgeTo
         distTo = new float[G.V]; //array disTo
@@ -32,7 +26,7 @@ public class Dijkstra {
             distTo[v] = Float.POSITIVE_INFINITY;
         }
 
-        if (this.submergedVertices.contains(start) || this.submergedVertices.contains(target)) {
+        if (this.submergedVertices.contains(start) || this.submergedVertices.contains(target)) { //early stop if start or target is unreachable due to submersion.
             return;
         }
 
@@ -53,8 +47,6 @@ public class Dijkstra {
             relax(G, current.vertex); //relax the current head vertex in our graph
         }
 
-        //Print for visual test:
-        System.out.println("Dijkstra ran till the end");
     }
 
     //in our relax we do not update existing Nodes as Java's PriorityQueue does not support change() which is shown in the book. We instead insert a new Node. It works the same way because of the priority
@@ -66,7 +58,7 @@ public class Dijkstra {
             int w = e.to();
             if(submergedVertices.contains(w)){continue;} //if the current neighbor to v, w, is submerged skip this point in relaxation and look to other neighbor vertices instead. Do not return or else we miss out on potentially not submerged neighbors
 
-            float weight = e.weight(vehicleType); //calculate the weight (currently time for car, bike & walk
+            float weight = e.weight(vehicleType); //calculate the weight (travel time for car, bike & walk)
 
             if (distTo[w] > distTo[v] + weight) {
                 distTo[w] = distTo[v] + weight; //save the shorter/cheaper path
@@ -99,4 +91,3 @@ public class Dijkstra {
 
 
 }
-

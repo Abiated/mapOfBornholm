@@ -1,7 +1,6 @@
 package PathFinder;
 
-//helper class for Dijkstra when using insert() into pq
-//TODO: see of osmNode is a goo enough class to use for this or if I should keep this helper class
+//helper class for Dijkstra when using insert() into pq as Java's PQ only takes one argument and we need both num and dist
 
 public class Node implements Comparable<Node> {
     int vertex;

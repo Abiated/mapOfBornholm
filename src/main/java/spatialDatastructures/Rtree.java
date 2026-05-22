@@ -4,8 +4,6 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import interfaces.InsertableInRtree;
-import models.HeightCurve;
-import models.OsmElement;
 import models.OsmWay;
 import models.OsmNode;
 

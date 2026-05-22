@@ -1,25 +1,29 @@
 package rendering;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.HeightCurve;
-import models.OsmNode;
-import models.OsmWay;
+import interfaces.InsertableInRtree;
+import models.*;
+import spatialDatastructures.Rtree;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
 public class Renderer {
 
     Graphics2D gc;
     JsonNode jn;
 
-    Renderer(Graphics2D gc, JsonNode jn) {
+    public Renderer(Graphics2D gc, JsonNode jn) {
         this.gc = gc;
         this.jn =jn;
     }
 
-    Path2D getWayPath(OsmWay way) {
+    //OSMWAY RENDERING
+    public Path2D getWayPath(OsmWay way) {
         // If the way has less than two nodes, draw nothing
         if (way.getNodes() == null || way.getNodes().size() < 2) {
             return new Path2D.Float();
@@ -28,7 +32,7 @@ public class Renderer {
         if (way.getNodes().size() == 2){
             //gc.setStroke(new BasicStroke(strokeWidth));
 
-            OsmNode a = way.getNodes().get(0);
+            OsmNode a = way.getNodes().getFirst();
             float x1 = a.getLon();
             float y1 = a.getLat();
 
@@ -59,56 +63,59 @@ public class Renderer {
             }
 
             // chatGPT siger det ik er optimalt det her
-            if(way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()){
+            if(way.isClosed()){
                 //gc.setStroke(new BasicStroke(0));
                 polygon.closePath();
                 //gc.fill(polygon);
-                way.setCachedShape(polygon);
-                return polygon;
 
-            } else {
-                //gc.setStroke(new BasicStroke(strokeWidth));
-                way.setCachedShape(polygon);
-                return polygon;
             }
+            way.setCachedShape(polygon);
+            return polygon;
 
         }
         return new Path2D.Float();
     }
 
-    void setWayColor(OsmWay way, float strokeWidth) {
+    public void getColor(OsmElement element, float strokeWidth) {
         //Map<String, String> tags = way.getTags();
 
         // Default color
         gc.setColor(Color.red);
 
-        if(way.hasTag("natural", "coastline")) {
-            gc.setColor(Color.yellow);
+        if(element.getType(wayType.COASTLINE)) {
+            gc.setColor(Color.decode("#EDE8D0"));
+            return;
         }
-        if (way.isWayType(wayType.WATER)) {
+        if (element.getType(wayType.WATER)) {
             gc.setColor(Color.decode("#2b8cbe"));
             //gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
-        if(way.isWayType(wayType.BUILDING)) {
+        if(element.getType(wayType.BUILDING)) {
             gc.setColor(Color.decode(jn.path("building").path("color").asText()));
             gc.setStroke(new BasicStroke(strokeWidth));
             return;
         }
+        if (element.getType(wayType.SEAROUTE)) {
+            gc.setColor(Color.decode(jn.path("searoute").path("color").asText()));
+            gc.setStroke(new BasicStroke(strokeWidth * 1,
+                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                    10.0f, new float[]{5.0f}, 0.0f));
+            return;
+        }
 
-        String key = null;
-        if (way.isWayType(wayType.BUILDING)) key = "natural";
-        else if (way.isWayType(wayType.NATURAL)) key = "natural";
-        else if (way.isWayType(wayType.ROAD)) key = "highway";
-        else if (way.isWayType(wayType.LANDUSE)) key = "landuse";
-        else if (way.isWayType(wayType.SEAROUTE)) key = "searoute";
-        else if (way.isWayType(wayType.WATER)) key = "water";
-        else if (way.isWayType(wayType.AMENITIES)) key = "amenity";
-        else if (way.isWayType(wayType.AEROWAYS)) key = "aeroway";
-        else if (way.isWayType(wayType.MAN_MADE)) key = "man_made";
+        String key;
+        if (element.getType(wayType.BUILDING)) key = "natural";
+        else if (element.getType(wayType.NATURAL)) key = "natural";
+        else if (element.getType(wayType.ROAD)) key = "highway";
+        else if (element.getType(wayType.LANDUSE)) key = "landuse";
+        else if (element.getType(wayType.WATER)) key = "water";
+        else if (element.getType(wayType.AMENITIES)) key = "amenity";
+        else if (element.getType(wayType.AEROWAYS)) key = "aeroway";
+        else if (element.getType(wayType.MAN_MADE)) key = "man_made";
         else key = "other";
 
-        JsonNode jPath = jn.path(key).path(way.getValue());
+        JsonNode jPath = jn.path(key).path(element.getValue());
 
         String color = jPath.isMissingNode() ? jn.path(key).path("defaultColor").asText()
                 : jPath.path("color").asText();
@@ -117,10 +124,10 @@ public class Renderer {
             gc.setColor(Color.decode(color));
         } catch (NumberFormatException e) {
             gc.setColor(Color.LIGHT_GRAY);
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         }
 
-        if(way.isWayType(wayType.ROAD)) {
+        if(element.getType(wayType.ROAD)) {
             int width = jPath.isMissingNode() ? 1 : jPath.path("width").asInt();
             if(jPath.path("dashed").asBoolean()) {
                 gc.setStroke(new BasicStroke(strokeWidth * width,
@@ -130,25 +137,130 @@ public class Renderer {
         } else gc.setStroke(new BasicStroke(strokeWidth));
     }
 
-    Path2D getHcBoundaryPath(HeightCurve curve) {
-        Path2D hc = new Path2D.Float();
-        // problemer opstår hvis heightcurve ikke er parsed
-        float x1 = curve.getCoords().getFirst().getLon();
-        float y1 = curve.getCoords().getFirst().getLat();
-        hc.moveTo(x1,y1);
-        for (int i = 1; i<curve.getCoords().size(); i++) {
-            float x = curve.getCoords().get(i).getLon();
-            float y = curve.getCoords().get(i).getLat();
-            hc.lineTo(x,y);
+    public float getZoomLevel(OsmElement way) {
+        String key;
+        if (way.getType(wayType.NATURAL)) key = "natural";
+        else if (way.getType(wayType.ROAD)) key = "highway";
+        else if (way.getType(wayType.LANDUSE)) key = "landuse";
+        else if (way.getType(wayType.WATER)) key = "water";
+        else if (way.getType(wayType.AMENITIES)) key = "amenity";
+        else if (way.getType(wayType.AEROWAYS)) key = "aeroway";
+        else if (way.getType(wayType.MAN_MADE)) key = "man_made";
+        else if (way.getType(wayType.BUILDING)) {
+            key = "building";
+            return (float) jn.path(key).path("zoom").asDouble();
+        } else if(way.getType(wayType.SEAROUTE)) {
+            key = "searoute";
+            return (float) jn.path(key).path("zoom").asDouble();
         }
-        return hc;
+        else return 0;
+        JsonNode jPath = jn.path(key).path(way.getValue()).path("zoom");
+
+        if (jPath.isMissingNode()) return 0;
+
+        return (float) jPath.asDouble();
     }
-    Path2D getHcRegionPath(HeightCurve curve) {
-        Path2D hc = new Path2D.Float(Path2D.WIND_EVEN_ODD);
-        hc.append(getHcBoundaryPath(curve),false);
-        for (HeightCurve heightcurve : curve.getChildren())
-            hc.append(heightcurve.getBoundaryPath(),false);
-        return hc;
+
+    //OSMRELATION RENDERING
+    public void renderMultipolygon(OsmRelation relation, Shape projected) {
+        if(relation.getTags() == null ||projected == null) return;
+
+        //Map<String, String> tags = relation.getTags();
+
+        getColor(relation, 1);
+        gc.fill(projected);
+    }
+    
+    
+    public Path2D buildMultiPolygon(OsmRelation relation) {
+        if  (relation.getTags() == null) return null;
+        if  (!relation.getTags().containsKey("type")) return null;
+        if  (!relation.getTags().get("type").equals("multipolygon")) return null;
+        if  (relation.getMembers() == null || relation.getMembers().isEmpty()) return null;
+
+        List<OsmWay> outerWays = new ArrayList<>();
+        List<OsmWay> innerWays = new ArrayList<>();
+
+        for(Member member : relation.getMembers()) {
+            if(!(member.getElement() instanceof OsmWay way)) continue;
+
+            if (way.getNodes() == null || way.getNodes().size() < 2) continue;
+            //if ((way.getNodes().stream().anyMatch(n -> n == null))) //Needed? runtime...
+
+            if(member.getRole().equals("outer")) outerWays.add(way);
+            else if(member.getRole().equals("inner")) innerWays.add(way);
+        }
+
+        if (outerWays.isEmpty()) return null;
+
+        Path2D results = new Path2D.Float(Path2D.WIND_EVEN_ODD);
+        for (OsmWay way : Stitcher.stitch(outerWays)) {
+            if (!way.isClosed()) continue;
+            results.append(getWayPath(way), false);
+        }
+        for (OsmWay way : Stitcher.stitch(innerWays)) {
+            if (!way.isClosed()) continue;
+            results.append(getWayPath(way), false);
+        }
+
+
+        return results.getBounds2D().isEmpty() ? null : results;
+    }
+
+    public void drawLayer(wayType type, Graphics2D gc, float sw, float zoom,
+                          MapProjection projection, int CutOffToRtree,
+                          EnumMap<wayType, List<OsmElement>> waysByType,
+                          EnumMap<wayType, Rtree> RtreesByType) {
+        AffineTransform combined = projection.getCombined();
+
+        List<InsertableInRtree> ways;
+        float[] bbox = projection.getViewPortBoundingBox();
+
+        if (zoom>CutOffToRtree) {
+            Rtree rtree = RtreesByType.get(type);
+            if (rtree == null) return;
+            ways = rtree.search(bbox);
+        }
+        else {
+            List<OsmElement> list = waysByType.get(type);
+            if (list == null || list.isEmpty()) return;
+            ways = new ArrayList<>(list);
+        }
+
+        //int x = 0;
+        for (InsertableInRtree element : ways) {
+            //x++;
+            if(element instanceof OsmWay way) {
+
+                if (!way.intersects(bbox)) continue;
+
+                if (type != wayType.WATER
+                        && type != wayType.COASTLINE
+                        && type != wayType.SEAROUTE
+                        && zoom < getZoomLevel(way)) continue;
+
+                Shape projected;
+                //Shape s;
+                if (way.getCachedShape() == null)
+                    projected = combined.createTransformedShape(getWayPath(way));
+                    //s = renderer.getWayPath(way);
+                else
+                    projected = combined.createTransformedShape(way.getCachedShape());
+                //s = way.getCachedShape();
+                getColor(way, sw);
+
+                if (way.getNodes().getFirst().getId() == way.getNodes().getLast().getId()
+                        && !(way.getType(wayType.ROAD) && !way.hasTag("highway", "rest_area")) && !way.getType(wayType.SEAROUTE))
+                    gc.fill(projected);
+                else gc.draw(projected);
+            } else if(element instanceof OsmRelation relation) {
+
+                Path2D path = buildMultiPolygon(relation);
+                if  (path == null) continue;
+                Shape projected = combined.createTransformedShape(path);
+                renderMultipolygon(relation, projected);
+            }
+        }
+        //System.out.println(x + " elements iterated in layer");
     }
 }
-

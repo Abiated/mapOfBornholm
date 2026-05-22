@@ -1,11 +1,5 @@
 package PathFinder;
 
-//import TagHelper.Direction;
-//import TagHelper.TagtoLife;
-//import dk.itu.parser.Parser;
-//import dk.itu.renderer.osm.OsmNode;
-//import dk.itu.renderer.osm.OsmWay;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import interfaces.InsertableInRtree;
 import models.OsmNode;
@@ -18,24 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Find out where to call constructGraph()
-// Thoughts: Do it in main/app or wherever we run the program from. Have a check to see if the file already exists and if so read our binary file of the graph rather than construct a new one
-
-
-//TODO: this class should be called in the background as soon as the program opens, to have the graph before the user clicks to make the program seem smoother
-
-
 public class EdgeWeightedDigraph {
     protected int V;
     private int E;
-    private List<DirectedEdge>[] adj; //array in adjancency list to answer "What edges go out from vertex v"
+    private List<DirectedEdge>[] adj; //main array in the adjancency list to answer "What edges go out from vertex v"
     private Rtree rtree;
     //HashMaps to go from id to index *AND* back again
-    //They are here bacuse we need them AFTER the graph is built
+    //They are here beacuse we need them AFTER the graph is built
     protected Map<Long, Integer> idToIndex;
     protected Map<Integer, Long> indexToId;
     private TagHelper tagHelper;
-//Lats and Lons are needed for the click function to work
+    //Lats and Lons are needed for the click function to work
 
 
     public EdgeWeightedDigraph(int V) {
@@ -60,7 +47,8 @@ public class EdgeWeightedDigraph {
         E++;
     }
 
-    /** Enables iteration through the adjacencylist when used in for loop in Dijkstra* */
+    /** Enables iteration through the adjacency list when used in for-loop in Dijkstra* */
+    //TODO: Delete if not needed
     public Iterable<DirectedEdge> adj(int v) {
         return adj[v];
     }
@@ -91,13 +79,14 @@ public class EdgeWeightedDigraph {
 
     /**Constructs and returns a digraph with all possible ways to travel between nodes in the map*/
     public static EdgeWeightedDigraph constructGraph(Parser input, JsonNode jRoot) {
+        //TODO: Lær hvad denne her JsonNode jRoot er og gør
         //mapping long id names to array indexes
         int index = 0; //counter
         //These are different from the fields, because they are local values
         //We use them to calculate the num of V before vi instantiate EdgeWeightedDigraph
         Map<Long, Integer> idToIndex = new HashMap<>();
         Map<Integer, Long> indexToId = new HashMap<>();
-        TagHelper tagHelper= new TagHelper(jRoot);
+        TagHelper tagHelper= new TagHelper(jRoot); //TODO: Hvorfor både jRoot & taghelper?
 
         for (OsmWay way : input.getOsmWayMap().values()) { //in way map
             if(!tagHelper.isHighway(way)) {continue;} //skip if OsmWay is not marked highway

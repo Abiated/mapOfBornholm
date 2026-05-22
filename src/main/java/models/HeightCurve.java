@@ -4,11 +4,13 @@ import interfaces.InsertableInRtree;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HeightCurve implements Serializable, InsertableInRtree {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     long id;
@@ -22,8 +24,10 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 1
     public Path2D getBoundaryPath() {
+        if(cachedBoundaryPath != null) return (Path2D) cachedBoundaryPath;
 
         Path2D path = new Path2D.Float();
+        if(coords.isEmpty()) return path;
 
         path.moveTo(coords.getFirst().getLon(), coords.getFirst().getLat());
 
@@ -36,16 +40,16 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         }
 
         else {
-            for (int i = 1; i < coords.size(); i += 20) {
+            for (int i = 1; i < coords.size(); i += 30) {
                 float x = coords.get(i).getLon();
                 float y = coords.get(i).getLat();
-                if (i == coords.size() - 20) {
-                    int minus = 20 - (coords.size() % 20);
-                    i -= minus;
-                }
                 path.lineTo(x, y);
             }
+            Coordinate last = coords.getLast();
+            path.lineTo(last.getLon(), last.getLat());
         }
+
+        path.closePath();
 
         setCachedBoundaryPath(path);
         return path;
@@ -53,23 +57,35 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     // Task 2
     public Path2D getRegionPath() {
+        if(cachedRegionPath != null) return (Path2D) cachedRegionPath;
 
         Path2D path = new Path2D.Float(Path2D.WIND_EVEN_ODD);
 
-        Shape boundaryPath;
-        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
-        else boundaryPath = getCachedBoundaryPath();
-        path.append(boundaryPath, false);
-
+        path.append(getBoundaryPath(), false);
         for (HeightCurve child : children) {
-            if (child.getCachedBoundaryPath()==null)
-                path.append(child.getBoundaryPath(), false);
-            else
-                path.append(child.getCachedBoundaryPath(), false);
+            path.append(child.getBoundaryPath(), false);
         }
-
-        setCachedRegionPath(path);
+//        for(int i = 1; i < coords.size(); i++) {
+//            path.lineTo(coords.get(i).getLon(), coords.get(i).getLat());
+//        }
+        path.closePath();
+        cachedRegionPath = path;
         return path;
+
+//        Shape boundaryPath;
+//        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
+//        else boundaryPath = getCachedBoundaryPath();
+//        path.append(boundaryPath, false);
+//
+//        for (HeightCurve child : children) {
+//            if (child.getCachedBoundaryPath()==null)
+//                path.append(child.getBoundaryPath(), false);
+//            else
+//                path.append(child.getCachedBoundaryPath(), false);
+//        }
+//
+//        setCachedRegionPath(path);
+//        return path;
     }
 
     // Task 3
@@ -81,18 +97,18 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 else return Color.decode("#ffffcc");
             } else if (elevation < 2.5) {
                 //return Color.decode("#c2e699");
-                return new Color(194, 230, 153, 255);
+                return Color.decode("#c2e699");
             } else if (elevation < 5) {
-                return new Color(120, 198, 121, 255);
+                return Color.decode("#78c679");
             } else if (elevation < 7.5) {
-                return new Color(49, 163, 84, 255);
+                return Color.decode("#31a354");
             } else {
-                return new Color(0, 104, 55, 255);
+                return Color.decode("#006837");
             }
         } else {
             if (elevation < 0) {
                 if (submerged) return Color.decode("#2b8cbe");
-                else return Color.decode("#ffffcc");
+                else return new Color(255, 255, 204, 0);
             } else if (elevation < 2.5) {
                 //return Color.decode("#c2e699");
                 return new Color(194, 230, 153, 0);
@@ -233,4 +249,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     public boolean isSubmerged() {
         return submerged;
     }
+
+    public void setSubmerged(Boolean val) {submerged = val;}
 }
