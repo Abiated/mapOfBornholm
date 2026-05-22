@@ -13,7 +13,7 @@ public class MapHandler {
     private final java.util.function.Supplier<java.util.Set<Integer>> submergedVertices;
     private final java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier;
     private final rendering.MapProjection projection;
-    private final java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound;
+    private final java.util.function.BiConsumer<java.util.List<PathFinder.DirectedEdge>, Float> onRouteFound;;
 
     private Double startLon, startLat;
     private Double targetLon, targetLat;
@@ -28,7 +28,7 @@ public class MapHandler {
                       java.util.function.Supplier<java.util.Set<Integer>> submergedVertices,
                       java.util.function.Supplier<PathFinder.VehicleType> vehicleTypeSupplier,
                       rendering.MapProjection projection,
-                      java.util.function.Consumer<java.util.List<PathFinder.DirectedEdge>> onRouteFound) {
+                      java.util.function.BiConsumer<java.util.List<PathFinder.DirectedEdge>, Float>  onRouteFound) {
         this.superAffine = superAffine;
         this.interaction = interaction;
         this.graph = graph;
