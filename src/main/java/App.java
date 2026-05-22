@@ -118,9 +118,8 @@ public class App extends DrawingApp {
             for (wayType type : wayType.values()) {
                 waysByType.put(type, new ArrayList<>());
             }
-
-            insertIntoWaysByType(ways.values());
             insertIntoWaysByType(multipolygon);
+            insertIntoWaysByType(ways.values());
 
         }
 

@@ -77,7 +77,6 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
             case wayType.LANDUSE:
                 return tags.get("landuse") != null;
             case wayType.COASTLINE:
-                //Place key for relations can be larger complicated polygons that can represent coastlines
                 //All are not included here
                 return hasTag("natural", "coastline") || hasTag("place", "island") || hasTag("place", "country");
             case wayType.SEAROUTE:
@@ -85,7 +84,7 @@ public abstract class OsmElement implements Serializable, InsertableInRtree {
             case wayType.BUILDING:
                 return tags.get("building") != null;
             case wayType.NATURAL:
-                return tags.get("natural") != null && !hasTag("natural", "water") && !hasTag("natural", "coastline");
+                return tags.get("natural") != null && !hasTag("natural", "coastline");
             case wayType.WATER:
                 return !hasTag("seamark:type", "ferry_route") &&
                         (tags.get("seamark:type") != null ||

@@ -196,8 +196,8 @@
     "quarry": {"color": "#BDBDBD", "zoom": 20},
     "landfill": {"color": "#AFAF8C", "zoom": 0},
     "brownfield": {"color": "#AFAF8C", "zoom": 0},
-    "industrial": {"color":  "#c4b9c1", "zoom":  0},
-    "residential": {"color":  "#d7d7d7", "zoom":  0},
+    "industrial": {"color":  "#c4b9c1", "zoom":  10},
+    "residential": {"color":  "#d7d7d7", "zoom":  10},
     "cemetery": {"color": "#aacbaf", "zoom": 12}
   },
 
@@ -211,8 +211,8 @@
     "sand": { "color": "#E6D6A8", "zoom": 10 },
     "beach": { "color": "#E6D6A8", "zoom": 10 },
     "shoal": { "color": "#2b8cbe", "zoom": 25 },
-    "water": { "color":  "2b8cbe", "zoom":  25},
-    "//Comment" : "Slash at the end of the tag to not create error reading as it has not yet gotten color and zoom",
+    "water": { "color":  "#2b8cbe", "zoom":  2},
+    "bare_rock": {"color": "#888888", "zoom": 15},
     "peak": { "color": "#9E9E9E", "zoom": 10 },
     "tree": { "color": "#5E9E6A", "zoom": 30 },
     "cape": { "color": "#C8D8B0", "zoom": 20 },

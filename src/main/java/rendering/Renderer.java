@@ -147,10 +147,6 @@ public class Renderer {
         else if (way.getType(wayType.AMENITIES)) key = "amenity";
         else if (way.getType(wayType.AEROWAYS)) key = "aeroway";
         else if (way.getType(wayType.MAN_MADE)) key = "man_made";
-//        else if (way.isLeisure()) {
-//            key = "leisure";
-//            return (float) jRoot.path(key).path("zoom").asDouble();
-//        }
         else if (way.getType(wayType.BUILDING)) {
             key = "building";
             return (float) jn.path(key).path("zoom").asDouble();
@@ -267,25 +263,4 @@ public class Renderer {
         }
         //System.out.println(x + " elements iterated in layer");
     }
-
-//    public Path2D getHcBoundaryPath(HeightCurve curve) {
-//        Path2D hc = new Path2D.Float();
-//        // problemer opstår hvis heightcurve ikke er parsed
-//        float x1 = curve.getCoords().getFirst().getLon();
-//        float y1 = curve.getCoords().getFirst().getLat();
-//        hc.moveTo(x1,y1);
-//        for (int i = 1; i<curve.getCoords().size(); i++) {
-//            float x = curve.getCoords().get(i).getLon();
-//            float y = curve.getCoords().get(i).getLat();
-//            hc.lineTo(x,y);
-//        }
-//        return hc;
-//    }
-//    Path2D getHcRegionPath(HeightCurve curve) {
-//        Path2D hc = new Path2D.Float(Path2D.WIND_EVEN_ODD);
-//        hc.append(getHcBoundaryPath(curve),false);
-//        for (HeightCurve heightcurve : curve.getChildren())
-//            hc.append(heightcurve.getBoundaryPath(),false);
-//        return hc;
-//    }
 }

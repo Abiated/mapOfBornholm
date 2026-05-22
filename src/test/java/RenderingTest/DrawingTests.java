@@ -16,6 +16,7 @@
 //import models.OsmElement;
 //import models.OsmNode;
 //import models.OsmWay;
+//import rendering.Renderer;
 //import RenderingTest.utils.DependsOn;
 //import RenderingTest.utils.DependsOnExtension;
 //import RenderingTest.utils.FakeParser;
