@@ -1,5 +1,6 @@
 package BenchMarking;
 
+import models.HeightCurve;
 import models.HeightCurveData;
 import org.junit.jupiter.api.Test;
 import parser.HcParser;

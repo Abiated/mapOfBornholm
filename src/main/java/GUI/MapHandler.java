@@ -92,34 +92,6 @@ public class MapHandler {
         interaction.run();
     }
 
-//    private double[] screenToLonLat(double x, double y, interfaces.Data d) {
-//        int WIDTH = DrawingApp.getWIDTH();
-//        int HEIGHT = DrawingApp.getHEIGHT();
-//        float p = 20;
-//        float c = (float) Math.cos(Math.toRadians((d.getMinLat() + d.getMaxLat()) / 2));
-//        float w = (d.getMaxLon() - d.getMinLon()) * c;
-//        float h = d.getMaxLat() - d.getMinLat();
-//        float k = Math.min((WIDTH - 2 * p) / w, (HEIGHT - 2 * p) / h);
-//
-//        java.awt.geom.AffineTransform t = new java.awt.geom.AffineTransform();
-//        t.translate(p + (WIDTH - 2 * p - w * k) / 2, p + (HEIGHT - 2 * p - h * k) / 2 + h * k);
-//        t.scale(k, -k);
-//        t.scale(c, 1);
-//        t.translate(-d.getMinLon(), -d.getMinLat());
-//
-//        java.awt.geom.AffineTransform combined = new java.awt.geom.AffineTransform(superAffine);
-//        combined.concatenate(t);
-//
-//        try {
-//            double[] screen = {x, y};
-//            double[] world  = new double[2];
-//            combined.inverseTransform(screen, 0, world, 0, 1);
-//            return world; // [lon, lat]
-//        } catch (Exception e) {
-//            return new double[]{0, 0};
-//        }
-//    }
-
     /**
      * Zooms in-and-out around the mouse.
      *

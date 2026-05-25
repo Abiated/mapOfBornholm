@@ -22,7 +22,6 @@ public class HcParser {
 
     public HeightCurveData parse() {
         try {
-            //InputStream is = HcParser.class.getResourceAsStream("/" + fileName);
             if (inputStream == null) {
                 throw new IllegalArgumentException("Resource not found: " + inputStream);
             }
