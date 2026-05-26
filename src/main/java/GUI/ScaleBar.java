@@ -19,15 +19,7 @@ public class ScaleBar extends Canvas {
 
         float degreePrPixel = 1.0f/zoom;     //Amount of degrees of longitude per screen pixel
         int metersPrDegree = 40075000/360;      //Meters per degree at the equator
-        //float degreeForDenmark = (float) Math.cos(55); //Corretion for being at danish latitude
         float metersPrPixel = degreePrPixel * metersPrDegree;
-
-//        System.out.println("Current zoom: " + zoom);
-//        System.out.println("Current degree per pixel: " + degreePrPixel);
-//        System.out.println("Current meter per pixel: " + metersPrPixel);
-//        System.out.println();
-//        System.out.println();
-
 
 
 
@@ -38,8 +30,6 @@ public class ScaleBar extends Canvas {
         double rangedMeters = parseFormatedDistance(label);
 
         double barWidthPx = rangedMeters / metersPrPixel;
-
-        //System.out.println(barWidthPx);
 
         scale.fillRect(20, 20, barWidthPx, 4);
         scale.fillRect(20, 14, 2, 12);

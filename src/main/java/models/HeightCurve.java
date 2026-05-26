@@ -22,7 +22,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
     Shape cachedRegionPath;
     Shape cachedBoundaryPath;
 
-    // Task 1
     public Path2D getBoundaryPath() {
         if(cachedBoundaryPath != null) return (Path2D) cachedBoundaryPath;
 
@@ -55,7 +54,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         return path;
     }
 
-    // Task 2
     public Path2D getRegionPath() {
         if(cachedRegionPath != null) return (Path2D) cachedRegionPath;
 
@@ -65,30 +63,12 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         for (HeightCurve child : children) {
             path.append(child.getBoundaryPath(), false);
         }
-//        for(int i = 1; i < coords.size(); i++) {
-//            path.lineTo(coords.get(i).getLon(), coords.get(i).getLat());
-//        }
+
         path.closePath();
         cachedRegionPath = path;
         return path;
-
-//        Shape boundaryPath;
-//        if (getCachedBoundaryPath()==null) boundaryPath = getBoundaryPath();
-//        else boundaryPath = getCachedBoundaryPath();
-//        path.append(boundaryPath, false);
-//
-//        for (HeightCurve child : children) {
-//            if (child.getCachedBoundaryPath()==null)
-//                path.append(child.getBoundaryPath(), false);
-//            else
-//                path.append(child.getCachedBoundaryPath(), false);
-//        }
-//
-//        setCachedRegionPath(path);
-//        return path;
     }
 
-    // Task 3
     public Color getFillColor(float seaLevel, boolean visible) {
         float elevation = height - seaLevel;
         if (visible) {
@@ -96,7 +76,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 if (submerged) return Color.decode("#2b8cbe");
                 else return Color.decode("#ffffcc");
             } else if (elevation < 2.5) {
-                //return Color.decode("#c2e699");
                 return Color.decode("#c2e699");
             } else if (elevation < 5) {
                 return Color.decode("#78c679");
@@ -110,7 +89,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
                 if (submerged) return Color.decode("#2b8cbe");
                 else return new Color(255, 255, 204, 0);
             } else if (elevation < 2.5) {
-                //return Color.decode("#c2e699");
                 return new Color(194, 230, 153, 0);
             } else if (elevation < 5) {
                 return new Color(120, 198, 121, 0);
@@ -122,7 +100,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         }
     }
 
-    // Task 4
     public void resetSubmerged() {
         this.submerged = false;
         for (HeightCurve child : this.children) {
@@ -130,7 +107,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
         }
     }
 
-    // Task 5
     public void submerge(float seaLevel) {
         float thisElevation = height - seaLevel;
 
@@ -189,9 +165,6 @@ public class HeightCurve implements Serializable, InsertableInRtree {
 
     public Shape getCachedBoundaryPath() { return cachedBoundaryPath; }
 
-    // ------------------------------------
-    // Don't edit anything below here
-    // ------------------------------------
     public HeightCurve() {
         this(0L, 0.0F, new ArrayList<>(), new ArrayList<>());
     }

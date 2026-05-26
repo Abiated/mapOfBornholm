@@ -8,7 +8,6 @@ import PathFinder.SubmergedVertexFinder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import interfaces.Data;
-import interfaces.InsertableInRtree;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -50,7 +49,7 @@ public class App extends DrawingApp {
     //Datastructures
     private final EnumMap<wayType, List<OsmElement>> waysByType = new EnumMap<>(wayType.class);
     private final EnumMap<wayType,Rtree> RtreesByType = new EnumMap<>(wayType.class);
-    private final int CutOffToRtree = 7;
+    private final int CutOffToRtree = 5;
 
     //Pathfinding data
     private EdgeWeightedDigraph graph;
@@ -63,7 +62,6 @@ public class App extends DrawingApp {
     private MapProjection projection;
     private static final SuperAffine superAffine = new SuperAffine();
     private Data projectionSource;
-    //private AffineTransform t;
     private Renderer renderer;
 
 
@@ -93,7 +91,6 @@ public class App extends DrawingApp {
         if (OsmData != null) ways = OsmData.getOsmWayMap();
         if (OsmData != null) projectionSource = OsmData;
         else projectionSource = HCdata;
-        //t = MapProjection.getProjectionTransform(projectionSource);
 
         projection = new MapProjection(superAffine, projectionSource);
 
@@ -128,8 +125,6 @@ public class App extends DrawingApp {
         if (HCdata != null) {
            curves = new ArrayList<>(HCdata.getCurves());
 
-            // hjemmelavet heightcurve til at indeholde alle andre
-            // systemet går i stykker hvis OsmData er null
             if (OsmData != null) {
                 List<Coordinate> coordlist = new ArrayList<>();
                 coordlist.add(new Coordinate(OsmData.getMinLat(), OsmData.getMinLon()));
@@ -146,8 +141,6 @@ public class App extends DrawingApp {
             curves.removeIf(c -> c.getCoords() == null
                     || c.getCoords().isEmpty()
                     || c.getBoundingBox() == null);
-
-            //HeightCurveRTree = new Rtree(new ArrayList<InsertableInRtree>(curves), 32);
         }
 
         if (OsmData != null) {
@@ -274,7 +267,6 @@ public class App extends DrawingApp {
         Graphics2D gc = getNewGraphicsContext();
         renderer = new Renderer(gc, jRoot);
         AffineTransform combined = projection.getCombined();
-        //gc.setTransform(combined);
 
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -287,7 +279,6 @@ public class App extends DrawingApp {
         float zoom = projection.getZoom();
         bottomControls.update(zoom);
 
-        //Midlertidig løsning måske?
         zoom = zoom / 1000; //Making the zoom level manageable for rendering with zoom
         //System.out.println("Manageable zoom level: " + zoom);
 
@@ -321,7 +312,6 @@ public class App extends DrawingApp {
 
         //HeightCurves raw paths
         if(HCdata != null) {
-            // bruger outer som sea da dens children er identiske med sea
             if(outer != null) {
                 outer.resetSubmerged();
                 outer.submerge(SEA_LEVEL);
@@ -332,27 +322,25 @@ public class App extends DrawingApp {
 
             float[] bbox = projection.getViewPortBoundingBox();
 
-            //List<InsertableInRtree> curves;
-            //if (zoom > CutOffToRtree) {
-            //curves = HeightCurveRTree.search(getViewPortBoundingBox());
-            //curves = new ArrayList<>(HCdata.curves);
             for (HeightCurve curve : curves) {
                 if (curve == sea) continue;
                 if (!curve.intersects(bbox)) continue;
 
-                gc.setColor(curve.getFillColor(SEA_LEVEL, OsmData == null));
+                if (curve.isSubmerged() || OsmData == null) {
+                    gc.setColor(curve.getFillColor(SEA_LEVEL, OsmData == null));
 
-                Shape path = curve.getCachedRegionPath() != null
-                        ? curve.getCachedRegionPath()
-                        : curve.getRegionPath();
-                Shape projected = project(path, combined);
+                    Shape path = curve.getCachedRegionPath() != null
+                            ? curve.getCachedRegionPath()
+                            : curve.getRegionPath();
+                    Shape projected = project(path, combined);
 
-                Coordinate first = curve.getCoords().getFirst();
-                Coordinate last = curve.getCoords().getLast();
-                boolean isClosed = first.getLon() == last.getLon() && first.getLat() == last.getLat();
+                    Coordinate first = curve.getCoords().getFirst();
+                    Coordinate last = curve.getCoords().getLast();
+                    boolean isClosed = first.getLon() == last.getLon() && first.getLat() == last.getLat();
 
-                if(isClosed) gc.fill(projected);
-                else gc.draw(projected);
+                    if(isClosed) gc.fill(projected);
+                    else gc.draw(projected);
+                }
             }
         }
 

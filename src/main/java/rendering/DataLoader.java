@@ -134,7 +134,7 @@ public class DataLoader {
         }
     }
 
-
+    //LOADING DEFAULT DATA
     public MapData loadDefaultData() {
         InputStream is = getClass().getResourceAsStream(DEFAULT_ZIP);
         if (is == null) {
@@ -147,22 +147,6 @@ public class DataLoader {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load default data from " + DEFAULT_ZIP, e);
         }
-    }
-
-
-
-    //DEFAULT LOADING:
-
-    private Parser loadDefaultOsmData() {
-        InputStream inputStream = getClass().getResourceAsStream(DEFAULT_OSM);
-        Parser parser = new Parser(inputStream);
-        parser.parse();
-        return parser;
-    }
-
-    private HeightCurveData loadDefaultHeightCurveData() {
-        InputStream inputStream = getClass().getResourceAsStream(DEFAULT_HC);
-        return new HcParser(inputStream).parse();
     }
 
 }

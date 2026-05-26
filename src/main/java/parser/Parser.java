@@ -17,7 +17,6 @@ public class Parser implements IParser, Data, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    //private final String fileName;
     private final List<Float> boundingBox = new ArrayList<>();
     private final HashMap<Long, OsmNode> osmNodeMap = new HashMap<>();
     private final HashMap<Long, OsmWay> osmWayMap = new HashMap<>();
@@ -50,7 +49,6 @@ public class Parser implements IParser, Data, Serializable {
 
 
             while ((line = br.readLine()) != null) {
-                //System.out.println(line);
 
                 /*––––––––– BOUNDS –––––––––*/
                 if (line.contains("<bounds")) {
@@ -88,10 +86,6 @@ public class Parser implements IParser, Data, Serializable {
                     tags = new HashMap<>();
                     inWay = true;
 
-                    //Puts a key-value pair for ID in the map
-//                    if (!osmWayMap.containsKey(ID)) {
-//                        osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
-//                    }
                 }
                 /*––––––––– WAY CONTENT –––––––––*/
                 else if (inWay && line.contains("<nd")) {
@@ -100,7 +94,6 @@ public class Parser implements IParser, Data, Serializable {
                     /*if(osmNodeMap.get(ref) != null)*/ wayNodeRef.add(osmNodeMap.get(ref));
 
                     //Updates map
-//                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
                 } else if (inWay && line.contains("<tag")) {
                     //Puts key-value pair for the "way"
                     String k = getAttribute(line, "k");
@@ -108,9 +101,6 @@ public class Parser implements IParser, Data, Serializable {
 
                     //Check that the map is instantiated
                     if (tags != null) tags.put(k, v);
-
-                    //Updates map
-//                    osmWayMap.put(ID, new OsmWay(ID, wayNodeRef, tags));
                 }
                 /*––––––––– WAY END –––––––––*/
                 else if (inWay && line.contains("</way>")) {

@@ -21,7 +21,7 @@ public class BottomControls extends BorderPane {
         //HBox that puts scale on the screen
         HBox scaleBar = new HBox(scale);
         //Styles controls with 20px padding and alignment
-        scaleBar.setStyle("-fx-padding: 20; -fx-alignment: center-right;");
+        scaleBar.setStyle("-fx-padding: 10; -fx-alignment: center-right;");
 
         setRight(scaleBar);
         setLeft(seaSlider);
