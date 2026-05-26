@@ -47,7 +47,7 @@ public class ScaleBar extends Canvas {
                }
                return Math.round(km) + "km";
            } else {
-               int[] rangeMeters = new int[]{10, 20, 30, 40, 50, 100, 250, 500};
+               int[] rangeMeters = new int[]{1, 2, 3, 5, 10, 20, 30, 40, 50, 100, 250, 500};
                for (int n : rangeMeters) {
                    if(meters <= n * 1.5) return n + "m";
                }
